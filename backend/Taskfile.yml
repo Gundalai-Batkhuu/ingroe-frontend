@@ -1,0 +1,10 @@
+version: '3'
+
+dotenv: ['.env']
+
+tasks:
+  dev:run:
+    desc: runs the server in the development mode
+    cmds:
+      - python -m your-assistant.main
+
