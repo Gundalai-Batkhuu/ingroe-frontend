@@ -1,0 +1,3 @@
+"""
+Used for initialising database.
+"""
