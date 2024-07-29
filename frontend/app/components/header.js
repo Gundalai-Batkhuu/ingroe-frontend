@@ -7,8 +7,8 @@ export default function Header() {
         <a href="/" className="text-xl font-bold">Legal AI</a>
       </div>
       <div className="flex items-center justify-end space-x-2">
-        <a href="/login" className="text-sm">Log In</a>
-        <a href="/signup" className="text-sm">Sign Up</a>
+        <a href="/login" className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Log In</a>
+        <a href="/signup" className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Sign Up</a>
       </div>
     </header>
     )
