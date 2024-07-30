@@ -6,7 +6,7 @@ export default function Header() {
       <div className="flex items-center">
         <a href="/" className="text-xl font-bold">Legal AI</a>
       </div>
-      <div className="flex items-center justify-end space-x-2">
+      <div className="flex items-center justify-end space-x-6">
         <a href="/login" className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Log In</a>
         <a href="/signup" className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Sign Up</a>
       </div>
