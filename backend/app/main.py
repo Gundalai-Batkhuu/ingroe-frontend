@@ -1,13 +1,13 @@
 """
-The backend of the Legal_AI_App. The backend is a project 
-named your-assistant.
+The backend of the Legal_AI_App.
 """
 
 from fastapi import FastAPI
 from .routes import action
 
 app = FastAPI()
-app.include_router(router=action.router)
+prefix = "/api/v1"
+app.include_router(router=action.router, prefix=prefix)
 
 @app.get("/")
 def run_server():
