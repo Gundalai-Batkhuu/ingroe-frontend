@@ -3,8 +3,7 @@ from typing import Any, Literal
 from pydantic_extra_types.country import CountryShortName
 
 class SearchQuery(BaseModel):
-    """
-    Data Model for searching documents.
+    """Data Model for searching documents.
 
     This model performs the validation of the body in the client request.
     """
@@ -12,11 +11,12 @@ class SearchQuery(BaseModel):
     country: CountryShortName | None = None
     country_specific_search: bool 
     search_type: Literal["strict", "medium", "open"] = "strict"
-    pdf_only: bool = False
+    file_type: str | None = None
     mix: bool = False
-    results : int = Field(default=5, ge=1, le=15)
+    results : int = Field(default=5, ge=1, le=16)
     before: int | None = None
     after: int | None = None
+    site: str | None = None
 
     @model_validator(mode="after")
     @classmethod
@@ -38,3 +38,12 @@ class SearchQuery(BaseModel):
         if values.before is not None and values.after is not None:
             raise ValueError("Cannot have before and after date set for a search query.")
         return values 
+    
+class SearchResult(BaseModel):
+    """Data model for search result that is returned from the search query.
+    """
+    title: str | None = None
+    thumbnail: str | None = None
+    snippet: str | None = None
+    html_snippet: str | None = None
+    link: str | None = None

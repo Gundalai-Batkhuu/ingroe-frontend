@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 from typing import Dict
 from ..model.pydantic_model.data_model import SearchQuery
+from ..controller.doc_action.search import Search
 
 router = APIRouter(
     prefix="/items",
@@ -13,5 +14,7 @@ def index() -> Dict[str,str]:
     return {"name": "hello"}
 
 @router.post("/search-document")
-async def search(query: SearchQuery):
-    return query
+async def search(queryObject: SearchQuery):
+    results = await Search.search_documents(queryObject)
+    # return queryObject
+    return results
