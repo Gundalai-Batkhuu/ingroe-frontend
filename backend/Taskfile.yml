@@ -10,5 +10,9 @@ tasks:
   dev:watch:
     desc: runs the server in the development mode while watching the changes in the file
     cmds:
-      - uvicorn app.main:app --host 0.0.0.0 --port 5000 --reload    
+      - uvicorn app.main:app --host 0.0.0.0 --port 5000 --reload  
+  test:
+    desc: runs tests present in the test package
+    cmds:
+      - pytest -v      
 
