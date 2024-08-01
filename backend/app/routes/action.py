@@ -14,7 +14,7 @@ def index() -> Dict[str,str]:
     return {"name": "hello"}
 
 @router.post("/search-document")
-async def search(queryObject: SearchQuery):
-    results = await Search.search_documents(queryObject)
-    # return queryObject
+async def search(query_object: SearchQuery):
+    results = await Search.search_documents(query_object)
+    # return query_object
     return results

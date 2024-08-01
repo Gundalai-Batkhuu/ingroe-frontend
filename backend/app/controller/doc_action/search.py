@@ -1,8 +1,8 @@
 from pydantic import BaseModel
 from ..core import APIEndPoint
-from ...model.pydantic_model.data_model import SearchQuery
+from ...model.pydantic_model.data_model import SearchQuery, SearchResult
 import pycountry
-from typing import Optional
+from typing import Optional, List
 from app.external.search_func import SearchFunction
 
 class Search(APIEndPoint):
@@ -74,29 +74,49 @@ class Search(APIEndPoint):
         """
         suffix = ""
         if file_type is not None:
-            suffix = file_type
+            suffix = f" {file_type}"
         return suffix    
 
 
     @classmethod
-    def _process_input(cls, queryObject: SearchQuery) -> str:
+    def _process_input(cls, query_object: SearchQuery) -> str:
         """Implementation of the base method to create a final search string.
 
         Args:
-        queryObject: An object that contains all info about a query.
+        query_object: An object that contains all info about a query.
 
         Returns:
         A string that represents a complete search query.
         """
-        prefix = cls._get_prefix(queryObject.country, queryObject.search_type, queryObject.site)
-        time_suffix = cls._get_time_suffix(queryObject.before, queryObject.after)
-        file_suffix = cls._get_file_suffix(queryObject.file_type)
-        search_query = f"{prefix}{queryObject.query}{time_suffix} {file_suffix}"
+        prefix = cls._get_prefix(query_object.country, query_object.search_type, query_object.site)
+        time_suffix = cls._get_time_suffix(query_object.before, query_object.after)
+        file_suffix = cls._get_file_suffix(query_object.file_type)
+        search_query = f"{prefix}{query_object.query}{time_suffix}{file_suffix}"
         return search_query
+    
+    @classmethod
+    def get_final_search_query(cls, query_object: SearchQuery) -> str:
+        """A wrapper for the private method to get a final search string.
+
+        Args:
+        query_object: An object that contains all info about a query.
+
+        Returns:
+        A string that represents a complete search query.
+        """
+        return cls._process_input(query_object)
 
     @classmethod
-    async def search_documents(cls, queryObject: SearchQuery):
-        search_query = cls._process_input(queryObject)
+    async def search_documents(cls, query_object: SearchQuery) -> List[SearchResult]:
+        """Performs a search based on the query and returns the list of results.
+
+        Args:
+        query_object: An object that contains all info about a query.
+
+        Returns:
+        A list containing a dictionary of search result properties
+        """
+        search_query = cls.get_final_search_query(query_object)
         print(search_query)
         results = await SearchFunction.get_result(search_query)
         return results
