@@ -3,28 +3,58 @@ import pytest
 from app.external.search_func import SearchFunction
 from app.model.pydantic_model.data_model import SearchResult 
 
-@pytest.mark.asyncio
-@patch.object(SearchFunction, "_get_result_from_engine", new_callable=AsyncMock)
-async def test_get_result(mock_get_result_from_engine):
-    """Test to check the right query object is received.
+@pytest.fixture
+def get_dictionary():
+    """Get a dictionary that contains the properties returned by the mock call.
     """
     list_of_dictionaries = [
     {"title":"Title", "link":"www.xyz.com", "snippet":"page snippet", "htmlSnippet":"page <b>snippet</b>", "pagemap":{"cse_thumbnail":[{"src":"www.xyz.com/src"}]}, "formattedUrl":"www.formatted.com"},
      {"title":"Title2", "link":"www.abc.com", "snippet":"page snippet2", "htmlSnippet":"page <b>snippet2</b>", "pagemap":{"no_cse_thumbanil":"random"}, "formattedUrl":"www.formatted2.com"}
     ]
+    return list_of_dictionaries
 
-    # mock response from get_result_from_engine
-    mock_get_result_from_engine.return_value = list_of_dictionaries
-
+@pytest.fixture
+def get_expected_result():
+    """Get the expected result from a function that formats the mock call result.
+    """
     expected_result = [
         SearchResult(title="Title", link="www.xyz.com", snippet="page snippet", html_snippet="page <b>snippet</b>", thumbnail="www.xyz.com/src"),
         SearchResult(title="Title2", link="www.abc.com", snippet="page snippet2", html_snippet="page <b>snippet2</b>", thumbnail=None),
     ]
+    return expected_result
+
+@pytest.mark.asyncio
+@patch.object(SearchFunction, "_get_result_from_engine", new_callable=AsyncMock)
+async def test_get_result(mock_get_result_from_engine, get_dictionary, get_expected_result):
+    """Test to check the right query object is received.
+    """
+
+    # mock response from get_result_from_engine
+    mock_get_result_from_engine.return_value = get_dictionary
+    expected_result = get_expected_result
 
     query = "test"
-    actual_result = await SearchFunction.get_result(query)
+    actual_result = await SearchFunction.get_result(query, 5)
     assert actual_result == expected_result
-    mock_get_result_from_engine.assert_awaited_once_with(query) # Assert mock is called with the correct arguments. assert_called_once_with(query) is also doing the same
+    mock_get_result_from_engine.assert_awaited_once_with(query, start=1, num=10) # Assert mock is called with the correct arguments. assert_called_once_with(query) is also doing the same
+
+@pytest.mark.asyncio
+@patch.object(SearchFunction, "_get_result_from_engine", new_callable=AsyncMock)
+async def test_get_result_multiple_api_calls(mock_get_result_from_engine, get_dictionary, get_expected_result):
+    """Test to check if the right query object is received. This is for the scenario when 
+    the number of api calls is more than 1. This happens when the number of results users wanna 
+    retrieve is greater than 10.
+    """
+
+    # mock response from get_result_from_engine
+    mock_get_result_from_engine.return_value = get_dictionary
+
+    call_result = get_expected_result
+    expected_result = call_result + call_result
+
+    query = "test"
+    actual_result = await SearchFunction.get_result(query, 15)
+    assert actual_result == expected_result
 
 @pytest.mark.asyncio
 @patch.object(SearchFunction, "_get_result_from_engine", new_callable=AsyncMock)
@@ -47,6 +77,6 @@ async def test_get_result_missing_keys(mock_get_result_from_engine):
         SearchResult(title=None, link=None, snippet=None, html_snippet=None, thumbnail=None),
     ]
     query = "test"
-    actual_result = await SearchFunction.get_result(query)
+    actual_result = await SearchFunction.get_result(query, 5)
     assert actual_result == expected_result
-    mock_get_result_from_engine.assert_awaited_once_with(query)
+    mock_get_result_from_engine.assert_awaited_once_with(query, start=1, num=10)

@@ -118,5 +118,5 @@ class Search(APIEndPoint):
         """
         search_query = cls.get_final_search_query(query_object)
         print(search_query)
-        results = await SearchFunction.get_result(search_query)
+        results = await SearchFunction.get_result(search_query, query_object.results)
         return results

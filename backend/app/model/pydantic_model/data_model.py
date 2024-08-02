@@ -13,7 +13,7 @@ class SearchQuery(BaseModel):
     search_type: Literal["strict", "medium", "open"] = "strict"
     file_type: str | None = None
     mix: bool = False
-    results : int = Field(default=5, ge=1, le=16)
+    results : int = Field(default=5, ge=1, le=20)
     before: int | None = None
     after: int | None = None
     site: str | None = None
