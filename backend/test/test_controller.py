@@ -60,7 +60,7 @@ def test_get_final_search_query_file():
     """Test if the search string has an expected format if file is provided.
     """
     query_object = SearchQuery(query="tax return", country="Australia", country_specific_search=True, file_type="pdf")
-    expected_query = "site:*.gov.au tax return pdf"
+    expected_query = "site:*.gov.au tax return filetype:pdf"
     actual_query = Search.get_final_search_query(query_object=query_object)
     assert actual_query == expected_query, f"Expected '{expected_query}' but got '{actual_query}'"
 
@@ -69,6 +69,6 @@ def test_get_final_search_query_all():
     query is passed to create a query object.
     """
     query_object = SearchQuery(query="tax return", country="Australia", country_specific_search=True, file_type="pdf", after=2019)
-    expected_query = "site:*.gov.au tax return AFTER:2019 pdf"
+    expected_query = "site:*.gov.au tax return AFTER:2019 filetype:pdf"
     actual_query = Search.get_final_search_query(query_object=query_object)
     assert actual_query == expected_query, f"Expected '{expected_query}' but got '{actual_query}'"        
