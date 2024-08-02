@@ -34,7 +34,7 @@ async def test_get_result(mock_get_result_from_engine, get_dictionary, get_expec
     expected_result = get_expected_result
 
     query = "test"
-    actual_result = await SearchFunction.get_result(query, 5)
+    actual_result = await SearchFunction.get_result(query, 5, False)
     assert actual_result == expected_result
     mock_get_result_from_engine.assert_awaited_once_with(query, start=1, num=10) # Assert mock is called with the correct arguments. assert_called_once_with(query) is also doing the same
 
@@ -45,15 +45,11 @@ async def test_get_result_multiple_api_calls(mock_get_result_from_engine, get_di
     the number of api calls is more than 1. This happens when the number of results users wanna 
     retrieve is greater than 10.
     """
-
-    # mock response from get_result_from_engine
     mock_get_result_from_engine.return_value = get_dictionary
-
     call_result = get_expected_result
     expected_result = call_result + call_result
-
     query = "test"
-    actual_result = await SearchFunction.get_result(query, 15)
+    actual_result = await SearchFunction.get_result(query, 15, False)
     assert actual_result == expected_result
 
 @pytest.mark.asyncio
@@ -77,6 +73,19 @@ async def test_get_result_missing_keys(mock_get_result_from_engine):
         SearchResult(title=None, link=None, snippet=None, html_snippet=None, thumbnail=None),
     ]
     query = "test"
-    actual_result = await SearchFunction.get_result(query, 5)
+    actual_result = await SearchFunction.get_result(query, 5, False)
     assert actual_result == expected_result
     mock_get_result_from_engine.assert_awaited_once_with(query, start=1, num=10)
+
+@pytest.mark.asyncio
+@patch.object(SearchFunction, "_get_result_from_engine", new_callable=AsyncMock)
+async def test_get_result_mix_results(mock_get_result_from_engine, get_dictionary, get_expected_result):
+    """Test to check if the right query object is received. This is for the scenario when users
+    want to receive a mix of results containing file based and non file based results.
+    """
+    mock_get_result_from_engine.return_value = get_dictionary
+    call_result = get_expected_result
+    expected_result = call_result + call_result
+    query = "test"
+    actual_result = await SearchFunction.get_result(query, 15, True)
+    assert actual_result == expected_result    
