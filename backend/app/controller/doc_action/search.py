@@ -74,7 +74,7 @@ class Search(APIEndPoint):
         """
         suffix = ""
         if file_type is not None:
-            suffix = f" {file_type}"
+            suffix = f" filetype:{file_type}"
         return suffix    
 
 

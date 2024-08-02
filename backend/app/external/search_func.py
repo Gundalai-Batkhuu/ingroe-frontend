@@ -1,7 +1,7 @@
 from googleapiclient.discovery import build
 from dotenv import load_dotenv
 import os
-from typing import List, Tuple, Dict
+from typing import List, Tuple, Dict, Optional
 from app.model.pydantic_model.data_model import SearchResult
 import math
 
@@ -79,6 +79,7 @@ class SearchFunction:
 
         Args:
         query: Query string.
+        num_of_results: Number of search results that users wanna fetch.
 
         Returns:
         A list containing a dictionary of search result properties
