@@ -3,7 +3,7 @@ The backend of the Legal_AI_App.
 """
 
 from fastapi import FastAPI
-from .routes import action
+from app.routes import action
 
 app = FastAPI()
 prefix = "/api/v1"
@@ -19,4 +19,4 @@ if __name__ == "__main__":
     You'd execute this by running `python -m your-assistant.main`
     """
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=5000)
+    uvicorn.run(app, host="0.0.0.0", port=5000, reload=False)
