@@ -1,6 +1,6 @@
 from unittest.mock import patch, AsyncMock
 import pytest
-from app.external.search_func import SearchFunction
+from app.dependencies.external.search_func import SearchFunction
 from app.model.pydantic_model.data_model import SearchResult 
 
 @pytest.fixture

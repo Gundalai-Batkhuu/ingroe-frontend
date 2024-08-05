@@ -21,5 +21,5 @@ async def search(payload: SearchQuery):
 
 @router.post("/create-document")
 async def create_document(payload: CreateDocument):
-    Create.create_document(payload)
+    await Create.create_document(payload)
     return payload
