@@ -2,7 +2,7 @@
 
 import { useFormStatus } from 'react-dom'
 import Link from 'next/link'
-import { IconSpinner } from '@/app/lib/ui/icons'
+import IconSpinner from '@/app/lib/ui/icons'
 export default function SignupForm() {
 
   return (
