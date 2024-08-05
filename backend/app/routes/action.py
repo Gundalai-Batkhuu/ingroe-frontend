@@ -1,12 +1,12 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, File, UploadFile
 from typing import Dict
 from app.model.pydantic_model.data_model import (SearchQuery, CreateDocument)
 from app.controller.doc_action.search import Search
 from app.controller.doc_action.create_document import Create
 
 router = APIRouter(
-    prefix="/items",
-    tags=["items"],
+    prefix="/store",
+    tags=["store"],
     responses={404: {"description": "Not found"}},
 )
 
@@ -23,3 +23,8 @@ async def search(payload: SearchQuery):
 async def create_document(payload: CreateDocument):
     await Create.create_document(payload)
     return payload
+
+@router.post("/create-document-from-file")
+async def create_document_from_file(file: UploadFile, user_id: str = File(...)):
+    await Create.create_document_from_file(file, user_id)
+    return file.filename

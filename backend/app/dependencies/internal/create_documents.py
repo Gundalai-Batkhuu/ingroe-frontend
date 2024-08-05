@@ -1,5 +1,5 @@
 from langchain_community.document_loaders import AsyncChromiumLoader
-from typing import List, AsyncIterator, Sequence, Tuple, Any
+from typing import List, AsyncIterator, Sequence, Tuple, Any, Literal, Optional
 from langchain_core.documents import Document
 from langchain_community.document_transformers import Html2TextTransformer
 from langchain_community.document_transformers import BeautifulSoupTransformer
@@ -10,11 +10,17 @@ import mimetypes
 from app.utils.utils import (get_root_directory, generate_unique_string, get_file_type_by_extension, get_current_directory)
 import os
 from langchain_community.document_loaders import (PyPDFLoader, UnstructuredMarkdownLoader, Docx2txtLoader)
+from fastapi import UploadFile
 
 class GetDocument:
     """Get the sequence of documents from the provided link or file.
     """
-    allowed_file_types: List[str] = ["pdf", "md", "docx"]
+    allowed_file_types: List[str] = ["pdf", "docx"]
+    additional_allowed_files: List[str] = ["md"]
+    content_type_map = {
+            "application/pdf": "pdf",
+            "text/markdown": "md",
+        }
     @classmethod
     async def _get_html_document_from_link(cls, links: List[str]) -> AsyncIterator[Document]:
         """Scrapes the given link or page and provide the sequence of documents.
@@ -117,46 +123,61 @@ class GetDocument:
         A string representing the file extension.
         """
         content_type = response.headers.get("Content-Type", "")
-        content_type_map = {
-            "application/pdf": "pdf",
-            "text/markdown": "md",
-        }
         # Return the file extension or 'unknown' if not found
-        return content_type_map.get(content_type, "unknown")
+        return cls.content_type_map.get(content_type, "unknown")
     
     @classmethod
-    def _get_file_extension(cls, response: Any, url: str) -> str:
+    def _get_file_extension(cls, path: str, response: Optional[Any] = None, file: Optional[UploadFile] = None) -> str:
         """Gives the file extension from the link. It tries to get the file extension from the header
         first and then only tries to retrieve from the file extension.
 
         Args:
         response: A response object from the server.
-        url: A string representing the link.
+        path: A string representing the link or the file name.
+        file: Uploaded file by the client.
 
         Returns:
         A string representing the file extension.
         """
-        file_extension = cls._get_file_extension_from_headers(response)
+        file_extension = "unknown"
+        if response is not None:
+            file_extension = cls._get_file_extension_from_headers(response)
+        if file is not None:
+            file_extension = cls._get_file_extension_from_file(file)    
         if file_extension == "unknown":
-            file_extension = get_file_type_by_extension(url)
-        return file_extension   
+            file_extension = get_file_type_by_extension(path)
+        return file_extension 
 
     @classmethod
-    def handle_link(cls, url: str):
+    def _get_file_extension_from_file(cls, file: UploadFile) -> str:
+        """Get the file extension based on the Content-Type from the file.
+        
+        Args:
+        file: Uploaded file by the client.
+
+        Returns:
+        A string representing the file extension.
+        """
+        content_type = file.content_type
+        return cls.content_type_map.get(content_type, "unknown")
+
+    @classmethod
+    def handle_link(cls, url: str, user_id: str):
         """Check if the link points to a downloadable file. If so, download it.
         
         Args:
         url: A string representing the link.
+        user_id: Id of the user passing the link.
         """
         try:
             response = requests.head(url, allow_redirects=True, timeout=5)
             is_downloadable = cls._is_downloadable(response, url)
             if is_downloadable:
-                file_extension = cls._get_file_extension(response, url)
+                file_extension = cls._get_file_extension(path=url, response=response)
                 if file_extension in cls.allowed_file_types:
-                    file_path = cls._get_file_path("files", "usr", file_extension)
+                    file_path = cls._get_file_path("files", user_id, file_extension)
                     cls._download_file(url, file_path)
-                    cls.create_documents_from_downloads(file_extension, file_path)   
+                    cls.create_documents_from_store(file_extension, file_path)   
             else:
                 print("The link is a normal link with no download option.")
         except Exception as e:
@@ -164,8 +185,8 @@ class GetDocument:
             print(f"An error occurred: {e}")
 
     @classmethod
-    def create_documents_from_downloads(cls, file_extension: str, file_path: str) -> None:
-        """Create documents from the downloaded file.
+    def create_documents_from_store(cls, file_extension: str, file_path: str) -> None:
+        """Create documents from the stored file.
 
         Args:
         file_extension: Extension of the downloaded file.
@@ -173,6 +194,9 @@ class GetDocument:
         """
         if file_extension == "pdf":
             cls.get_documents_from_pdf(file_path)
+            return
+        if file_extension == "md":
+            cls.get_document_from_md(file_path)
             return
         if file_extension == "docx":
             cls.get_document_from_docx(file_path)
@@ -211,9 +235,38 @@ class GetDocument:
         document_docx = loader.load()
         print(document_docx)
 
+    @classmethod
+    async def _upload_file(cls, file_path: str, uploaded_file: UploadFile) -> None:
+        """Stores the uploaded file in the designated file path.
 
+        Args:
+        file_path: The path where the uploaded file resides.
+        file: Uploaded file by the client.
+        """
+        with open(file_path, "wb") as file:
+            content = await uploaded_file.read()
+            file.write(content)
+        print(f"File uploaded and saved to {file_path}")
+
+    @classmethod
+    async def get_document_from_file(cls, file: UploadFile, user_id: str) -> None:
+        """Creates a sequence of document from the uploaded file.
+
+        Args:
+        file: Uploaded file by the client.
+        user_id: Id of the user uploading the file.
+        """
+        full_allowed_list = cls.allowed_file_types + cls.additional_allowed_files
+        file_extension = cls._get_file_extension(path=file.filename, file=file)
+        if file_extension in full_allowed_list:
+            file_path = cls._get_file_path("files", user_id, file_extension)
+            await cls._upload_file(file_path, file)
+            cls.create_documents_from_store(file_extension, file_path)
+        else:
+            print("not allowed")    
+        # print(file.content_type)
 
 if __name__ == "__main__":  
-    html = asyncio.run(GetDocument.get_document_from_link(["https://python.langchain.com/v0.1/docs/integrations/document_loaders/async_chromium/"]))
-    print(html)   
-    GetDocument.handle_link("https://bhutan.com.au/wp-content/uploads/2022/06/Nepal-on-a-budget-5-nts.pdf")
+    # html = asyncio.run(GetDocument.get_document_from_link(["https://python.langchain.com/v0.1/docs/integrations/document_loaders/async_chromium/"]))
+    # print(html)   
+    GetDocument.handle_link("https://bhutan.com.au/wp-content/uploads/2022/06/Nepal-on-a-budget-5-nts.pdf", "usr3")
