@@ -121,6 +121,8 @@ class SearchFunction:
             file_result = await cls._get_result_from_engine(query, start=1, num=count_file)
             non_file_result.extend(file_result)
             return non_file_result
+        if num_of_results < 10:
+           return await cls._get_result_from_engine(query, start=1, num=num_of_results) 
         return await cls._get_total_results(query, num_of_results, api_calls)
     
     @classmethod
