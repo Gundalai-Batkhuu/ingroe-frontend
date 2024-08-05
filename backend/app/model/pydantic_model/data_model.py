@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field, model_validator
 from typing import Any, Literal
 from pydantic_extra_types.country import CountryShortName
+from uuid import uuid4
 
 class SearchQuery(BaseModel):
     """Data Model for searching documents.
@@ -47,3 +48,14 @@ class SearchResult(BaseModel):
     snippet: str | None = None
     html_snippet: str | None = None
     link: str | None = None
+
+class CreateDocument(BaseModel):
+    """Data model for creating documents.
+
+    It checks if the payload submitted conforms to the required format before
+    creating documents.
+    """    
+    user_id: str
+    document_id: str= Field(default_factory=lambda: uuid4().hex) # create automatic id
+    link: str
+    requires_asset_download: bool = False
