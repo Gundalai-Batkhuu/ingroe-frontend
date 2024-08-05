@@ -36,7 +36,7 @@ async def test_get_result(mock_get_result_from_engine, get_dictionary, get_expec
     query = "test"
     actual_result = await SearchFunction.get_result(query, 5, False)
     assert actual_result == expected_result
-    mock_get_result_from_engine.assert_awaited_once_with(query, start=1, num=10) # Assert mock is called with the correct arguments. assert_called_once_with(query) is also doing the same
+    mock_get_result_from_engine.assert_awaited_once_with(query, start=1, num=5) # Assert mock is called with the correct arguments. assert_called_once_with(query) is also doing the same
 
 @pytest.mark.asyncio
 @patch.object(SearchFunction, "_get_result_from_engine", new_callable=AsyncMock)
@@ -49,7 +49,7 @@ async def test_get_result_multiple_api_calls(mock_get_result_from_engine, get_di
     call_result = get_expected_result
     expected_result = call_result + call_result
     query = "test"
-    actual_result = await SearchFunction.get_result(query, 15, False)
+    actual_result = await SearchFunction.get_result(query, 12, False)
     assert actual_result == expected_result
 
 @pytest.mark.asyncio
@@ -75,7 +75,7 @@ async def test_get_result_missing_keys(mock_get_result_from_engine):
     query = "test"
     actual_result = await SearchFunction.get_result(query, 5, False)
     assert actual_result == expected_result
-    mock_get_result_from_engine.assert_awaited_once_with(query, start=1, num=10)
+    mock_get_result_from_engine.assert_awaited_once_with(query, start=1, num=5)
 
 @pytest.mark.asyncio
 @patch.object(SearchFunction, "_get_result_from_engine", new_callable=AsyncMock)
@@ -87,5 +87,19 @@ async def test_get_result_mix_results(mock_get_result_from_engine, get_dictionar
     call_result = get_expected_result
     expected_result = call_result + call_result
     query = "test"
-    actual_result = await SearchFunction.get_result(query, 15, True)
-    assert actual_result == expected_result    
+    actual_result = await SearchFunction.get_result(query, 12, True)
+    assert actual_result == expected_result   
+
+@pytest.mark.asyncio
+@patch.object(SearchFunction, "_get_result_from_engine", new_callable=AsyncMock)
+async def test_get_result_num_of_result_is_10(mock_get_result_from_engine, get_dictionary, get_expected_result):
+    """Test to check if the number of results wanted is 10. In this case, the call to the mock 
+    function must receive 10 as a number of results. This will mainly check if the mock call is 
+    made with the right argument.
+    """
+    mock_get_result_from_engine.return_value = get_dictionary
+    expected_result = get_expected_result
+    query = "test"
+    actual_result = await SearchFunction.get_result(query, 10, False)
+    assert actual_result == expected_result     
+    mock_get_result_from_engine.assert_awaited_once_with(query, start=1, num=10) 
