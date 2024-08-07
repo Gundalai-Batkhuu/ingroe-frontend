@@ -1,8 +1,8 @@
 from fastapi import APIRouter, File, UploadFile
 from typing import Dict
 from app.model.pydantic_model.data_model import (SearchQuery, CreateDocument)
-from app.controller.doc_action.search import Search
-from app.controller.doc_action.create_document import Create
+from app.controller.doc_action import Search
+from app.controller.doc_action import Create
 
 router = APIRouter(
     prefix="/store",
