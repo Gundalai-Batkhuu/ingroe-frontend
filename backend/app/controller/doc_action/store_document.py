@@ -1,7 +1,7 @@
 from ..core import APIEndPoint
 from typing import List, Sequence
 from langchain_core.documents import Document
-from app.dependencies.internal.store_documents import StoreDocument
+from app.dependencies.internal import StoreDocument
 
 class Store(APIEndPoint):
     @classmethod

@@ -1,6 +1,6 @@
 from ..core import APIEndPoint
 from app.model.pydantic_model.data_model import CreateDocument
-from app.dependencies.internal.create_documents import GetDocument
+from app.dependencies.internal import GetDocument
 from fastapi import UploadFile
 
 class Create(APIEndPoint):
