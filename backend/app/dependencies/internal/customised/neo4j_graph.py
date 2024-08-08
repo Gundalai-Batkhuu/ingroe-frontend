@@ -1,5 +1,5 @@
 from hashlib import md5
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from langchain_core.utils import get_from_dict_or_env
 
@@ -49,7 +49,6 @@ include_docs_query = (
     "SET d += $document.metadata "
     "WITH d "
 )
-
 
 def clean_string_values(text: str) -> str:
     """Clean string values for schema.
@@ -110,6 +109,13 @@ def value_sanitize(d: Any) -> Any:
     else:
         return d
 
+def _get_create_and_attach_query(parent_label: str) -> str:
+    return (
+        f"MERGE (parent:{parent_label} {{id: $parent_id}}) "
+        "MERGE (d:Document {id: $doc_id}) "
+        "SET d += $doc_properties "
+        "MERGE (parent)-[:OWNS]->(d)"
+    )
 
 def _get_node_import_query(baseEntityLabel: bool, include_source: bool) -> str:
     if baseEntityLabel:
@@ -527,7 +533,7 @@ class Neo4jGraph(GraphStore):
     def add_graph_documents(
         self,
         graph_documents: List[GraphDocument],
-        parent_node_query: str,
+        parent_node: Dict[str, Union[str, int]] | None = None,
         include_source: bool = False,
         baseEntityLabel: bool = False,
     ) -> None:
@@ -540,7 +546,8 @@ class Neo4jGraph(GraphStore):
         that contain the nodes and relationships to be added to the graph. Each
         GraphDocument should encapsulate the structure of part of the graph,
         including nodes, relationships, and the source document information.
-        - parent_node_query (str): A Cypher query to get the parent node.
+        - parent_node (Dict[str, Union[str, int]]): A dictionary containing label and 
+        id for the parent node.
         - include_source (bool, optional): If True, stores the source document
         and links it to nodes in the graph using the MENTIONS relationship.
         This is useful for tracing back the origin of data. Merges source
@@ -551,6 +558,10 @@ class Neo4jGraph(GraphStore):
         gets a secondary __Entity__ label, which is indexed and improves import
         speed and performance. Defaults to False.
         """
+        if parent_node is not None:
+            if "label" not in parent_node or "id" not in parent_node:
+                raise ValueError("Parent node must contain 'label' and 'id' keys.")
+    
         if baseEntityLabel:  # Check if constraint already exists
             constraint_exists = any(
                 [
@@ -578,19 +589,16 @@ class Neo4jGraph(GraphStore):
                     document.source.page_content.encode("utf-8")
                 ).hexdigest()
 
-            create_and_attach_query = f"""
-            {parent_node_query}
-            MERGE (d:Document {{id: $doc_id}})
-            SET d += $doc_properties
-            MERGE (parent)-[:OWN]->(d)
-            """
-            self.query(
-                create_and_attach_query,
-                {
-                    "doc_id": document.source.metadata["id"],
-                    "doc_properties": document.source.metadata
-                }
-            )    
+            if parent_node is not None:
+                create_and_attach_query = _get_create_and_attach_query(parent_node.get("label"))
+                self.query(
+                    create_and_attach_query,
+                    {
+                        "parent_id": parent_node.get("id"),
+                        "doc_id": document.source.metadata["id"],
+                        "doc_properties": document.source.metadata
+                    }
+                )    
 
             # Remove backticks from node types
             for node in document.nodes:
