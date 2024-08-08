@@ -63,8 +63,7 @@ class StoreDocument():
         graph = Neo4jGraph()
         graph.add_graph_documents(
             graph_documents,
-            # parent_node={"label":"User", "id": "123"},
-            parent_node_query="MATCH (parent:User {id:'123'})",
+            parent_node={"label":"User", "id": 123},
             baseEntityLabel=True,
             include_source=True
         )
