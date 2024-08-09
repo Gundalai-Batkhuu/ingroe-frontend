@@ -16,17 +16,22 @@ if TYPE_CHECKING:
     from app.controller.doc_action.store_document import (
         Store,
     )
+    from app.controller.doc_action.query_document import (
+        Query,
+    )
 
 __all__ = [
     "Search",
     "Create",
-    "Store"
+    "Store",
+    "Query"
 ]
 
 _module_lookup = {
     "Search": "app.controller.doc_action.search",
     "Create": "app.controller.doc_action.create_document",
-    "Store": "app.controller.doc_action.store_document"
+    "Store": "app.controller.doc_action.store_document",
+    "Query": "app.controller.doc_action.query_document"
 }
 
 def __getattr__(name: str) -> Any:

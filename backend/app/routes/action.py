@@ -1,8 +1,9 @@
 from fastapi import APIRouter, File, UploadFile
 from typing import Dict
-from app.model.pydantic_model.data_model import (SearchQuery, CreateDocument)
+from app.model.pydantic_model.data_model import (SearchQuery, CreateDocument, QueryDocument)
 from app.controller.doc_action import Search
 from app.controller.doc_action import Create
+from app.controller.doc_action import Query
 
 router = APIRouter(
     prefix="/store",
@@ -28,3 +29,8 @@ async def create_document(payload: CreateDocument):
 async def create_document_from_file(file: UploadFile, user_id: str = File(...)):
     await Create.create_document_from_file(file, user_id)
     return file.filename
+
+@router.post("/query-document")
+async def query_document(payload: QueryDocument):
+    await Query.query_document(payload.query)
+    return payload
