@@ -67,6 +67,15 @@ class StoreDocument():
             baseEntityLabel=True,
             include_source=True
         )
+        cls._create_indexes(graph)
+
+    @classmethod
+    def _create_indexes(cls, graph: Neo4jGraph):
+        """Creates one full text index and one property index.
+        Args (Neo4jGraph): Neo4jGraph instance. 
+        """
+        graph.query("CREATE FULLTEXT INDEX entity IF NOT EXISTS FOR (e:__Entity__) ON EACH [e.id]")
+        graph.query("CREATE INDEX parent IF NOT EXISTS FOR (e:__ENTITY__) ON (e.parent_id)")
 
 
 if __name__ == "__main__":
