@@ -110,6 +110,19 @@ def value_sanitize(d: Any) -> Any:
         return d
 
 def _get_create_and_attach_query(parent_label: str) -> str:
+    # return (
+    #     f"MERGE (parent:{parent_label} {{id: '{parent_id}'}}) "
+    #     "MERGE (d:Document {id: $doc_id}) "
+    #     "SET d += $doc_properties "
+    #     "MERGE (parent)-[:OWNS]->(d)"
+    # )
+    # return (
+    #     f"MERGE (parent:{parent_label} {{id: {parent_id}}}) "
+    #     "MERGE (d:Document {id: $doc_id}) "
+    #     "SET d += $doc_properties "
+    #     "MERGE (parent)-[:OWNS]->(d)"
+    # )
+    # we use the param to pass the parent id cause this makes Neo4j to handle the type conversion correctly
     return (
         f"MERGE (parent:{parent_label} {{id: $parent_id}}) "
         "MERGE (d:Document {id: $doc_id}) "
@@ -124,6 +137,7 @@ def _get_node_import_query(baseEntityLabel: bool, include_source: bool) -> str:
             "UNWIND $data AS row "
             f"MERGE (source:`{BASE_ENTITY_LABEL}` {{id: row.id}}) "
             "SET source += row.properties "
+            "SET source.parent_id = $parent_id "
             f"{'MERGE (d)-[:MENTIONS]->(source) ' if include_source else ''}"
             "WITH source, row "
             "CALL apoc.create.addLabels( source, [row.type] ) YIELD node "
@@ -146,6 +160,7 @@ def _get_rel_import_query(baseEntityLabel: bool) -> str:
             "UNWIND $data AS row "
             f"MERGE (source:`{BASE_ENTITY_LABEL}` {{id: row.source}}) "
             f"MERGE (target:`{BASE_ENTITY_LABEL}` {{id: row.target}}) "
+            "SET target.parent_id = $parent_id "
             "WITH source, target, row "
             "CALL apoc.merge.relationship(source, row.type, "
             "{}, row.properties, target) YIELD rel "
@@ -609,6 +624,7 @@ class Neo4jGraph(GraphStore):
                 {
                     "data": [el.__dict__ for el in document.nodes],
                     "document": document.source.__dict__,
+                    "parent_id": parent_node["id"] if parent_node else None,
                 },
             )
             # Import relationships
@@ -627,7 +643,8 @@ class Neo4jGraph(GraphStore):
                             "properties": el.properties,
                         }
                         for el in document.relationships
-                    ]
+                    ],
+                    "parent_id": parent_node["id"] if parent_node else None,
                 },
             )
 
