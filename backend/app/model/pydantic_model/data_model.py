@@ -63,3 +63,6 @@ class CreateDocument(BaseModel):
     document_id: str= Field(default_factory=lambda: uuid4().hex) # create automatic id
     link: str
     requires_asset_download: bool = False
+
+class QueryDocument(BaseModel):
+    query: str    

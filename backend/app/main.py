@@ -11,6 +11,7 @@ app.include_router(router=action.router, prefix=prefix)
 
 @app.get("/")
 def run_server():
+    print("hello")
     return {"msg": "Hello from main API"}
 
 if __name__ == "__main__":

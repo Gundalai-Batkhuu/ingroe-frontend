@@ -7,6 +7,8 @@ from langchain_community.graphs.graph_document import GraphDocument
 from app.temp_test.graph import get_graph_doc
 # from ..internal.customised.neo4j_graph import Neo4jGraph
 from app.dependencies.internal.customised import Neo4jGraph
+from langchain_community.vectorstores import Neo4jVector
+from langchain_openai import OpenAIEmbeddings
 
 class StoreDocument():
     """
@@ -68,6 +70,7 @@ class StoreDocument():
             include_source=True
         )
         cls._create_indexes(graph)
+        cls._create_vector_index()
 
     @classmethod
     def _create_indexes(cls, graph: Neo4jGraph):
@@ -76,6 +79,18 @@ class StoreDocument():
         """
         graph.query("CREATE FULLTEXT INDEX entity IF NOT EXISTS FOR (e:__Entity__) ON EACH [e.id]")
         graph.query("CREATE INDEX parent IF NOT EXISTS FOR (e:__ENTITY__) ON (e.parent_id)")
+
+    @classmethod
+    def _create_vector_index(cls) -> None:
+        """Creates a Neo4jVector from existing database where the strategy to use is both vector similarity and keyword matching. It specifies the Document node to be used and the text property of the nodes should be embedded and adds the embedding property to the document node.
+        """
+        vector_index = Neo4jVector.from_existing_graph(
+        OpenAIEmbeddings(),
+        search_type="hybrid",
+        node_label="Document",
+        text_node_properties=["text"],
+        embedding_node_property="embedding"
+    )
 
 
 if __name__ == "__main__":
