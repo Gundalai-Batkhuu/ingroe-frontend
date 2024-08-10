@@ -1,9 +1,7 @@
 from fastapi import APIRouter, File, UploadFile
 from typing import Dict
 from app.model.pydantic_model.data_model import (SearchQuery, CreateDocument, QueryDocument)
-from app.controller.doc_action import Search
-from app.controller.doc_action import Create
-from app.controller.doc_action import Query
+from app.controller.doc_action import (Search, Create, Query, Store)
 
 router = APIRouter(
     prefix="/store",
@@ -22,7 +20,11 @@ async def search(payload: SearchQuery):
 
 @router.post("/create-document")
 async def create_document(payload: CreateDocument):
-    await Create.create_document(payload)
+    documents = await Create.create_document(payload)
+    parent_id = payload.document_id
+    parent_label = "Owner"
+    parent_node = {"label": parent_label, "id": parent_id}
+    Store.store_document(documents, parent_node)
     return payload
 
 @router.post("/create-document-from-file")
@@ -32,5 +34,5 @@ async def create_document_from_file(file: UploadFile, user_id: str = File(...)):
 
 @router.post("/query-document")
 async def query_document(payload: QueryDocument):
-    await Query.query_document(payload.query)
-    return payload
+    response = await Query.query_document(payload.query, payload.document_id)
+    return response

@@ -10,7 +10,7 @@ from app.dependencies.internal.customised import Neo4jGraph
 from langchain_community.vectorstores import Neo4jVector
 from langchain_openai import OpenAIEmbeddings
 
-class StoreDocument():
+class StoreDocument:
     """
     Stores the document in the Neo4j graph database.
 
@@ -18,8 +18,8 @@ class StoreDocument():
     groq_model (str): The model name to determine the llm model.
     openai_model (str): The name of OpenAI model.
     """
-    groq_model : str = "llama3-70b-8192",
-    openai_model : str = "gpt-3.5-turbo-0125"
+    groq_model = "llama3-70b-8192"
+    openai_model = "gpt-3.5-turbo-0125"
 
     @classmethod
     def _get_document_chunks(cls, documents: Sequence[Document]) -> List[Document]:
@@ -46,7 +46,8 @@ class StoreDocument():
         List[GraphDocument]: The list of graph documents obtained from the documents.
         """
         documents = cls._get_document_chunks(documents)
-        llm = LLM(model=cls.groq_model, temperature=0)
+        llm_selector = LLM(model=cls.groq_model, temperature=0)
+        llm = llm_selector.get_groq()
         llm_transformer = LLMGraphTransformer(llm=llm)
         graph_documents = llm_transformer.convert_to_graph_documents(documents)
         return graph_documents
@@ -60,8 +61,8 @@ class StoreDocument():
         parent_node (Dict[str, Union[str, int]]): The dictionary containing parent label and parent id.
 
         """
-        # graph_documents = cls._get_graph_documents(documents)
-        graph_documents = get_graph_doc()
+        graph_documents = cls._get_graph_documents(documents)
+        # graph_documents = get_graph_doc()
         print(graph_documents)
         graph = Neo4jGraph()
         graph.add_graph_documents(
@@ -95,4 +96,5 @@ class StoreDocument():
 
 
 if __name__ == "__main__":
-    StoreDocument.store_documents_in_graph_db(documents=None, parent_node={"label":"User", "id": "456"})
+    documents = [Document(metadata={'title': 'Elizabeth I', 'summary': 'Elizabeth I (7 September 1533 – 24 March 1603) was Queen of England and Ireland from 17 November 1558 until her death in 1603. She was the last monarch of the House of Tudor.\nElizabeth was the only surviving child of Henry VIII and his second wife, Anne Boleyn.', 'source': 'https://en.wikipedia.org/wiki/Elizabeth_I'}, page_content='Elizabeth I (7 September 1533 – 24 March 1603) was Queen of England and Ireland from 17 November 1558 until her death in 1603. She was the last monarch of the House of Tudor.\nElizabeth was the only surviving child of Henry VIII and his second wife, Anne Boleyn.')]
+    StoreDocument.store_documents_in_graph_db(documents=documents, parent_node={"label":"User", "id": "456"})

@@ -20,4 +20,4 @@ if __name__ == "__main__":
     You'd execute this by running `python -m your-assistant.main`
     """
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=5000, reload=False)
+    uvicorn.run(app, host="0.0.0.0", port=5500, reload=False)
