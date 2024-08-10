@@ -2,7 +2,7 @@ from typing import Union
 from langchain_groq import ChatGroq 
 from langchain_openai import ChatOpenAI
 
-class LLM():
+class LLM:
     """Provides an option to select the type of llm model.
 
     Parameters:
