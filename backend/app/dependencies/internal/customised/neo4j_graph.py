@@ -135,9 +135,8 @@ def _get_node_import_query(baseEntityLabel: bool, include_source: bool) -> str:
         return (
             f"{include_docs_query if include_source else ''}"
             "UNWIND $data AS row "
-            f"MERGE (source:`{BASE_ENTITY_LABEL}` {{id: row.id}}) "
+            f"MERGE (source:`{BASE_ENTITY_LABEL}` {{id: CASE WHEN $parent_id IS NOT NULL THEN row.id + '-' + $parent_id ELSE row.id END}}) "
             "SET source += row.properties "
-            "SET source.parent_id = $parent_id "
             f"{'MERGE (d)-[:MENTIONS]->(source) ' if include_source else ''}"
             "WITH source, row "
             "CALL apoc.create.addLabels( source, [row.type] ) YIELD node "
@@ -158,9 +157,8 @@ def _get_rel_import_query(baseEntityLabel: bool) -> str:
     if baseEntityLabel:
         return (
             "UNWIND $data AS row "
-            f"MERGE (source:`{BASE_ENTITY_LABEL}` {{id: row.source}}) "
-            f"MERGE (target:`{BASE_ENTITY_LABEL}` {{id: row.target}}) "
-            "SET target.parent_id = $parent_id "
+            f"MERGE (source:`{BASE_ENTITY_LABEL}` {{id: CASE WHEN $parent_id IS NOT NULL THEN row.source + '-' + $parent_id ELSE row.source END}}) "
+            f"MERGE (target:`{BASE_ENTITY_LABEL}` {{id: CASE WHEN $parent_id IS NOT NULL THEN row.target + '-' + $parent_id ELSE row.target END}}) "
             "WITH source, target, row "
             "CALL apoc.merge.relationship(source, row.type, "
             "{}, row.properties, target) YIELD rel "
