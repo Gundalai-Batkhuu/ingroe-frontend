@@ -1,5 +1,5 @@
 from langchain.text_splitter import TokenTextSplitter
-from typing import Sequence, List
+from typing import Sequence, List, Dict, Union
 from langchain_core.documents import Document
 from langchain_experimental.graph_transformers import LLMGraphTransformer
 from app.dependencies.external.get_llm import LLM
@@ -52,11 +52,12 @@ class StoreDocument():
         return graph_documents
     
     @classmethod
-    def store_documents_in_graph_db(cls, documents: Sequence[Document] | None):
+    def store_documents_in_graph_db(cls, documents: Sequence[Document] | None, parent_node: Dict[str, Union[str, int]]):
         """Stores the graph documents in the database while attaching the new nodes to the existing parent node.
 
         Args:
         documents (Sequence[Document]): The list of document object containing information.
+        parent_node (Dict[str, Union[str, int]]): The dictionary containing parent label and parent id.
 
         """
         # graph_documents = cls._get_graph_documents(documents)
@@ -65,7 +66,7 @@ class StoreDocument():
         graph = Neo4jGraph()
         graph.add_graph_documents(
             graph_documents,
-            parent_node={"label":"User", "id": 123},
+            parent_node=parent_node,
             baseEntityLabel=True,
             include_source=True
         )
@@ -94,4 +95,4 @@ class StoreDocument():
 
 
 if __name__ == "__main__":
-    StoreDocument.store_documents_in_graph_db(None)
+    StoreDocument.store_documents_in_graph_db(documents=None, parent_node={"label":"User", "id": "456"})
