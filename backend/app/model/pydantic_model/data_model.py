@@ -65,4 +65,4 @@ class CreateDocument(BaseModel):
     requires_asset_download: bool = False
 
 class QueryDocument(BaseModel):
-    query: str    
+    query: str        
