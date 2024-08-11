@@ -17,9 +17,6 @@ from langchain_core.pydantic_v1 import (BaseModel)
 from app.dependencies.internal.customised import ScopedNeo4jVector
 from langchain_core.messages import AIMessage, HumanMessage
 
-# import logging
-# logging.basicConfig(level=logging.WARNING)
-
 class QueryDocument:
     """Class that contains the operations required to get response from the stored documents.
     E.g. calling query_document with the query and other required parameters will get you a response.
@@ -188,8 +185,11 @@ class QueryDocument:
         vector_index = cls._get_vector_index()
         structured_data = cls._structured_retriever(question, parent_id)
         formatted_structured_data = cls._format_structured_data(parent_id, structured_data)
-        print(formatted_structured_data)
-        unstructured_data = [el.page_content for el in vector_index.scoped_similarity_search(question, parent_id)]
+        # print(formatted_structured_data)
+        unstructured_data = [el.page_content for el in vector_index.scoped_similarity_search(question, parent_id, k=3)]
+        # print(unstructured_data)
+        # print(type(structured_data))
+        if not formatted_structured_data and not unstructured_data: return ""
         # unstructured_data = [el.page_content for el in vector_index.similarity_search(question)]
         final_data = f"""Structured data:
                     {formatted_structured_data}
@@ -200,7 +200,7 @@ class QueryDocument:
         #             Unstructured data:
         #             {"#Document ". join(unstructured_data)}
         #                 """
-        print(final_data)
+        # print(final_data)
         return final_data
     
     @classmethod
@@ -277,6 +277,7 @@ class QueryDocument:
         """
         template = """Answer the question based only on the following context:
         {context}
+        If the context is empty, say answers can't be found in the selected document.
 
         Question: {question}
         Use natural language and be concise.
@@ -331,6 +332,7 @@ class QueryDocument:
 if __name__ == "__main__":
     chat_history = [("What is Chromium?", "Chromium is one of the browsers supported by Playwright, a library used to control browser automation.")]
     # response = QueryDocument.query_document("What is Chromium?", "7dbcc9ede1a24c5fb26d37fcf8da8fb7")
+    # response = QueryDocument.query_document("What is xxxxxxxx?", "7dbcc9ede1a24c5fb26d37fcf8da8fb7")
     # response = QueryDocument.query_document("What is Headless mode?", "7dbcc9ede1a24c5fb26d37fcf8da8fb7", chat_history) 
     response = QueryDocument.query_document("What is Markdown?", "8bd4014e479f4a878ce06779d2efd24e") 
     print(response)      
