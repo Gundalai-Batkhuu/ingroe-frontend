@@ -7,6 +7,12 @@ logger = logging.getLogger(__name__)
 
 BASE_ENTITY_LABEL = "__Entity__"
 class ScopedNeo4jVector(Neo4jVector):
+    """A child class of Neo4jVector to override few of the functions to implement scope based
+    search to get the similar documents.
+
+    E.g. If we want to retrieve the similarity only from the nodes that are a child of the node
+    with some id. We can use this class to get that.
+    """
     def scoped_similarity_search(
         self,
         query: str,
@@ -15,6 +21,18 @@ class ScopedNeo4jVector(Neo4jVector):
         params: Dict[str, Any] = {},
         **kwargs: Any
     ) -> List[Document]:
+        """Run similarity search with Neo4jVector.
+
+        Args:
+            query (str): Query text to search for.
+            primary_node_id (str): The id of node to scope the similarity search.
+            k (int): Number of results to return. Defaults to 4.
+            params (Dict[str, Any]): The search params for the index type.
+                Defaults to empty dict.
+
+        Returns:
+            List of Documents most similar to the query.
+        """
         logger.info(f"Starting scoped similarity search for query '{query}': with primary node ID: {primary_node_id}")
         embedding = self.embedding.embed_query(text=query)
         return self.scoped_similarity_search_by_vector(
@@ -34,6 +52,18 @@ class ScopedNeo4jVector(Neo4jVector):
         params: Dict[str, Any] = {},
         **kwargs: Any
     ) -> List[Document]:
+        """Return docs most similar to embedding vector.
+
+        Args:
+            embedding: Embedding to look up documents similar to.
+            primary_node_id (str): The id of node to scope the similarity search.
+            k: Number of Documents to return. Defaults to 4.
+            params (Dict[str, Any]): The search params for the index type.
+                Defaults to empty dict.
+
+        Returns:
+            List of Documents most similar to the query vector.
+        """
         docs_and_scores = self.scoped_similarity_search_with_score_by_vector(
             embedding=embedding,
             primary_node_id=primary_node_id,
@@ -51,6 +81,27 @@ class ScopedNeo4jVector(Neo4jVector):
         params: Dict[str, Any] = {},
         **kwargs: Any
     ) -> List[Tuple[Document, float]]:
+        """
+        Perform a similarity search in the Neo4j database using a
+        given vector and return the top k similar documents with their scores.
+
+        This method uses a Cypher query to find the top k documents that
+        are most similar to a given embedding. The similarity is measured
+        using a vector index in the Neo4j database. The results are returned
+        as a list of tuples, each containing a Document object and
+        its similarity score.
+
+        Args:
+            embedding (List[float]): The embedding vector to compare against.
+            primary_node_id (str): The id of node to scope the similarity search.
+            k (int, optional): The number of top similar documents to retrieve.
+            params (Dict[str, Any]): The search params for the index type.
+                Defaults to empty dict.
+
+        Returns:
+            List[Tuple[Document, float]]: A list of tuples, each containing
+                                a Document object and its similarity score.
+        """
         # Check if the primary node exists
         check_query = "MATCH (d:Document {parent_id: $primary_node_id}) RETURN d"
         check_results = self.query(check_query, params={"primary_node_id": primary_node_id})
