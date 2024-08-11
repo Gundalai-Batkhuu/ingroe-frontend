@@ -111,6 +111,12 @@ class QueryDocument:
         return vector_index
     
     @classmethod
+    def _format_structured_data(cls, parent_id: str, structured_data: str):
+        string_to_replace = f"-{parent_id}"
+        formatted_data = structured_data.replace(string_to_replace, "")
+        return formatted_data
+
+    @classmethod
     def _context_retriever(cls, question: str, parent_id: str) -> str:
         """
         Returns a string that is a combination of both the structured_data that shows relationship and unstructured data obtained from similarity search.
@@ -118,11 +124,12 @@ class QueryDocument:
         print(f"Search query: {question} {parent_id}")
         vector_index = cls._get_vector_index()
         structured_data = cls._structured_retriever(question, parent_id)
-        print(structured_data)
+        formatted_structured_data = cls._format_structured_data(parent_id, structured_data)
+        print(formatted_structured_data)
         unstructured_data = [el.page_content for el in vector_index.scoped_similarity_search(question, parent_id)]
         # unstructured_data = [el.page_content for el in vector_index.similarity_search(question)]
         final_data = f"""Structured data:
-                    {structured_data}
+                    {formatted_structured_data}
                     Unstructured data:
                     {"#Document ". join(unstructured_data)}
                         """
