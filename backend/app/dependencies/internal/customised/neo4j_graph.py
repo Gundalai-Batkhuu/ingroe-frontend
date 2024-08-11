@@ -46,6 +46,7 @@ RETURN {start: label, type: property, end: toString(other_node)} AS output
 include_docs_query = (
     "MERGE (d:Document {id:$document.metadata.id}) "
     "SET d.text = $document.page_content "
+    "SET d.parent_id = $parent_id "
     "SET d += $document.metadata "
     "WITH d "
 )

@@ -45,7 +45,7 @@ class QueryDocument:
         return prompt
     
     @classmethod
-    def _get_entity_chain(cls) -> Runnable[LanguageModelInput, Union[Dict, BaseModel]]:
+    def _get_entity_chain(cls) -> Runnable:
         llm = cls._get_llm()
         prompt = cls._get_entity_extraction_prompt()
         entity_chain = prompt | llm.with_structured_output(Entities)
@@ -183,7 +183,7 @@ class QueryDocument:
         return prompt
     
     @classmethod
-    def _get_chain(cls, parent_id: str) -> Any:
+    def _get_chain(cls, parent_id: str) -> Runnable:
         search_query = cls._get_search_query(parent_id)
         chain = (
         RunnableParallel(
