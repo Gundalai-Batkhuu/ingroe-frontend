@@ -16,7 +16,11 @@ from langchain_core.runnables import Runnable
 from langchain_core.pydantic_v1 import (BaseModel)
 from langchain_core.language_models import LanguageModelInput
 from langchain_community.vectorstores import Neo4jVector
+from app.dependencies.internal.customised import ScopedNeo4jVector
 from langchain_core.messages import AIMessage, HumanMessage
+
+import logging
+logging.basicConfig(level=logging.WARNING)
 
 class QueryDocument:
     groq_model : str = "llama3-70b-8192"
@@ -101,9 +105,9 @@ class QueryDocument:
         return result
     
     @classmethod
-    def _get_vector_index(cls) -> Neo4jVector:
+    def _get_vector_index(cls) -> ScopedNeo4jVector:
         from langchain_openai import OpenAIEmbeddings
-        vector_index = Neo4jVector.from_existing_index(embedding=OpenAIEmbeddings(), index_name="vector", search_type="hybrid", keyword_index_name="keyword")
+        vector_index = ScopedNeo4jVector.from_existing_index(embedding=OpenAIEmbeddings(), index_name="vector", search_type="hybrid", keyword_index_name="keyword")
         return vector_index
     
     @classmethod
@@ -115,12 +119,18 @@ class QueryDocument:
         vector_index = cls._get_vector_index()
         structured_data = cls._structured_retriever(question, parent_id)
         print(structured_data)
-        unstructured_data = [el.page_content for el in vector_index.similarity_search(question)]
+        unstructured_data = [el.page_content for el in vector_index.scoped_similarity_search(question, parent_id)]
+        # unstructured_data = [el.page_content for el in vector_index.similarity_search(question)]
         final_data = f"""Structured data:
                     {structured_data}
                     Unstructured data:
                     {"#Document ". join(unstructured_data)}
                         """
+        # final_data = f"""
+        #             Unstructured data:
+        #             {"#Document ". join(unstructured_data)}
+        #                 """
+        print(final_data)
         return final_data
     
     @classmethod
@@ -212,5 +222,6 @@ class QueryDocument:
 if __name__ == "__main__":
     chat_history = [("What is Chromium?", "Chromium is one of the browsers supported by Playwright, a library used to control browser automation.")]
     # response = QueryDocument.query_document("What is Chromium?", "7dbcc9ede1a24c5fb26d37fcf8da8fb7")
-    response = QueryDocument.query_document("What is Headless mode?", "7dbcc9ede1a24c5fb26d37fcf8da8fb7", chat_history)  
+    # response = QueryDocument.query_document("What is Headless mode?", "7dbcc9ede1a24c5fb26d37fcf8da8fb7", chat_history) 
+    response = QueryDocument.query_document("What is Markdown?", "8bd4014e479f4a878ce06779d2efd24e") 
     print(response)      
