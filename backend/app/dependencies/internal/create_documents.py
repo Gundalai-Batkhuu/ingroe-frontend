@@ -36,7 +36,7 @@ class GetDocument:
         return html
     
     @classmethod
-    async def get_document_from_link(cls, links: List[str]) -> Sequence[Document]:
+    async def get_document_from_links(cls, links: List[str]) -> Sequence[Document]:
         """Scrapes the given link or page and provide the sequence of documents.
 
         Args:
@@ -53,7 +53,7 @@ class GetDocument:
     
     @classmethod
     def _is_downloadable(cls, response: Any, url: str) -> bool:
-        """Check if the provided url is a downloadable by either cjhecking the file extension, content 
+        """Check if the provided url is a downloadable by either checking the file extension, content 
         type, content disposition. 
 
         Args:
@@ -67,12 +67,13 @@ class GetDocument:
         if "application/" in content_type or "binary/" in content_type:
             return True
         content_disposition = response.headers.get("Content-Disposition", "").lower()
-        if "attachment" in content_disposition or "filename" in content_disposition:
+        if "attachment" in content_disposition:
             return True
         parsed_url = urlparse(url)
         file_extension = mimetypes.guess_type(parsed_url.path)[0]
         if file_extension and file_extension.startswith(("application/", "binary/")):
             return True
+        return False
         
     @classmethod    
     def _download_file(cls, url: str, file_path: str) -> None:
@@ -162,12 +163,18 @@ class GetDocument:
         return cls.content_type_map.get(content_type, "unknown")
 
     @classmethod
-    def handle_link(cls, url: str, user_id: str):
+    def handle_link(cls, url: str, user_id: str) -> List[Document] | int:
         """Check if the link points to a downloadable file. If so, download it.
         
         Args:
         url: A string representing the link.
         user_id: Id of the user passing the link.
+
+        Returns:
+        List[Document] | int: A list of documents created from the file type detected 
+        or -1 if the link is a normal link without downloadables
+        or 0 if the downloadable file is not allowed to download
+        or 2 if error occurs.
         """
         try:
             response = requests.head(url, allow_redirects=True, timeout=5)
@@ -177,24 +184,29 @@ class GetDocument:
                 if file_extension in cls.allowed_file_types:
                     file_path = cls._get_file_path("files", user_id, file_extension)
                     cls._download_file(url, file_path)
-                    cls.create_documents_from_store(file_extension, file_path)   
+                    return cls.create_documents_from_store(file_extension, file_path) 
+                else:
+                    return 0  
             else:
-                print("The link is a normal link with no download option.")
+                return -1
         except Exception as e:
             # raise error here if needed
             print(f"An error occurred: {e}")
+            return 2
 
     @classmethod
-    def create_documents_from_store(cls, file_extension: str, file_path: str) -> None:
+    def create_documents_from_store(cls, file_extension: str, file_path: str) -> List[Document]:
         """Create documents from the stored file.
 
         Args:
         file_extension: Extension of the downloaded file.
         file_path: The path where the downloaded file resides.
+
+        Returns:
+        List[Document]: A list of documents created from the specified file.
         """
         if file_extension == "pdf":
-            cls.get_documents_from_pdf(file_path)
-            return
+            return cls.get_documents_from_pdf(file_path)
         if file_extension == "md":
             cls.get_document_from_md(file_path)
             return
@@ -203,37 +215,43 @@ class GetDocument:
             return
 
     @classmethod
-    def get_documents_from_pdf(cls, file_path: str) -> None:
+    def get_documents_from_pdf(cls, file_path: str) -> List[Document]:
         """Creates document from pdf file.
 
         Args:
         file_path: The path where the downloaded file resides.
+
+        Returns:
+        List[Document]: A list of documents created from the pdf file.
         """
         loader = PyPDFLoader(file_path)
-        pages = loader.load_and_split()
-        print(pages)
+        return loader.load_and_split()
 
     @classmethod
-    def get_document_from_md(cls, file_path: str) -> None:
+    def get_document_from_md(cls, file_path: str) -> List[Document]:
         """Creates document from markdown file.
 
         Args:
         file_path: The path where the downloaded file resides.
+
+        Returns:
+        List[Document]: A list of documents created from the markdown file.
         """
         loader = UnstructuredMarkdownLoader(file_path)
-        document_md = loader.load()
-        print(document_md)
+        return loader.load()
 
     @classmethod
-    def get_document_from_docx(cls, file_path: str) -> None:
+    def get_document_from_docx(cls, file_path: str) -> List[Document]:
         """Creates document from docx or word file.
 
         Args:
         file_path: The path where the downloaded file resides.
+
+        Returns:
+        List[Document]: A list of documents created from the docx or word file.
         """
         loader = Docx2txtLoader(file_path)
-        document_docx = loader.load()
-        print(document_docx)
+        return loader.load()
 
     @classmethod
     async def _upload_file(cls, file_path: str, uploaded_file: UploadFile) -> None:
@@ -249,22 +267,25 @@ class GetDocument:
         print(f"File uploaded and saved to {file_path}")
 
     @classmethod
-    async def get_document_from_file(cls, file: UploadFile, user_id: str) -> None:
+    async def get_document_from_file(cls, file: UploadFile, user_id: str) -> List[Document] | int:
         """Creates a sequence of document from the uploaded file.
 
         Args:
         file: Uploaded file by the client.
         user_id: Id of the user uploading the file.
+
+        Returns:
+        Sequence[Document] | int: A list or sequence of documents or -1 if the file is
+        outside of the downloadable file types.
         """
         full_allowed_list = cls.allowed_file_types + cls.additional_allowed_files
         file_extension = cls._get_file_extension(path=file.filename, file=file)
         if file_extension in full_allowed_list:
             file_path = cls._get_file_path("files", user_id, file_extension)
             await cls._upload_file(file_path, file)
-            cls.create_documents_from_store(file_extension, file_path)
-        else:
-            print("not allowed")    
-        # print(file.content_type)
+            return cls.create_documents_from_store(file_extension, file_path)
+        else: 
+            return -1  
 
 if __name__ == "__main__":  
     # html = asyncio.run(GetDocument.get_document_from_link(["https://python.langchain.com/v0.1/docs/integrations/document_loaders/async_chromium/"]))
