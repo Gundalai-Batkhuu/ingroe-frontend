@@ -1,17 +1,20 @@
+"use client"
+
 import React, { useState } from 'react';
 
-export const Sidebar: React.FC = () => {
+
+export const SearchSidebar: React.FC = () => {
   const [expanded, setExpanded] = useState(true);
 
   return (
-    <div className={`bg-gray-800 text-white h-screen ${expanded ? 'w-64' : 'w-20'} transition-all duration-300 ease-in-out`}>
+    <div className={`text-white h-screen ${expanded ? 'w-64' : 'w-20'} transition-all duration-300 ease-in-out`}>
       {/* Logo Area */}
       <div className="flex items-center justify-between p-4">
         <div className={`flex items-center ${expanded ? '' : 'justify-center w-full'}`}>
           {expanded ? (
-            <span className="text-2xl font-semibold">Logo</span>
+            <span className="text-xl font-semibold">Search options</span>
           ) : (
-            <span className="text-2xl font-semibold">L</span>
+            <span className="text-2xl font-semibold"></span>
           )}
         </div>
         <button
@@ -41,5 +44,3 @@ export const Sidebar: React.FC = () => {
     </div>
   );
 };
-
-export default Sidebar;

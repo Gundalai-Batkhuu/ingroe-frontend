@@ -6,6 +6,7 @@ import { GeistMono } from 'geist/font/mono'
 import { cn } from './lib/utils'
 import { Providers } from './components/providers'
 import { Header } from './components/header'
+import { SearchSidebar } from "@/app/components/search-sidebar";
 
 export const metadata: Metadata = {
     title: "Legal AI",
@@ -41,9 +42,12 @@ export default function RootLayout({ children }: RootLayoutProps) {
         >
         <div className="flex flex-col min-h-screen">
             <Header/>
-            <main className="flex flex-col flex-1 bg-muted/50">{children}</main>
+            <div className="flex flex-1">
+                <main className="flex-1 bg-muted/50">{children}</main>
+                <SearchSidebar />
+            </div>
         </div>
-            </Providers>
+        </Providers>
         </body>
         </html>
     );
