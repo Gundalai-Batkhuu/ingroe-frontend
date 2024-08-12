@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, model_validator
-from typing import Any, Literal
+from typing import Any, Literal, List
 from pydantic_extra_types.country import CountryShortName
 from uuid import uuid4
 
@@ -61,7 +61,7 @@ class CreateDocument(BaseModel):
     """    
     user_id: str
     document_id: str= Field(default_factory=lambda: uuid4().hex) # create automatic id
-    link: str
+    links: List[str]
     requires_asset_download: bool = False
 
 class QueryDocument(BaseModel):
