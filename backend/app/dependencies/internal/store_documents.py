@@ -9,17 +9,12 @@ from app.temp_test.graph import get_graph_doc
 from app.dependencies.internal.customised import Neo4jGraph
 from langchain_community.vectorstores import Neo4jVector
 from langchain_openai import OpenAIEmbeddings
+from app.enum import ModelProvider
 
 class StoreDocument:
     """
     Stores the document in the Neo4j graph database.
-
-    Parameters:
-    groq_model (str): The model name to determine the llm model.
-    openai_model (str): The name of OpenAI model.
     """
-    groq_model = "llama3-70b-8192"
-    openai_model = "gpt-3.5-turbo-0125"
 
     @classmethod
     def _get_document_chunks(cls, documents: Sequence[Document]) -> List[Document]:
@@ -46,8 +41,8 @@ class StoreDocument:
         List[GraphDocument]: The list of graph documents obtained from the documents.
         """
         documents = cls._get_document_chunks(documents)
-        llm_selector = LLM(model=cls.groq_model, temperature=0)
-        llm = llm_selector.get_groq()
+        llm_selector = LLM(temperature=0)
+        llm = llm_selector.get_model(ModelProvider.GROQ)
         llm_transformer = LLMGraphTransformer(llm=llm)
         graph_documents = llm_transformer.convert_to_graph_documents(documents)
         return graph_documents

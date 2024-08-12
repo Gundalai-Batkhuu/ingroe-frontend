@@ -16,18 +16,13 @@ from langchain_core.runnables import Runnable
 from langchain_core.pydantic_v1 import (BaseModel)
 from app.dependencies.internal.customised import ScopedNeo4jVector
 from langchain_core.messages import AIMessage, HumanMessage
+from app.enum import ModelProvider
 
 class QueryDocument:
     """Class that contains the operations required to get response from the stored documents.
     E.g. calling query_document with the query and other required parameters will get you a response.
     The response is obtained from the content in the documents.
-
-    Params:
-    groq_model (str): The model id from the groq.
-    opeanai_model (str): The open ai model id.
     """
-    groq_model : str = "llama3-70b-8192"
-    openai_model : str = "gpt-3.5-turbo-0125"
 
     @classmethod
     def _get_llm(cls) -> ChatGroq | ChatOpenAI:
@@ -36,7 +31,8 @@ class QueryDocument:
         Returns:
         ChatGroq | ChatOpenAI: The llm model by either groq or openai.
         """
-        llm = LLM(model=cls.groq_model, temperature=0).get_groq()
+        llm_instance = LLM(temperature=0)
+        llm = llm_instance.get_model(ModelProvider.GROQ)
         return llm
 
     @classmethod
