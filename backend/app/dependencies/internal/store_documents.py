@@ -9,7 +9,8 @@ from app.temp_test.graph import get_graph_doc
 from app.dependencies.internal.customised import Neo4jGraph
 from langchain_community.vectorstores import Neo4jVector
 from langchain_openai import OpenAIEmbeddings
-from app.enum import ModelProvider
+from app.enum import (ModelProvider,)
+from app.const import GraphLabel
 
 class StoreDocument:
     """
@@ -75,7 +76,9 @@ class StoreDocument:
         Args (Neo4jGraph): Neo4jGraph instance. 
         """
         graph.query("CREATE FULLTEXT INDEX entity IF NOT EXISTS FOR (e:__Entity__) ON EACH [e.id]")
-        graph.query("CREATE INDEX parent IF NOT EXISTS FOR (e:__ENTITY__) ON (e.parent_id)")
+        graph.query("CREATE INDEX parent IF NOT EXISTS FOR (e:__Entity__) ON (e.parent_id)")
+        root_entity = GraphLabel.DOCUMENT_ROOT
+        graph.query(f"CREATE INDEX document_root IF NOT EXISTS FOR (d:{root_entity}) ON (d.id)")
 
     @classmethod
     def _create_vector_index(cls) -> None:
@@ -88,8 +91,29 @@ class StoreDocument:
         text_node_properties=["text"],
         embedding_node_property="embedding"
     )
+        
+    @classmethod    
+    def check_if_node_exists_for_id(cls, id: str) -> bool:
+        """Checks if node exists for an id in the graph.
 
+        Args:
+        id (str): The id to be checked against the node id.
+
+        Returns:
+        bool: True or False based on the node existence in the graph for an id.
+        """
+        check_query = (
+            f"MATCH (n {{id:$id}}) "
+            "RETURN count(n) as count"
+        )   
+        check_result = Neo4jVector(embedding=OpenAIEmbeddings()).query(query=check_query, params={"id": id})
+        count = check_result[0]["count"]
+        if count != 1:
+            return False
+        return True
 
 if __name__ == "__main__":
     documents = [Document(metadata={'title': 'Elizabeth I', 'summary': 'Elizabeth I (7 September 1533 – 24 March 1603) was Queen of England and Ireland from 17 November 1558 until her death in 1603. She was the last monarch of the House of Tudor.\nElizabeth was the only surviving child of Henry VIII and his second wife, Anne Boleyn.', 'source': 'https://en.wikipedia.org/wiki/Elizabeth_I'}, page_content='Elizabeth I (7 September 1533 – 24 March 1603) was Queen of England and Ireland from 17 November 1558 until her death in 1603. She was the last monarch of the House of Tudor.\nElizabeth was the only surviving child of Henry VIII and his second wife, Anne Boleyn.')]
-    StoreDocument.store_documents_in_graph_db(documents=documents, parent_node={"label":"User", "id": "456"})
+    # label = GraphLabel.DOCUMENT_ROOT
+    # print(label)
+    StoreDocument.store_documents_in_graph_db(documents=documents, parent_node={"label":GraphLabel.DOCUMENT_ROOT, "id": "456"})
