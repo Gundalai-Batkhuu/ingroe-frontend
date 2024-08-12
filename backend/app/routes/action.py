@@ -42,7 +42,7 @@ async def create_document_selection(payload: CreateDocument):
     # return documents
     parent_node = {"label": GraphLabel.DOCUMENT_ROOT, "id": payload.document_id}
     print(parent_node)
-    Store.store_document(documents, parent_node)
+    Store.store_document(documents, parent_node, payload.user_id)
     return JSONResponse(
         status_code=200,
         content={"message": "Documents from provided sources stored successfully!!"}
@@ -68,7 +68,7 @@ async def create_document_manually(link: Optional[str] = Form(None), file: Optio
         documents_from_file = await Create.create_document_from_file(file, user_id)
         documents_from_link = await Create.create_document_from_links([link])
         combined_documents = documents_from_file + documents_from_link
-        Store.store_document(combined_documents, parent_node)
+        Store.store_document(combined_documents, parent_node, user_id)
         return JSONResponse(
         status_code=200,
         content={"message": "Documents from provided sources stored successfully!!"}
@@ -79,9 +79,9 @@ async def create_document_manually(link: Optional[str] = Form(None), file: Optio
         documents = await Create.create_document_from_file(file, user_id)
     else: 
         print("from link")
-        # documents = get_doc()
-        documents = await Create.create_document_from_links([link])
-    Store.store_document(documents, parent_node)  
+        documents = get_doc()
+        # documents = await Create.create_document_from_links([link])
+    Store.store_document(documents, parent_node, user_id)  
     # print(documents)  
     return JSONResponse(
         status_code=200,

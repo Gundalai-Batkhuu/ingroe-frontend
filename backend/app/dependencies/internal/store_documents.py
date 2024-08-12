@@ -49,7 +49,7 @@ class StoreDocument:
         return graph_documents
     
     @classmethod
-    def store_documents_in_graph_db(cls, documents: Sequence[Document] | None, parent_node: Dict[str, Union[str, int]]):
+    def store_documents_in_graph_db(cls, documents: Sequence[Document] | None, parent_node: Dict[str, Union[str, int]], user_id: str) -> None:
         """Stores the graph documents in the database while attaching the new nodes to the existing parent node.
 
         Args:
@@ -69,6 +69,8 @@ class StoreDocument:
         )
         cls._create_indexes(graph)
         cls._create_vector_index()
+        document_id = parent_node.get("id")
+        cls.attach_document_to_user(user_id, document_id)
 
     @classmethod
     def _create_indexes(cls, graph: Neo4jGraph):
@@ -111,6 +113,16 @@ class StoreDocument:
         if count != 1:
             return False
         return True
+    
+    @classmethod
+    def attach_document_to_user(cls, user_id: str, document_id: str) -> None:
+        attach_query = (
+            f"MERGE (user:{GraphLabel.USER} {{id:$user_id}}) "
+            "WITH user AS user "
+            f"MATCH (document_root:{GraphLabel.DOCUMENT_ROOT} {{id:$document_id}}) "
+            f"MERGE (user) -[:{GraphLabel.USER_DOCUMENT_RELATIONSHIP}]-> (document_root) "
+        )
+        Neo4jVector(embedding=OpenAIEmbeddings()).query(query=attach_query, params={"user_id": user_id, "document_id": document_id})
 
 if __name__ == "__main__":
     documents = [Document(metadata={'title': 'Elizabeth I', 'summary': 'Elizabeth I (7 September 1533 – 24 March 1603) was Queen of England and Ireland from 17 November 1558 until her death in 1603. She was the last monarch of the House of Tudor.\nElizabeth was the only surviving child of Henry VIII and his second wife, Anne Boleyn.', 'source': 'https://en.wikipedia.org/wiki/Elizabeth_I'}, page_content='Elizabeth I (7 September 1533 – 24 March 1603) was Queen of England and Ireland from 17 November 1558 until her death in 1603. She was the last monarch of the House of Tudor.\nElizabeth was the only surviving child of Henry VIII and his second wife, Anne Boleyn.')]

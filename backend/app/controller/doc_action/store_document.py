@@ -6,5 +6,5 @@ from typing import Dict
 
 class Store(APIEndPoint):
     @classmethod
-    def store_document(cls, documents: Sequence[Document], parent_node: Dict[str, str]):
-        StoreDocument.store_documents_in_graph_db(documents, parent_node)
+    def store_document(cls, documents: Sequence[Document], parent_node: Dict[str, str], user_id: str):
+        StoreDocument.store_documents_in_graph_db(documents, parent_node, user_id)
