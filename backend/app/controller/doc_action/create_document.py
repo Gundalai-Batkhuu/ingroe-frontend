@@ -4,6 +4,7 @@ from app.dependencies.internal import (GetDocument, StoreDocument)
 from fastapi import UploadFile
 from langchain_core.documents import Document
 from typing import Sequence, List
+from app.const import ReturnCode
 
 class Create(APIEndPoint):
     # @classmethod
@@ -34,11 +35,11 @@ class Create(APIEndPoint):
         for link in links:
             response = GetDocument.handle_link(link, user_id)
             if isinstance(response, int):
-                if response == -1:
+                if response == ReturnCode.VANILLA_LINK:
                     link_list.append(link)
-                if response == 0:
+                if response == ReturnCode.UNSUPPORTED_FILE:
                     unallowed_downloadable_links.append(link)
-                if response == 2:
+                if response == ReturnCode.ERROR:
                     error_link.append(link)   
             else:
                 print("pdf files")

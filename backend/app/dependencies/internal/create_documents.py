@@ -11,6 +11,7 @@ from app.utils.utils import (get_root_directory, generate_unique_string, get_fil
 import os
 from langchain_community.document_loaders import (PyPDFLoader, UnstructuredMarkdownLoader, Docx2txtLoader)
 from fastapi import UploadFile
+from app.const import ReturnCode
 
 class GetDocument:
     """Get the sequence of documents from the provided link or file.
@@ -183,16 +184,16 @@ class GetDocument:
                 file_extension = cls._get_file_extension(path=url, response=response)
                 if file_extension in cls.allowed_file_types:
                     file_path = cls._get_file_path("files", user_id, file_extension)
-                    cls._download_file(url, file_path)
+                    cls._download_file(url, file_path) # make this call or function to save the file to the storage in the cloud for a user
                     return cls.create_documents_from_store(file_extension, file_path) 
                 else:
-                    return 0  
+                    return ReturnCode.UNSUPPORTED_FILE 
             else:
-                return -1
+                return ReturnCode.VANILLA_LINK
         except Exception as e:
             # raise error here if needed
             print(f"An error occurred: {e}")
-            return 2
+            return ReturnCode.ERROR
 
     @classmethod
     def create_documents_from_store(cls, file_extension: str, file_path: str) -> List[Document]:
