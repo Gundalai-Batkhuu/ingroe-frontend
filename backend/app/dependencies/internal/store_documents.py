@@ -116,6 +116,13 @@ class StoreDocument:
     
     @classmethod
     def attach_document_to_user(cls, user_id: str, document_id: str) -> None:
+        """"Attaches the document root which owns all the document node for a particular
+        document to the user id or the user.
+
+        Args:
+        user_id (str): The id of the node or the user to attach the document root.
+        document_id (str): The id of the document root. 
+        """
         attach_query = (
             f"MERGE (user:{GraphLabel.USER} {{id:$user_id}}) "
             "WITH user AS user "
