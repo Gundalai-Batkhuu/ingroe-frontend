@@ -46,7 +46,6 @@ async def create_document_selection(payload: CreateDocument):
     print(parent_node)
     Store.store_document(documents, parent_node, payload.user_id)
     storer = StoreAssets(user_id=payload.user_id, document_root_id=payload.document_id, source_payload=source)
-    source.file_paths = ["x", "d"]
     storer.store()
     return JSONResponse(
         status_code=200,
@@ -74,10 +73,14 @@ async def create_document_manually(link: Optional[str] = Form(None), file: Optio
         # document_from_link = get_doc_from_file()
         # combined_documents = document_from_file + document_from_link
         # print(combined_documents)
-        documents_from_file = await Create.create_document_from_file(file, user_id)
-        documents_from_link = await Create.create_document_from_links([link])
+        documents_from_file = await Create.create_document_from_file(file, user_id) # we need to get file path from this function
+        # documents_from_link = await Create.create_document_from_links([link])
+        documents_from_link, source = await Create.create_documents_from_selection([link], user_id)
         combined_documents = documents_from_file + documents_from_link
         Store.store_document(combined_documents, parent_node, user_id)
+        storer = StoreAssets(user_id=user_id, document_root_id=document_id, source_payload=source)
+        source.file_paths = ["x", "d"]
+        storer.store()
         return JSONResponse(
         status_code=200,
         content={"message": "Documents from provided sources stored successfully!!"}
@@ -85,12 +88,16 @@ async def create_document_manually(link: Optional[str] = Form(None), file: Optio
     if file: 
         print("from file")
         # documents = get_doc_from_file()
-        documents = await Create.create_document_from_file(file, user_id)
+        documents = await Create.create_document_from_file(file, user_id) # we need to get the file path from here
     else: 
         print("from link")
-        documents = get_doc()
+        # documents = get_doc()
         # documents = await Create.create_document_from_links([link])
+        documents, source = await Create.create_documents_from_selection([link], user_id)
     Store.store_document(documents, parent_node, user_id)  
+    storer = StoreAssets(user_id=user_id, document_root_id=document_id, source_payload=source)
+    source.file_paths = ["x", "d"]
+    storer.store()
     # print(documents)  
     return JSONResponse(
         status_code=200,
