@@ -1,10 +1,11 @@
 from ..core import APIEndPoint
 from app.model.pydantic_model.data_model import CreateDocument
-from app.dependencies.internal import (GetDocument, StoreDocument)
+from app.dependencies.internal import (GetDocument, StoreDocument, StoreAssets)
 from fastapi import UploadFile
 from langchain_core.documents import Document
-from typing import Sequence, List
+from typing import Sequence, List, Tuple
 from app.const import ReturnCode
+from app.model.pydantic_model.payload.misc import DocumentSource
 
 class Create(APIEndPoint):
     # @classmethod
@@ -27,16 +28,17 @@ class Create(APIEndPoint):
         return documents
     
     @classmethod
-    async def create_documents_from_selection(cls, links: List[str], user_id: str):
-        link_list = []
+    async def create_documents_from_selection(cls, links: List[str], user_id: str) -> Tuple[Sequence[Document], DocumentSource]:
+        vanilla_link = []
         unallowed_downloadable_links = []
         error_link = []
+        file_link = []
         documents = []
         for link in links:
             response = GetDocument.handle_link(link, user_id)
             if isinstance(response, int):
                 if response == ReturnCode.VANILLA_LINK:
-                    link_list.append(link)
+                    vanilla_link.append(link)
                 if response == ReturnCode.UNSUPPORTED_FILE:
                     unallowed_downloadable_links.append(link)
                 if response == ReturnCode.ERROR:
@@ -44,10 +46,12 @@ class Create(APIEndPoint):
             else:
                 print("pdf files")
                 documents += response
-        print(link_list)
-        documents_from_link = await cls.create_document_from_links(link_list)
+                file_link.append(link)
+        print(vanilla_link)
+        documents_from_link = await cls.create_document_from_links(vanilla_link)
         documents += documents_from_link
-        return documents
+        source = DocumentSource(vanilla_links=vanilla_link, file_links=file_link, error_links=error_link, unsupported_file_links=unallowed_downloadable_links)
+        return documents, source
 
 def document_exists(document_id: str) -> bool:
     """A wrapper for node checker function.
