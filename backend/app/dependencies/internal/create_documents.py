@@ -94,25 +94,34 @@ class GetDocument:
             print("Failed to download file. HTTP Status Code:", response.status_code)
 
     @classmethod
-    def _get_file_path(cls, parent_folder: str, folder_name: str, file_extension: str) -> str:
+    def _get_file_path(cls, parent_folder: str, file_extension: str) -> str:
         """Returns the file path where the downloaded file will reside.
 
         Args:
         parent_folder: Parent folder name.
-        folder_name: Folder name for the downloaded file based on the user id which is unique.
         file_extension: Extension of the downloaded file.
 
         Return:
         The complete path where the downloaded file resides.
         """
         root = get_root_directory()
-        folder_path = os.path.join(root, parent_folder, folder_name)
+        # folder_path = os.path.join(root, parent_folder, folder_name)
+        folder_path = os.path.join(root, parent_folder)
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
         file_name = generate_unique_string()
         file_path = os.path.join(folder_path, file_name)
         complete_path = f"{file_path}.{file_extension}"
         return complete_path  
+    
+    @classmethod
+    def _clear_file(cls, file_path: str) -> None:
+        """Removes the file from the specified file path.
+        Args:
+        file_path (str): The location of the file.
+        """
+        if os.path.isfile(file_path):
+            os.remove(file_path)   
 
     @classmethod
     def _get_file_extension_from_headers(cls, response: Any) -> str:
@@ -183,9 +192,11 @@ class GetDocument:
             if is_downloadable:
                 file_extension = cls._get_file_extension(path=url, response=response)
                 if file_extension in cls.allowed_file_types:
-                    file_path = cls._get_file_path("files", user_id, file_extension)
-                    cls._download_file(url, file_path) # make this call or function to save the file to the storage in the cloud for a user
-                    return cls.create_documents_from_store(file_extension, file_path) 
+                    file_path = cls._get_file_path("files", file_extension)
+                    cls._download_file(url, file_path) 
+                    documents =  cls.create_documents_from_store(file_extension, file_path) 
+                    cls._clear_file(file_path)
+                    return documents
                 else:
                     return ReturnCode.UNSUPPORTED_FILE 
             else:
@@ -276,17 +287,17 @@ class GetDocument:
         user_id: Id of the user uploading the file.
 
         Returns:
-        Sequence[Document] | int: A list or sequence of documents or -1 if the file is
+        Sequence[Document] | int: A list or sequence of documents or 0 if the file is
         outside of the downloadable file types.
         """
         full_allowed_list = cls.allowed_file_types + cls.additional_allowed_files
         file_extension = cls._get_file_extension(path=file.filename, file=file)
         if file_extension in full_allowed_list:
-            file_path = cls._get_file_path("files", user_id, file_extension)
+            file_path = cls._get_file_path("files", file_extension) # get the file path of the cloud
             await cls._upload_file(file_path, file)
             return cls.create_documents_from_store(file_extension, file_path)
         else: 
-            return -1  
+            return ReturnCode.UNSUPPORTED_FILE  
 
 if __name__ == "__main__":  
     # html = asyncio.run(GetDocument.get_document_from_link(["https://python.langchain.com/v0.1/docs/integrations/document_loaders/async_chromium/"]))
