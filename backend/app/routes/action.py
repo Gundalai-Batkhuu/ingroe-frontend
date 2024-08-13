@@ -6,6 +6,8 @@ from app.controller.doc_action import (Search, Create, Query, Store, document_ex
 from pydantic import Field
 from uuid import uuid4
 from app.const import GraphLabel
+from app.model.pydantic_model.payload.misc import DocumentSource
+from app.dependencies.internal import StoreAssets
 
 from app.temp_test.graph import get_doc, get_doc_from_file
 
@@ -36,16 +38,23 @@ async def search(payload: SearchQuery):
 @router.post("/create-document-selection")
 async def create_document_selection(payload: CreateDocument):
     print(payload.document_id)
-    documents = await Create.create_documents_from_selection(payload.links, payload.user_id)
+    documents, source = await Create.create_documents_from_selection(payload.links, payload.user_id)
     print("received documents")
     print(len(documents))
     # return documents
     parent_node = {"label": GraphLabel.DOCUMENT_ROOT, "id": payload.document_id}
     print(parent_node)
     Store.store_document(documents, parent_node, payload.user_id)
+    storer = StoreAssets(user_id=payload.user_id, document_root_id=payload.document_id, source_payload=source)
+    source.file_paths = ["x", "d"]
+    storer.store()
     return JSONResponse(
         status_code=200,
-        content={"message": "Documents from provided sources stored successfully!!"}
+        content={
+            "message": "Documents from provided sources stored successfully!!", 
+            "unsupported_file_links": {source.unsupported_file_links},
+            "error_links": {source.error_links}
+            }
     )
 
 @router.post("/create-document-manually")

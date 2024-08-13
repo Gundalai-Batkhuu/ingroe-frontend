@@ -15,17 +15,22 @@ if TYPE_CHECKING:
     from app.dependencies.internal.query_documents import (
         QueryDocument
     )
+    from app.dependencies.internal.store_assets import (
+        StoreAssets
+    )
 
 __all__ = [
     "GetDocument",
     "StoreDocument",
-    "QueryDocument"
+    "QueryDocument",
+    "StoreAssets"
 ]
 
 _module_lookup = {
     "GetDocument": "app.dependencies.internal.create_documents",
     "StoreDocument": "app.dependencies.internal.store_documents",
-    "QueryDocument": "app.dependencies.internal.query_documents"
+    "QueryDocument": "app.dependencies.internal.query_documents",
+    "StoreAssets": "app.dependencies.internal.store_assets"
 }
 
 def __getattr__(name: str) -> Any:
