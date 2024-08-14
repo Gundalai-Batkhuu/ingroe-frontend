@@ -2,6 +2,7 @@ from app.controller.doc_action.search import Search
 from app.model.pydantic_model.data_model import SearchQuery
 import pytest
 
+# --- doc_action -> search.py ---
 @pytest.fixture
 def query_object():
     """Get a class containing the search query.
@@ -72,3 +73,19 @@ def test_get_final_search_query_all():
     expected_query = "site:*.gov.au tax return AFTER:2019 filetype:pdf"
     actual_query = Search.get_final_search_query(query_object=query_object)
     assert actual_query == expected_query, f"Expected '{expected_query}' but got '{actual_query}'"        
+
+# --- doc_action -> create_document.py ---
+from app.controller.doc_action import document_exists
+
+# this makes a real call to the neo4j database to check the result
+# we need to have the database running, plus the id might change in the development phase
+# as we are deleting the old data when needed. So, look at these factors first if the test fails.
+def test_document_exists_for_right_id():
+    document_id = "7dbcc9ede1a24c5fb26d37fcf8da8fb7"
+    actual_result = document_exists(document_id)
+    assert actual_result == True
+
+def test_document_exists_for_false_id():
+    document_id = "123abc"
+    actual_result = document_exists(document_id)
+    assert actual_result == False   

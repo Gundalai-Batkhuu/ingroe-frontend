@@ -111,18 +111,6 @@ def value_sanitize(d: Any) -> Any:
         return d
 
 def _get_create_and_attach_query(parent_label: str) -> str:
-    # return (
-    #     f"MERGE (parent:{parent_label} {{id: '{parent_id}'}}) "
-    #     "MERGE (d:Document {id: $doc_id}) "
-    #     "SET d += $doc_properties "
-    #     "MERGE (parent)-[:OWNS]->(d)"
-    # )
-    # return (
-    #     f"MERGE (parent:{parent_label} {{id: {parent_id}}}) "
-    #     "MERGE (d:Document {id: $doc_id}) "
-    #     "SET d += $doc_properties "
-    #     "MERGE (parent)-[:OWNS]->(d)"
-    # )
     # we use the param to pass the parent id cause this makes Neo4j to handle the type conversion correctly
     return (
         f"MERGE (parent:{parent_label} {{id: $parent_id}}) "
