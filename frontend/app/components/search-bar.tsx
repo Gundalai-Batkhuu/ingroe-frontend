@@ -1,18 +1,52 @@
 import React, { useState, useRef, FormEvent, ChangeEvent } from 'react';
+import { COUNTRIES, Country } from "@/app/lib/countries";
 
 interface SearchBarProps {
     placeholder?: string;
     setResults: (value: any) => void;
+    country: string;
+    countrySpecificSearch: boolean;
+    searchType: "strict" | "medium" | "open";
+    fileType: string | null;
+    mix: boolean;
+    results: number;
+    before: number | null;
+    after: number | null;
+    site: string | null;
 }
 
-export const SearchBar: React.FC<SearchBarProps> = ({ placeholder = "Search...", setResults }) => {
+export const SearchBar: React.FC<SearchBarProps> = ({
+    placeholder = "Search...",
+    setResults,
+    country,
+    countrySpecificSearch,
+    searchType,
+    fileType,
+    mix,
+    results,
+    before,
+    after,
+    site
+}) => {
     const [query, setQuery] = useState<string>("");
     const inputRef = useRef<HTMLInputElement>(null);
+    const selectedCountry = COUNTRIES.find((option: Country) => option.value === country)?.title ?? '';
 
     const handleSearch = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        console.log('Searching for:', query);
+        console.log('Searching with parameters:', {
+            query,
+            country: selectedCountry,
+            countrySpecificSearch,
+            searchType,
+            fileType,
+            mix,
+            results,
+            before,
+            after,
+            site
+        });
 
         try {
             const response = await fetch('http://localhost:5000/api/v1/items/search-document', {
@@ -23,8 +57,15 @@ export const SearchBar: React.FC<SearchBarProps> = ({ placeholder = "Search...",
                 },
                 body: JSON.stringify({
                     query: query,
-                    country: "United States",
-                    country_specific_search: true
+                    country: selectedCountry,
+                    country_specific_search: countrySpecificSearch,
+                    search_type: searchType,
+                    file_type: fileType,
+                    mix: mix,
+                    results: results,
+                    before: before,
+                    after: after,
+                    site: site
                 }),
             });
 
@@ -34,11 +75,10 @@ export const SearchBar: React.FC<SearchBarProps> = ({ placeholder = "Search...",
 
             const data = await response.json();
             console.log('Search results:', data);
-            setResults(data)
+            setResults(data);
 
         } catch (error) {
             console.error('Error during search:', error);
-            // Handle error (e.g., show an error message to the user)
         }
     }
 
