@@ -189,8 +189,8 @@ class GetDocument:
         try:
             response = requests.head(url, allow_redirects=True, timeout=5)
             is_downloadable = cls._is_downloadable(response, url)
-            if is_downloadable:
-                file_extension = cls._get_file_extension(path=url, response=response)
+            file_extension = cls._get_file_extension(path=url, response=response)
+            if is_downloadable or file_extension != "":
                 if file_extension in cls.allowed_file_types:
                     file_path = cls._get_file_path("files", file_extension)
                     cls._download_file(url, file_path) 
@@ -202,7 +202,6 @@ class GetDocument:
             else:
                 return ReturnCode.VANILLA_LINK
         except Exception as e:
-            # raise error here if needed
             print(f"An error occurred: {e}")
             return ReturnCode.ERROR
 
@@ -291,7 +290,7 @@ class GetDocument:
         outside of the downloadable file types.
         """
         full_allowed_list = cls.allowed_file_types + cls.additional_allowed_files
-        file_extension = cls._get_file_extension(path=file.filename, file=file)
+        file_extension = cls._get_file_extension(path=file.filename, file=file) # get the file name as well. if the same name exists, then write add copy. If copy then copy(1)
         if file_extension in full_allowed_list:
             file_path = cls._get_file_path("files", file_extension) # get the file path of the cloud
             await cls._upload_file(file_path, file)
