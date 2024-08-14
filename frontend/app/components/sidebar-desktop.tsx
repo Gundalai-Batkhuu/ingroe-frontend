@@ -1,5 +1,3 @@
-import { SearchSidebar } from './search-sidebar'
-
 import { auth } from '@/auth'
 import { ChatHistory } from './chat-history'
 import {ChatSidebar} from "@/app/components/chat-sidebar";
