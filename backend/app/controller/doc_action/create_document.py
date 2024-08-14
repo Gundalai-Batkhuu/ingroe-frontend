@@ -53,7 +53,7 @@ class Create(APIEndPoint):
         source = DocumentSource(vanilla_links=vanilla_link, file_links=file_link, error_links=error_link, unsupported_file_links=unallowed_downloadable_links)
         return documents, source
 
-def document_exists(document_id: str) -> bool:
+def document_exists(document_id: str, user_id) -> bool:
     """A wrapper for node checker function.
 
     Args:
@@ -62,4 +62,4 @@ def document_exists(document_id: str) -> bool:
     Returns:
     bool: True or False depending on the node existence in the graph for an id.
     """
-    return StoreDocument.check_if_node_exists_for_id(document_id)
+    return StoreDocument.check_if_node_exists_for_id(document_id, user_id)

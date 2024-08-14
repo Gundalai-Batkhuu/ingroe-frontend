@@ -77,15 +77,39 @@ def test_get_final_search_query_all():
 # --- doc_action -> create_document.py ---
 from app.controller.doc_action import document_exists
 
+@pytest.fixture
+def id_map():
+    id_map = {
+        "correct_document_id": "3e968a71e7644eb595cf9cfab3249ec7",
+        "correct_user_id": "1111",
+        "incorrect_document_id": "123abc",
+        "incorrect_user_id": "zzz"
+    }
+    return id_map
+
 # this makes a real call to the neo4j database to check the result
 # we need to have the database running, plus the id might change in the development phase
 # as we are deleting the old data when needed. So, look at these factors first if the test fails.
-def test_document_exists_for_right_id():
-    document_id = "7dbcc9ede1a24c5fb26d37fcf8da8fb7"
-    actual_result = document_exists(document_id)
+def test_document_exists_for_right_ids(id_map):
+    document_id = id_map.get("correct_document_id")
+    user_id = id_map.get("correct_user_id")
+    actual_result = document_exists(document_id, user_id)
     assert actual_result == True
 
-def test_document_exists_for_false_id():
-    document_id = "123abc"
-    actual_result = document_exists(document_id)
-    assert actual_result == False   
+def test_document_exists_for_false_document_id(id_map):
+    document_id = id_map.get("incorrect_document_id")
+    user_id = id_map.get("correct_user_id")
+    actual_result = document_exists(document_id, user_id)
+    assert actual_result == False  
+
+def test_document_exists_for_false_user_id(id_map):
+    document_id = id_map.get("correct_document_id")
+    user_id = id_map.get("incorrect_user_id")
+    actual_result = document_exists(document_id, user_id)
+    assert actual_result == False      
+
+def test_document_exists_for_both_false_ids(id_map):
+    document_id = id_map.get("incorrect_document_id")
+    user_id = id_map.get("incorrect_user_id")
+    actual_result = document_exists(document_id, user_id)
+    assert actual_result == False     
