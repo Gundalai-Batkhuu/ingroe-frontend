@@ -1,9 +1,9 @@
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.prompts.prompt import PromptTemplate
-from app.dependencies.external.get_llm import LLM
+from app.dependencies.external import LLM
  # from ..internal.customised.neo4j_graph import Neo4jGraph
 from app.dependencies.internal.customised import Neo4jGraph
-from app.model.pydantic_model.payload.query_documents import Entities
+from app.model.pydantic_model.payload import Entities
 from langchain_community.vectorstores.neo4j_vector import remove_lucene_chars
 from typing import List, Tuple, Union, Dict, Any
 from langchain_core.runnables import (RunnableBranch, RunnableLambda, RunnableParallel,

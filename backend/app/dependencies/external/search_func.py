@@ -2,7 +2,7 @@ from googleapiclient.discovery import build
 from dotenv import load_dotenv
 import os
 from typing import List, Tuple, Dict, Optional
-from app.model.pydantic_model.data_model import SearchResult
+from app.model.pydantic_model import SearchResult
 import math
 import re
 

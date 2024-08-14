@@ -1,7 +1,7 @@
 from unittest.mock import patch, AsyncMock
 import pytest
-from app.dependencies.external.search_func import SearchFunction
-from app.model.pydantic_model.data_model import SearchResult 
+from app.dependencies.external import SearchFunction
+from app.model.pydantic_model import SearchResult 
 
 # --- search_func.py ---
 @pytest.fixture
@@ -110,7 +110,7 @@ async def test_get_result_num_of_result_is_10(mock_get_result_from_engine, get_d
 from langchain_groq import ChatGroq 
 from langchain_openai import ChatOpenAI
 from app.enum import ModelProvider
-from app.dependencies.external.get_llm import LLM 
+from app.dependencies.external import LLM 
 
 def test_get_llm_groq():
     """Checks if the groq model is provided when we requested the groq model.

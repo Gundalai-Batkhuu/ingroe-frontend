@@ -1,5 +1,5 @@
 from app.controller.doc_action.search import Search
-from app.model.pydantic_model.data_model import SearchQuery
+from app.model.pydantic_model import SearchQuery
 import pytest
 
 # --- doc_action -> search.py ---

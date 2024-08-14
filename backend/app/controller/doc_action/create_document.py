@@ -1,11 +1,11 @@
 from ..core import APIEndPoint
-from app.model.pydantic_model.data_model import CreateDocument
+from app.model.pydantic_model import CreateDocument
 from app.dependencies.internal import (GetDocument, StoreDocument, StoreAssets)
 from fastapi import UploadFile
 from langchain_core.documents import Document
 from typing import Sequence, List, Tuple
 from app.const import ReturnCode
-from app.model.pydantic_model.payload.misc import DocumentSource
+from app.model.pydantic_model.payload import DocumentSource
 
 class Create(APIEndPoint):
     # @classmethod

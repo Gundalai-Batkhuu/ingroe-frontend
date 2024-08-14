@@ -7,7 +7,7 @@ import asyncio
 import requests
 from urllib.parse import urlparse
 import mimetypes
-from app.utils.utils import (get_root_directory, generate_unique_string, get_file_type_by_extension, get_current_directory)
+from app.utils import (get_root_directory, generate_unique_string, get_file_type_by_extension, get_current_directory)
 import os
 from langchain_community.document_loaders import (PyPDFLoader, UnstructuredMarkdownLoader, Docx2txtLoader)
 from fastapi import UploadFile
