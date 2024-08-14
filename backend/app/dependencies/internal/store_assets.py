@@ -1,5 +1,5 @@
 from typing import List
-from app.model.pydantic_model.payload.misc import DocumentSource
+from app.model.pydantic_model.payload import DocumentSource
 
 class StoreAssets:
     def __init__(

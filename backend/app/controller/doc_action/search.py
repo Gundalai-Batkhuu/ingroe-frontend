@@ -3,7 +3,7 @@ from ..core import APIEndPoint
 from ...model.pydantic_model.data_model import SearchQuery, SearchResult
 import pycountry
 from typing import Optional, List
-from app.dependencies.external.search_func import SearchFunction
+from app.dependencies.external import SearchFunction
 
 class Search(APIEndPoint):
     # class_var: str = "xyz"

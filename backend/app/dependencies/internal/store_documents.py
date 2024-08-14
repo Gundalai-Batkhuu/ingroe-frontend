@@ -2,7 +2,7 @@ from langchain.text_splitter import TokenTextSplitter
 from typing import Sequence, List, Dict, Union
 from langchain_core.documents import Document
 from langchain_experimental.graph_transformers import LLMGraphTransformer
-from app.dependencies.external.get_llm import LLM
+from app.dependencies.external import LLM
 from langchain_community.graphs.graph_document import GraphDocument
 from app.temp_test.graph import get_graph_doc
 # from ..internal.customised.neo4j_graph import Neo4jGraph

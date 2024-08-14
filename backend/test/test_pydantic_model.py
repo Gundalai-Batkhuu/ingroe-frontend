@@ -1,6 +1,6 @@
 import pytest
 from pydantic import ValidationError
-from app.model.pydantic_model.data_model import SearchQuery
+from app.model.pydantic_model import SearchQuery
 
 def test_country_not_none_css_false():
     """Test that the model raises an error if country is provided and country_specific_search is False."""

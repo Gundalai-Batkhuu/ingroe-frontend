@@ -1,12 +1,12 @@
 from fastapi import APIRouter, File, UploadFile, Form, HTTPException
 from fastapi.responses import JSONResponse
 from typing import Dict, Optional, List
-from app.model.pydantic_model.data_model import (SearchQuery, CreateDocument, QueryDocument)
+from app.model.pydantic_model import (SearchQuery, CreateDocument, QueryDocument)
 from app.controller.doc_action import (Search, Create, Query, Store, document_exists)
 from pydantic import Field
 from uuid import uuid4
 from app.const import GraphLabel
-from app.model.pydantic_model.payload.misc import DocumentSource
+from app.model.pydantic_model.payload import DocumentSource
 from app.dependencies.internal import StoreAssets
 
 from app.temp_test.graph import get_doc, get_doc_from_file
