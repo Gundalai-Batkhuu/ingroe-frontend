@@ -70,7 +70,7 @@ class StoreDocument:
         cls._create_indexes(graph)
         cls._create_vector_index()
         document_id = parent_node.get("id")
-        cls.attach_document_to_user(user_id, document_id)
+        cls._attach_document_to_user(user_id, document_id)
 
     @classmethod
     def _create_indexes(cls, graph: Neo4jGraph):
@@ -115,7 +115,7 @@ class StoreDocument:
         return True
     
     @classmethod
-    def attach_document_to_user(cls, user_id: str, document_id: str) -> None:
+    def _attach_document_to_user(cls, user_id: str, document_id: str) -> None:
         """"Attaches the document root which owns all the document node for a particular
         document to the user id or the user.
 

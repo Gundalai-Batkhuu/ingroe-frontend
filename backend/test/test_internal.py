@@ -129,12 +129,15 @@ def test_handle_link_for_error_links(mock_create_documents_from_store, mock_down
 @patch.object(GetDocument, "_upload_file", new_callable=AsyncMock)
 @patch.object(GetDocument, "create_documents_from_store")
 async def test_get_document_from_file_for_unsupported_files(mock_create_documents_from_store, mock_upload_file, filename, variable_map, get_document):
+    """Checks if unsupported file types are uploaded then the integer 0 is returned. 
+    """
     mock_create_documents_from_store.return_value = get_document
     file = create_upload_file(filename, b"dummy content")
     user_id = variable_map.get("user_id")
     expected_result = ReturnCode.UNSUPPORTED_FILE
     actual_result = await GetDocument.get_document_from_file(file=file, user_id=user_id)
     assert actual_result == expected_result
+    assert mock_create_documents_from_store.call_count == 0
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("filename", [
@@ -145,9 +148,14 @@ async def test_get_document_from_file_for_unsupported_files(mock_create_document
 @patch.object(GetDocument, "_upload_file", new_callable=AsyncMock)
 @patch.object(GetDocument, "create_documents_from_store")
 async def test_get_document_from_file_for_supported_files(mock_create_documents_from_store, mock_upload_file, filename, variable_map, get_document):
+    """Checks if supported file types are uploaded, then the document creation is performed
+    from the file.
+    """
     mock_create_documents_from_store.return_value = get_document
     file = create_upload_file(filename, b"dummy content")
     user_id = variable_map.get("user_id")
     expected_result = get_document
     actual_result = await GetDocument.get_document_from_file(file=file, user_id=user_id)
     assert actual_result == expected_result
+    assert mock_create_documents_from_store.call_count == 1
+

@@ -13,14 +13,12 @@ class LLM:
     """
     def __init__(
             self,
-            # model: str,
             temperature: Union[float, int] = 0,
         ):
         """If temperature is outside the range of 0 and 1, it throws an error."""
         if not (0 <= temperature <= 1):
             raise ValueError("The temperature must be between 0 and 1 inclusive.")  
         self.temperature = temperature  
-        # self.model = model
 
     def get_model(self, model_provider: str) -> ChatGroq | ChatOpenAI:
         """Provides the llm model based on the chosen model provider.

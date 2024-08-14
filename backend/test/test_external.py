@@ -3,6 +3,7 @@ import pytest
 from app.dependencies.external.search_func import SearchFunction
 from app.model.pydantic_model.data_model import SearchResult 
 
+# --- search_func.py ---
 @pytest.fixture
 def get_dictionary():
     """Get a dictionary that contains the properties returned by the mock call.
@@ -103,3 +104,24 @@ async def test_get_result_num_of_result_is_10(mock_get_result_from_engine, get_d
     actual_result = await SearchFunction.get_result(query, 10, False)
     assert actual_result == expected_result     
     mock_get_result_from_engine.assert_awaited_once_with(query, start=1, num=10) 
+
+# --- get_llm.py --- 
+
+from langchain_groq import ChatGroq 
+from langchain_openai import ChatOpenAI
+from app.enum import ModelProvider
+from app.dependencies.external.get_llm import LLM 
+
+def test_get_llm_groq():
+    """Checks if the groq model is provided when we requested the groq model.
+    """
+    llm_selector = LLM(temperature=0)
+    llm = llm_selector.get_model(ModelProvider.GROQ)
+    assert isinstance(llm, ChatGroq)
+
+def test_get_llm_openai():
+    """Checks if the openai model is provided when we requested the openai model.
+    """
+    llm_selector = LLM(temperature=0)
+    llm = llm_selector.get_model(ModelProvider.OPENAI)
+    assert isinstance(llm, ChatOpenAI)    
