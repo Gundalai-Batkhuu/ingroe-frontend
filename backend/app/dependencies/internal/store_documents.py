@@ -95,21 +95,31 @@ class StoreDocument:
     )
         
     @classmethod    
-    def check_if_node_exists_for_id(cls, id: str) -> bool:
+    def check_if_node_exists_for_id(cls, document_id: str, user_id: str) -> bool:
         """Checks if node exists for an id in the graph.
 
         Args:
-        id (str): The id to be checked against the node id.
+        document_id (str): The id to be checked against the node id.
 
         Returns:
         bool: True or False based on the node existence in the graph for an id.
         """
-        check_query = (
-            f"MATCH (n {{id:$id}}) "
+        document_check_query = (
+            f"MATCH (n {{id:$document_id}}) "
             "RETURN count(n) as count"
         )   
-        check_result = Neo4jVector(embedding=OpenAIEmbeddings()).query(query=check_query, params={"id": id})
-        count = check_result[0]["count"]
+        document_check_result = Neo4jVector(embedding=OpenAIEmbeddings()).query(query=document_check_query, params={"document_id": document_id})
+        count = document_check_result[0]["count"]
+        if count != 1:
+            return False
+        print("reach whole check")
+        complete_check_query = (
+            f"MATCH (user:User {{id:$user_id}}), (d:Document_Root {{id:$document_id}}) "
+            "WHERE EXISTS ((user) -[:Created]-> (d)) "
+            "RETURN count(d) as count "
+        )
+        complete_check_result = Neo4jVector(embedding=OpenAIEmbeddings()).query(query=complete_check_query, params={"user_id": user_id,"document_id": document_id})
+        count = complete_check_result[0]["count"]
         if count != 1:
             return False
         return True
