@@ -3,9 +3,9 @@ import { notFound, redirect } from 'next/navigation'
 
 import { auth } from '@/auth'
 import { getChat, getMissingKeys } from '@/app/actions'
-import { Chat } from '@/components/chat'
-import { AI } from '@/lib/chat/actions'
-import { Session } from '@/lib/types'
+import { Chat } from '@/app/components/chat'
+import { AI } from '@/app/lib/chat/actions'
+import { Session } from '@/app/lib/types'
 
 export interface ChatPageProps {
   params: {
