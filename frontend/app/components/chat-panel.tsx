@@ -5,7 +5,6 @@ import { Button } from './ui/button'
 import { PromptForm } from './prompt-form'
 import { ButtonScrollToBottom } from './button-scroll-to-bottom'
 import { IconShare } from './ui/icons'
-import { FooterText } from './footer'
 import { ChatShareDialog } from './chat-share-dialog'
 import { useAIState, useActions, useUIState } from 'ai/rsc'
 import type { AI } from '../lib/chat/actions'
@@ -131,7 +130,6 @@ export function ChatPanel({
 
         <div className="space-y-4 border-t bg-background px-4 py-2 shadow-lg sm:rounded-t-xl sm:border md:py-4">
           <PromptForm input={input} setInput={setInput} />
-          <FooterText className="hidden sm:block" />
         </div>
       </div>
     </div>
