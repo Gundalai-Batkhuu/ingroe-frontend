@@ -6,6 +6,7 @@ from langchain_core.documents import Document
 from typing import Sequence, List, Tuple
 from app.const import ReturnCode
 from app.model.pydantic_model.payload import DocumentSource
+from app.temp_test.graph import get_doc
 
 class Create(APIEndPoint):
     # @classmethod
@@ -49,6 +50,7 @@ class Create(APIEndPoint):
                 file_link.append(link)
         print(vanilla_link)
         documents_from_link = await cls.create_document_from_links(vanilla_link)
+        # documents_from_link, source = get_doc()
         documents += documents_from_link
         source = DocumentSource(vanilla_links=vanilla_link, file_links=file_link, error_links=error_link, unsupported_file_links=unallowed_downloadable_links)
         return documents, source
