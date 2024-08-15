@@ -7,12 +7,25 @@ readme = "README.md"
 package-mode = false
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = ">=3.12,<3.13"
 fastapi = "^0.111.1"
 pydantic-extra-types = "^2.9.0"
 pycountry = "^24.6.1"
 google-api-python-client = "^2.139.0"
 python-dotenv = "^1.0.1"
+langchain = "^0.2.12"
+playwright = "^1.45.1"
+beautifulsoup4 = "^4.12.3"
+langchain-community = "^0.2.11"
+html2text = "^2024.2.26"
+pypdf = "^4.3.1"
+unstructured = {extras = ["md"], version = "^0.15.0"}
+docx2txt = "^0.8"
+python-multipart = "^0.0.9"
+neo4j = "^5.23.1"
+langchain-openai = "^0.1.20"
+langchain-experimental = "^0.0.64"
+langchain-groq = "^0.1.9"
 
 
 [tool.poetry.group.dev.dependencies]
