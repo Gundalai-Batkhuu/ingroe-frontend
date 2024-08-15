@@ -40,7 +40,7 @@ async def create_document_selection(payload: CreateDocument):
     print(payload.document_id)
     documents, source = await Create.create_documents_from_selection(payload.links, payload.user_id)
     print("received documents")
-    print(len(documents))
+    print(len(documents[:10]))
     # return documents
     parent_node = {"label": GraphLabel.DOCUMENT_ROOT, "id": payload.document_id}
     print(parent_node)
@@ -51,8 +51,8 @@ async def create_document_selection(payload: CreateDocument):
         status_code=200,
         content={
             "message": "Documents from provided sources stored successfully!!", 
-            "unsupported_file_links": {source.unsupported_file_links},
-            "error_links": {source.error_links}
+            "unsupported_file_links": source.unsupported_file_links,
+            "error_links": source.error_links
             }
     )
 
