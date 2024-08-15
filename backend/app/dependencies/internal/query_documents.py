@@ -200,6 +200,22 @@ class QueryDocument:
         return final_data
     
     @classmethod
+    def _context_from_vector_search(cls, question: str, parent_id: str) -> List[str]:
+        """Provides the context based on the similarity results obtained from the vector search.
+
+        Args:
+        question (str): The query supplied by the user.
+        parent_id (str): The root node to scope the similarity search and obtaining relationships.
+
+        Returns:
+        List[str]: The list of the string containing the relevnat documents that act as a context.
+        """
+        vector_index = cls._get_vector_index()
+        context = [el.page_content for el in vector_index.scoped_similarity_search(question, parent_id, k=3)]
+        print(context)
+        return context
+    
+    @classmethod
     def _get_condensed_prompt(cls) -> PromptTemplate:
         """Based on the chat history, it creates a new prompt while rephrasing the question.
 
@@ -304,6 +320,29 @@ class QueryDocument:
         | StrOutputParser()
         )
         return chain
+    
+    @classmethod
+    def _get_quick_chain(cls, parent_id: str) -> Runnable:
+        """The final chain required for the quick search.
+
+        Args:
+        parent_id (str): The root node containing all the nodes that is being searched/used.
+
+        Returns:
+        Runnable: Runnable that is used to generate the final response to the user's query.        
+        """
+        chain = (
+        RunnableParallel(
+            {
+                "context": RunnableLambda(lambda x: cls._context_from_vector_search(x["question"], x["parent_id"])),
+                "question": RunnablePassthrough(),
+            }
+        )
+        | cls._get_final_prompt()
+        | cls._get_llm()
+        | StrOutputParser()
+        )
+        return chain
 
     @classmethod
     def query_document(cls, query: str, parent_id: str, chat_history: List[Tuple[str, str]] | None = None) -> str:
@@ -325,10 +364,27 @@ class QueryDocument:
         llm_response = chain.invoke({"question": query, "parent_id": parent_id})
         return llm_response
 
+    @classmethod   
+    def query_document_quick(cls, query: str, parent_id: str) -> str:
+        """Queries the document using just vector search to get the relevant documents to
+        perfrom quick search.
+
+        Args:
+        query (str): The question or query passed by the user.
+        parent_id (str): The root node containing all the nodes that is being searched/used.
+
+        Returns:
+        str: The response to the user question.
+        """
+        chain = cls._get_quick_chain(parent_id)
+        llm_response = chain.invoke({"question": query, "parent_id": parent_id})
+        return llm_response
+
 if __name__ == "__main__":
     chat_history = [("What is Chromium?", "Chromium is one of the browsers supported by Playwright, a library used to control browser automation.")]
     # response = QueryDocument.query_document("What is Chromium?", "7dbcc9ede1a24c5fb26d37fcf8da8fb7")
     # response = QueryDocument.query_document("What is xxxxxxxx?", "7dbcc9ede1a24c5fb26d37fcf8da8fb7")
     # response = QueryDocument.query_document("What is Headless mode?", "7dbcc9ede1a24c5fb26d37fcf8da8fb7", chat_history) 
-    response = QueryDocument.query_document("What is Markdown?", "8bd4014e479f4a878ce06779d2efd24e") 
+    # response = QueryDocument.query_document("What is Markdown?", "8bd4014e479f4a878ce06779d2efd24e")
+    response = QueryDocument.query_document_quick("What is Markdown?", "003f07657ba64a47992a76d84998d3bb") 
     print(response)      
