@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field, model_validator
-from typing import Any, Literal
+from typing import Any, Literal, List
 from pydantic_extra_types.country import CountryShortName
+from uuid import uuid4
 
 class SearchQuery(BaseModel):
     """Data Model for searching documents.
@@ -11,20 +12,20 @@ class SearchQuery(BaseModel):
     country: CountryShortName | None = None
     country_specific_search: bool 
     search_type: Literal["strict", "medium", "open"] = "strict"
-    file_type: str | None = None
+    file_type: Literal["pdf", "docx"] | None = None
     mix: bool = False
-    results : int = Field(default=5, ge=1, le=16)
+    results : int = Field(default=5, ge=1, le=12)
     before: int | None = None
     after: int | None = None
     site: str | None = None
 
     @model_validator(mode="after")
     @classmethod
-    def check_country_specific(cls, values: Any) -> Any:
+    def post_validator(cls, values: Any) -> Any:
         """
-        checks if the combination of country and country specific search is acceptable 
+        checks if the combination of values passed as inputs are acceptable.
 
-        raises Value Error if combination violates the expectation
+        raises Value Error if combination violates the expectation.
         """
         country = values.country
         country_specific_search = values.country_specific_search
@@ -37,6 +38,10 @@ class SearchQuery(BaseModel):
             raise ValueError("If 'country' is provided, 'country_specific_search' must be True.")
         if values.before is not None and values.after is not None:
             raise ValueError("Cannot have before and after date set for a search query.")
+        if values.results == 1 and values.mix:
+            raise ValueError("Cannot provide mix results for a single result.")
+        if values.file_type is None and values.mix:
+            raise ValueError("Must provide a file type if mix result is required.")
         return values 
     
 class SearchResult(BaseModel):
@@ -47,3 +52,18 @@ class SearchResult(BaseModel):
     snippet: str | None = None
     html_snippet: str | None = None
     link: str | None = None
+
+class CreateDocument(BaseModel):
+    """Data model for creating documents.
+
+    It checks if the payload submitted conforms to the required format before
+    creating documents.
+    """    
+    user_id: str
+    document_id: str= Field(default_factory=lambda: uuid4().hex) # create automatic id
+    links: List[str]
+    requires_asset_download: bool = False
+
+class QueryDocument(BaseModel):
+    query: str 
+    document_id: str       

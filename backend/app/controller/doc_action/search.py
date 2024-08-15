@@ -3,7 +3,7 @@ from ..core import APIEndPoint
 from ...model.pydantic_model.data_model import SearchQuery, SearchResult
 import pycountry
 from typing import Optional, List
-from app.external.search_func import SearchFunction
+from app.dependencies.external import SearchFunction
 
 class Search(APIEndPoint):
     # class_var: str = "xyz"
@@ -74,7 +74,7 @@ class Search(APIEndPoint):
         """
         suffix = ""
         if file_type is not None:
-            suffix = f" {file_type}"
+            suffix = f" filetype:{file_type}"
         return suffix    
 
 
@@ -118,5 +118,5 @@ class Search(APIEndPoint):
         """
         search_query = cls.get_final_search_query(query_object)
         print(search_query)
-        results = await SearchFunction.get_result(search_query)
+        results = await SearchFunction.get_result(search_query, query_object.results, query_object.mix)
         return results
