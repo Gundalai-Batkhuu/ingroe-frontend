@@ -3,24 +3,28 @@ The backend of the Legal_AI_App.
 """
 
 from fastapi import FastAPI
-from app.routes import action
+from .routes import action
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 prefix = "/api/v1"
-app.include_router(router=action.router, prefix=prefix)
+
+origins = [
+    "http://localhost:3000",
+]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  
+    allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],   
-    allow_headers=["*"],  
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
+
+app.include_router(router=action.router, prefix=prefix)
 
 @app.get("/")
 def run_server():
-    print("hello")
     return {"msg": "Hello from main API"}
 
 if __name__ == "__main__":
@@ -29,4 +33,4 @@ if __name__ == "__main__":
     You'd execute this by running `python -m your-assistant.main`
     """
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=5500, reload=False)
+    uvicorn.run(app, host="0.0.0.0", port=5000)
