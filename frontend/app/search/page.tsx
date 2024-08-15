@@ -1,11 +1,12 @@
 'use client'
 
-import React, { useState } from "react";
-import { SearchBar } from "@/app/components/search-bar";
-import { SearchResultsList } from "@/app/components/search-results";
-import { SidebarSearch } from "@/app/components/sidebar-search";
+import React, {useState} from "react";
+import {SearchBar} from "@/app/components/search-bar";
+import {SearchResultsList} from "@/app/components/search-results";
+import {SidebarSearch} from "@/app/components/sidebar-search";
+import {useSidebar} from "@/app/lib/hooks/use-sidebar";
 
-export default function Home() {
+export default function SearchPage() {
     const [searchResults, setSearchResults] = useState([]);
     const [country, setCountry] = useState<string>("AU");
     const [countrySpecificSearch, setCountrySpecificSearch] = useState<boolean>(true);
@@ -16,6 +17,7 @@ export default function Home() {
     const [before, setBefore] = useState<number | null>(null);
     const [after, setAfter] = useState<number | null>(null);
     const [site, setSite] = useState<string | null>(null);
+    const {isSidebarOpen} = useSidebar();
 
     return (
         <div className="flex h-[calc(100vh_-_theme(spacing.16))] overflow-hidden">
@@ -39,9 +41,19 @@ export default function Home() {
                 site={site}
                 setSite={setSite}
             />
-            <div className="flex-1 overflow-y-auto">
-                <div className="flex flex-col min-h-full p-6">
-                    <div className="flex-grow flex flex-col items-center justify-center space-y-8 max-w-4xl mx-auto">
+            <div
+                className={`
+                    flex-1 overflow-y-auto
+                    transition-all duration-300 ease-in-out
+                    ${!isSidebarOpen ? 'lg:mr-[250px] xl:mr-[300px]' : 'ml-0'}
+                `}
+            >
+                <div
+                    className={`
+                        flex flex-col min-h-full p-6
+                    `}
+                >
+                    <div className="grow flex flex-col items-center justify-center space-y-8 max-w-4xl mx-auto">
                         <h1 className="text-4xl font-bold">Welcome to the Legal AI App!</h1>
                         <p className="text-lg text-center">
                             Get started by choosing a country and searching with keywords to find legal information.
