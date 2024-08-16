@@ -1,9 +1,8 @@
-import { type Session } from '../lib/types'
 import React from 'react'
 import { signOut } from '@/auth'
 
 
-export function SignOut() {
+export function SignoutForm() {
 
     return (
         <form
