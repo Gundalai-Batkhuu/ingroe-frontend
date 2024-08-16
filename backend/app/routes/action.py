@@ -97,9 +97,9 @@ async def create_document_manually(link: Optional[str] = Form(None), file: Optio
         # documents = await Create.create_document_from_links([link])
         documents, source = await Create.create_documents_from_selection([link], user_id)
     Store.store_document(documents, parent_node, user_id)  
-    # storer = StoreAssets(user_id=user_id, document_root_id=document_id, source_payload=source)
-    # if file_paths is not None: source.file_paths = ["x", "d"]
-    # storer.store() 
+    storer = StoreAssets(user_id=user_id, document_root_id=document_id, source_payload=source)
+    if file_paths is not None: source.file_paths = ["x", "d"]
+    storer.store() 
     return JSONResponse(
         status_code=200,
         content={"message": "Documents from provided sources stored successfully!!"}
@@ -113,6 +113,11 @@ async def create_document_manually(link: Optional[str] = Form(None), file: Optio
 @router.post("/query-document")
 async def query_document(payload: QueryDocument):
     response = await Query.query_document(payload.query, payload.document_id)
+    return response
+
+@router.post("/query-document-quick")
+async def query_document_quick(payload: QueryDocument):
+    response = await Query.query_document_quick(payload.query, payload.document_id)
     return response
 
 # for passing the links and files as a list, we need change the types of the function first
