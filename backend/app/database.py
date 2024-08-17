@@ -26,6 +26,10 @@ def init_db():
     We import all the models from which tables are to be produced and create all.
     """
     # Import all the models here to ensure they are registered properly
-    from app.model.db import User
+    from app.model.db import (User, Document)
     Base.metadata.create_all(bind=engine)  
     print("database initialised")      
+
+def get_session():
+    """Directly returns a database session."""
+    return SessionLocal()

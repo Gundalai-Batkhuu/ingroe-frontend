@@ -1,5 +1,9 @@
 from typing import List
 from app.model.pydantic_model.payload import DocumentSource
+from app.scripts.db import DocumentCRUD
+from sqlalchemy.orm import Session
+from app.database import get_session
+from fastapi import Depends
 
 class StoreAssets:
     def __init__(
@@ -13,11 +17,20 @@ class StoreAssets:
         self.vanilla_links = source_payload.vanilla_links
         self.error_links = source_payload.error_links
         self.file_links = source_payload.file_links 
-        self.file_paths = source_payload.file_paths
         self.unsuppported_file_links = source_payload.unsupported_file_links
+        self.files = source_payload.files
 
     def store(self):
-        # store the source in the database. 
-        print(self.file_paths)   
+        db = get_session()
+        # store the source in the database.    
+        DocumentCRUD.create_document(
+            db=db, 
+            document_id=self.document_root_id,
+            user_id=self.user_id,
+            vanilla_links=self.vanilla_links,
+            file_links=self.file_links,
+            unsupported_file_links=self.unsuppported_file_links,
+            files=self.files
+        )
         pass
   

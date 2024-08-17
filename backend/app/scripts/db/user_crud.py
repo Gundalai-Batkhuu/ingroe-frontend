@@ -6,7 +6,7 @@ class UserCRUD:
     """
     @classmethod
     def create_user(cls, db: Session, name: str, email: str, user_id: str) -> None:
-        """Creates a table called user with the required fields.
+        """Creates a record in the user table with the required fields.
         """
         db_user = User(name=name, email=email, user_id=user_id)
         db.add(db_user)
