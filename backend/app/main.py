@@ -3,12 +3,14 @@ The backend of the Legal_AI_App.
 """
 
 from fastapi import FastAPI
-from app.routes import action
+from app.routes import (action, user)
 from fastapi.middleware.cors import CORSMiddleware
+from app.database import init_db
 
 app = FastAPI()
 prefix = "/api/v1"
 app.include_router(router=action.router, prefix=prefix)
+app.include_router(router=user.router, prefix=prefix)
 
 app.add_middleware(
     CORSMiddleware,
@@ -17,6 +19,8 @@ app.add_middleware(
     allow_methods=["*"],   
     allow_headers=["*"],  
 )
+
+init_db()
 
 @app.get("/")
 def run_server():
