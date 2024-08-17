@@ -65,4 +65,9 @@ class CreateDocument(BaseModel):
 
 class QueryDocument(BaseModel):
     query: str 
-    document_id: str       
+    document_id: str    
+
+class User(BaseModel):
+    name: str
+    email: str
+    user_id: str       
