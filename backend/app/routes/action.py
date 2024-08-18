@@ -75,14 +75,14 @@ async def create_document_manually(link: Optional[str] = Form(None), file: Optio
         # document_from_link, source = get_doc()
         # combined_documents = document_from_file + document_from_link
         # print(combined_documents)
-        documents_from_file = await Create.create_document_from_file(file, user_id, document_id) # we need to get file path from this function
+        documents_from_file, file_map = await Create.create_document_from_file(file, user_id, document_id) # we need to get file path from this function
         # # documents_from_link = await Create.create_document_from_links([link])
         documents_from_link, source = await Create.create_documents_from_selection([link], user_id)
+        source.files = [file_map]
         combined_documents = documents_from_file + documents_from_link
         Store.store_document(combined_documents, parent_node, user_id)
-        # storer = StoreAssets(user_id=user_id, document_root_id=document_id, source_payload=source)
-        # source.file_paths = ["x", "d"]
-        # storer.store()
+        storer = StoreAssets(user_id=user_id, document_root_id=document_id, source_payload=source)
+        storer.store()
         return JSONResponse(
         status_code=200,
         content={"message": "Documents from provided sources stored successfully!!"}
@@ -107,6 +107,14 @@ async def create_document_manually(link: Optional[str] = Form(None), file: Optio
     )
 
 def _get_source_payload_from_file_map(file_map: Dict[str,str]) -> DocumentSource:
+    """Provides a source payload from the file map.
+
+    Args:
+    file_map (Dict[str, str]): A dictionary containing a file url and file name.
+
+    Returns: 
+    DocumentSource: A DocumentSource object containing the files attribute that stores the file_map.
+    """
     source_payload = DocumentSource()
     source_payload.files = [file_map]
     return source_payload
