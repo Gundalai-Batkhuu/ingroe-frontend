@@ -23,10 +23,10 @@ class Create(APIEndPoint):
         return documents
 
     @classmethod
-    async def create_document_from_file(cls, file: UploadFile, user_id: str) -> List[Document]:
-        documents = await GetDocument.get_document_from_file(file, user_id)
+    async def create_document_from_file(cls, file: UploadFile, user_id: str, document_id: str) -> List[Document]:
+        documents, file_map = await GetDocument.get_document_from_file(file, user_id, document_id)
         # print(documents)    
-        return documents
+        return documents, file_map
     
     @classmethod
     async def create_documents_from_selection(cls, links: List[str], user_id: str) -> Tuple[Sequence[Document], DocumentSource]:
