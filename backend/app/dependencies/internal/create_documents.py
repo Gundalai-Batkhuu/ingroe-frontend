@@ -1,5 +1,5 @@
 from langchain_community.document_loaders import AsyncChromiumLoader
-from typing import List, AsyncIterator, Sequence, Tuple, Any, Literal, Optional
+from typing import List, AsyncIterator, Sequence, Tuple, Any, Literal, Optional, Dict
 from langchain_core.documents import Document
 from langchain_community.document_transformers import Html2TextTransformer
 from langchain_community.document_transformers import BeautifulSoupTransformer
@@ -11,7 +11,8 @@ from app.utils import (get_root_directory, generate_unique_string, get_file_type
 import os
 from langchain_community.document_loaders import (PyPDFLoader, UnstructuredMarkdownLoader, Docx2txtLoader)
 from fastapi import UploadFile
-from app.const import ReturnCode
+from app.const import (ReturnCode, NameClass)
+from app.dependencies.external import S3
 
 class GetDocument:
     """Get the sequence of documents from the provided link or file.
@@ -278,7 +279,15 @@ class GetDocument:
         print(f"File uploaded and saved to {file_path}")
 
     @classmethod
-    async def get_document_from_file(cls, file: UploadFile, user_id: str) -> List[Document] | int:
+    def _get_file_map(cls, file_url: str, file_name: str) -> Dict[str, str]:
+        file_map = {
+            "file_url": file_url,
+            "file_name": file_name
+        }    
+        return file_map
+
+    @classmethod
+    async def get_document_from_file(cls, file: UploadFile, user_id: str, document_id: str) -> Tuple[List[Document], Dict[str, str]] | int:
         """Creates a sequence of document from the uploaded file.
 
         Args:
@@ -294,7 +303,11 @@ class GetDocument:
         if file_extension in full_allowed_list:
             file_path = cls._get_file_path("files", file_extension) # get the file path of the cloud
             await cls._upload_file(file_path, file)
-            return cls.create_documents_from_store(file_extension, file_path)
+            documents = cls.create_documents_from_store(file_extension, file_path)
+            file_url, file_name = S3.upload_to_s3_bucket(file_path, NameClass.S3_BUCKET_NAME, user_id, document_id, file.filename)
+            cls._clear_file(file_path)
+            file_map = cls._get_file_map(file_url, file_name)
+            return documents, file_map
         else: 
             return ReturnCode.UNSUPPORTED_FILE  
 

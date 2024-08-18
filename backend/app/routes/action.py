@@ -62,8 +62,9 @@ async def create_document_manually(link: Optional[str] = Form(None), file: Optio
     if link is None and file is None:
         raise HTTPException(status_code=400, detail="You must provide either a link or file.")
     if document_id is not None:
-        if not document_exists(document_id, user_id):
-            raise HTTPException(status_code=400, detail="The supplied document id does not exist. Please provide the right id or leave blank.")
+        pass
+        # if not document_exists(document_id, user_id):
+        #     raise HTTPException(status_code=400, detail="The supplied document id does not exist. Please provide the right id or leave blank.")
     else:
         document_id = uuid4().hex  
     parent_node = {"label": GraphLabel.DOCUMENT_ROOT, "id": document_id}
@@ -74,7 +75,7 @@ async def create_document_manually(link: Optional[str] = Form(None), file: Optio
         # document_from_link, source = get_doc()
         # combined_documents = document_from_file + document_from_link
         # print(combined_documents)
-        documents_from_file = await Create.create_document_from_file(file, user_id) # we need to get file path from this function
+        documents_from_file = await Create.create_document_from_file(file, user_id, document_id) # we need to get file path from this function
         # # documents_from_link = await Create.create_document_from_links([link])
         documents_from_link, source = await Create.create_documents_from_selection([link], user_id)
         combined_documents = documents_from_file + documents_from_link
@@ -86,24 +87,29 @@ async def create_document_manually(link: Optional[str] = Form(None), file: Optio
         status_code=200,
         content={"message": "Documents from provided sources stored successfully!!"}
     )
-    file_paths = None
     if file: 
         print("from file")
         # documents = get_doc_from_file()
-        documents = await Create.create_document_from_file(file, user_id) # we need to get the file path from here
+        documents, file_map = await Create.create_document_from_file(file, user_id, document_id) 
+        source = _get_source_payload_from_file_map(file_map)
+        print("source done")
     else: 
         print("from link")
         # documents, source = get_doc()
         # documents = await Create.create_document_from_links([link])
         documents, source = await Create.create_documents_from_selection([link], user_id)
-    Store.store_document(documents, parent_node, user_id)  
+    # Store.store_document(documents, parent_node, user_id)  
     storer = StoreAssets(user_id=user_id, document_root_id=document_id, source_payload=source)
-    if file_paths is not None: source.file_paths = ["x", "d"]
     storer.store() 
     return JSONResponse(
         status_code=200,
         content={"message": "Documents from provided sources stored successfully!!"}
     )
+
+def _get_source_payload_from_file_map(file_map: Dict[str,str]) -> DocumentSource:
+    source_payload = DocumentSource()
+    source_payload.files = [file_map]
+    return source_payload
 
 # @router.post("/create-document-from-file")
 # async def create_document_from_file(file: UploadFile, user_id: str = File(...)):
