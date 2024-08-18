@@ -280,6 +280,15 @@ class GetDocument:
 
     @classmethod
     def _get_file_map(cls, file_url: str, file_name: str) -> Dict[str, str]:
+        """Construct a file map or dictionary containing file url and file name.
+
+        Args:
+        file_url (str): The url of the file.
+        file_name (str): The name of the file.
+
+        Returns:
+        Dict[str, str]: A dictionary containing file url and file name.
+        """
         file_map = {
             "file_url": file_url,
             "file_name": file_name
@@ -288,20 +297,21 @@ class GetDocument:
 
     @classmethod
     async def get_document_from_file(cls, file: UploadFile, user_id: str, document_id: str) -> Tuple[List[Document], Dict[str, str]] | int:
-        """Creates a sequence of document from the uploaded file.
+        """Creates a list of documents from the uploaded file and stores the uploaded file to the 
+        S3 storage.
 
         Args:
         file: Uploaded file by the client.
         user_id: Id of the user uploading the file.
+        document_id: Id of the document root that holds all the document entities for a particular topic.
 
         Returns:
-        Sequence[Document] | int: A list or sequence of documents or 0 if the file is
-        outside of the downloadable file types.
+        Tuple[List[Document], Dict[str, str]] | int: A tuple containing a list of documents and file map or 0 if the file is outside of the downloadable file types.
         """
         full_allowed_list = cls.allowed_file_types + cls.additional_allowed_files
-        file_extension = cls._get_file_extension(path=file.filename, file=file) # get the file name as well. if the same name exists, then write add copy. If copy then copy(1)
+        file_extension = cls._get_file_extension(path=file.filename, file=file) 
         if file_extension in full_allowed_list:
-            file_path = cls._get_file_path("files", file_extension) # get the file path of the cloud
+            file_path = cls._get_file_path("files", file_extension)
             await cls._upload_file(file_path, file)
             documents = cls.create_documents_from_store(file_extension, file_path)
             file_url, file_name = S3.upload_to_s3_bucket(file_path, NameClass.S3_BUCKET_NAME, user_id, document_id, file.filename)

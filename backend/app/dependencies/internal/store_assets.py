@@ -6,12 +6,21 @@ from app.database import get_session
 from fastapi import Depends
 
 class StoreAssets:
+    """Class containing methods to store the asset information to the database.
+    """
     def __init__(
             self,
             user_id: str,
             document_root_id: str, 
             source_payload: DocumentSource
-            ):
+            ) -> None:
+        """A constructor method to initialise the StoreAssets instance.
+
+        Args:
+        user_id (str): Id of the user.
+        document_root_id (str): Id of the document root holding all the documents.
+        source_payload (DocumentSource): The DocumentSource object containing the asset information.
+        """
         self.user_id = user_id
         self.document_root_id = document_root_id
         self.vanilla_links = source_payload.vanilla_links
@@ -20,7 +29,9 @@ class StoreAssets:
         self.unsuppported_file_links = source_payload.unsupported_file_links
         self.files = source_payload.files
 
-    def store(self):
+    def store(self) -> None:
+        """Stores the asset information to the database.
+        """
         db = get_session()
         # store the source in the database.    
         DocumentCRUD.create_document(
@@ -32,5 +43,4 @@ class StoreAssets:
             unsupported_file_links=self.unsuppported_file_links,
             files=self.files
         )
-        pass
   

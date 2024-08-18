@@ -11,9 +11,19 @@ os.environ["AWS_SECRET_ACCESS_KEY"] = os.getenv("AWS_SECRET_ACCESS_KEY")
 os.environ["AWS_DEFAULT_REGION"] = os.getenv("AWS_REGION_SYD")
 
 class S3:
-
+    """A class containing methods to interact with the S3 bucket.
+    """
     @classmethod
-    def _file_exists_in_s3(cls, bucket_name, s3_key):
+    def _file_exists_in_s3(cls, bucket_name: str, s3_key: str) -> bool:
+        """Checks if the file exists in the specified bucket.
+
+        Args:
+        bucket_name (str): The name of the S3 bucket.
+        s3_key (str): The complete file path of the file in the bucket.
+
+        Returns:
+        bool: A True or False value based on the file existence in the bucket.
+        """
         s3 = boto3.client("s3")
         try:
             s3.head_object(Bucket=bucket_name, Key=s3_key)
@@ -23,10 +33,20 @@ class S3:
             return False
         
     @classmethod    
-    def _generate_new_filename(cls, bucket_name, s3_key_root, original_filename):
-        # Split the file name and extension
-        name, extension = os.path.splitext(original_filename)
-        new_filename = original_filename
+    def _generate_new_filename(cls, bucket_name, s3_key_root, original_file_name) -> str:
+        """It checks if the supplied file name already exists, and based on the check, if it exists,
+        then a new file name is generated. It splits the file name to separate out the extension and name of the file to construct the new file name if the name already exists.
+
+        Args:
+        bucket_name (str): The name of the S3 bucket.
+        s3_key_root (str): The path till the folder containing the file.
+        original_file_name (str): The name of the file.
+
+        Returns:
+        str: The name of the file whether original or new.
+        """
+        name, extension = os.path.splitext(original_file_name)
+        new_filename = original_file_name
         counter = 0
         
         # Loop to find a unique file name
@@ -36,16 +56,36 @@ class S3:
                 new_filename = f"{name}-copy{extension}"
             else:
                 new_filename = f"{name}-copy-{counter}{extension}"
-        
         return new_filename  
     
     @classmethod
     def _get_file_url(cls, bucket_name: str, s3_key: str) -> str:
+        """Provides the url of the file stored in the bucket.
+
+        Args:
+        bucket_name (str): The name of the S3 bucket.
+        s3_key (str): The complete file path of the file in the bucket.
+
+        Returns:
+        str: The url of the file pointing to the file location in the S3 bucket.
+        """
         file_url = f"https://{bucket_name}.s3.amazonaws.com/{s3_key}"
         return file_url
     
     @classmethod
     def upload_to_s3_bucket(cls, local_file_path: str, bucket_name: str, s3_main_folder: str, s3_sub_folder: str, s3_file_name: str) -> Tuple[str, str]:
+        """Uploads the file to an S3 bucket based on the path specified for a bucket.
+
+        Args:
+        local_file_path (str): The path of the file in the local system.
+        bucket_name (str): The name of the S3 bucket.
+        s3_main_folder (str): The folder to store user files, usually the user id of the user.
+        s3_sub_folder (str): The folder storing the documents, usually the document id.
+        s3_file_name (str): The name of the file.
+
+        Returns:
+        Tuple[str, str]: A tuple containing the file url and the file name.
+        """
         try:
             # Initialize a session using Amazon S3
             s3 = boto3.client("s3")
