@@ -15,4 +15,10 @@ class ReturnCode:
 class NameClass:
     """Constants representing plain strings.
     """
-    S3_BUCKET_NAME: str = "lai-app-dev"    
+    S3_BUCKET_NAME: str = "lai-app-dev"  
+
+class ModelDetails:
+    """Provides the model id for a provider.
+    """   
+    BEDROCK_CLAUDE_HAIKU = "anthropic.claude-3-haiku-20240307-v1:0" 
+    BEDROCK_CLAUDE_SONNET = "anthropic.claude-3-sonnet-20240229-v1:0"    

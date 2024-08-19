@@ -23,6 +23,9 @@ if TYPE_CHECKING:
     from app.controller.doc_action.delete_document import (
         Delete,
     )
+    from app.controller.doc_action.capture_document import (
+        Capture,
+    )
 
 __all__ = [
     "Search",
@@ -30,7 +33,8 @@ __all__ = [
     "Store",
     "Query",
     "document_exists",
-    "Delete"
+    "Delete",
+    "Capture"
 ]
 
 _module_lookup = {
@@ -39,7 +43,8 @@ _module_lookup = {
     "Store": "app.controller.doc_action.store_document",
     "Query": "app.controller.doc_action.query_document",
     "document_exists": "app.controller.doc_action.create_document",
-    "Delete": "app.controller.doc_action.delete_document"
+    "Delete": "app.controller.doc_action.delete_document",
+    "Capture": "app.controller.doc_action.capture_document"
 }
 
 def __getattr__(name: str) -> Any:

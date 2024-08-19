@@ -9,12 +9,6 @@ from app.model.pydantic_model.payload import DocumentSource
 from app.temp_test.graph import get_doc
 
 class Create(APIEndPoint):
-    # @classmethod
-    # async def create_document_from_link(cls, document_payload: CreateDocument) -> Sequence[Document]:
-    #     page_link = document_payload.link
-    #     documents = await GetDocument.get_document_from_link([page_link])
-    #     # print(documents)
-    #     return documents
 
     @classmethod
     async def create_document_from_links(cls, page_links: List[str]) -> Sequence[Document]:
@@ -54,7 +48,7 @@ class Create(APIEndPoint):
         # documents_from_link, source = get_doc()
         documents += documents_from_link
         source = DocumentSource(vanilla_links=vanilla_link, file_links=file_link, error_links=error_link, unsupported_file_links=unallowed_downloadable_links)
-        return documents, source
+        return documents, source    
 
 def document_exists(document_id: str, user_id) -> bool:
     """A wrapper for node checker function.

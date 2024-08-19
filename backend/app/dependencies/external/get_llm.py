@@ -44,5 +44,5 @@ class LLM:
     def _get_openai(self, model) -> ChatOpenAI:
         """Get the llm model of choice from OpenAI."""
         llm = ChatOpenAI(temperature=self.temperature, model_name=model)
-        return llm
+        return llm    
         
