@@ -11,8 +11,13 @@ from app.utils import (get_root_directory, generate_unique_string, get_file_type
 import os
 from langchain_community.document_loaders import (PyPDFLoader, UnstructuredMarkdownLoader, Docx2txtLoader)
 from fastapi import UploadFile
-from app.const import (ReturnCode, NameClass)
+from app.const import (ReturnCode, NameClass, ModelDetails)
 from app.dependencies.external import S3
+import base64
+import aiofiles
+import json
+import boto3
+from app.enum import ServiceProvider
 
 class GetDocument:
     """Get the sequence of documents from the provided link or file.
@@ -320,6 +325,73 @@ class GetDocument:
             return documents, file_map
         else: 
             return ReturnCode.UNSUPPORTED_FILE  
+
+class CaptureDocument:
+    
+    @classmethod
+    async def _encode_image_to_base64(cls, image_path: str) -> str:
+        async with aiofiles.open(image_path, "rb") as image_file:
+            image_data = await image_file.read()
+            encoded_image = base64.b64encode(image_data).decode("utf-8")
+            return encoded_image
+
+    @classmethod
+    def _get_body(cls, base64_image: str, max_tokens: int, prompt: str) -> str:
+        body = json.dumps(
+            {
+                "anthropic_version": "bedrock-2023-05-31",
+                "max_tokens": max_tokens,
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": [
+                            {
+                                "type": "image",
+                                "source": {
+                                    "type": "base64",
+                                    "media_type": "image/jpeg",
+                                    "data": base64_image,
+                                },
+                            },
+                            {"type": "text",
+                            "text": prompt},
+                        ],
+                    }
+                ],
+            } 
+        )
+        return body
+    
+    @classmethod
+    def _get_prompt(cls):
+        prompt = "Extract the text in this image as it is. Do not add extra information. Use <start> tag to indicate start and <end> to indicate end."
+        return prompt
+
+    @classmethod
+    def _get_extracted_text(cls, body: str):
+        from app.credentials import Credentials
+        credentials = Credentials.get_credentials(ServiceProvider.AWS)
+        runtime = boto3.client(
+            "bedrock-runtime", 
+            region_name=credentials.get("region"),
+            aws_access_key_id=credentials.get("access_key"), 
+            aws_secret_access_key=credentials.get("secret_key"))
+        response = runtime.invoke_model(
+            modelId=ModelDetails.BEDROCK_CLAUDE_HAIKU,
+            body=body
+        )
+        response_body = json.loads(response.get("body").read())  
+        return response_body["content"][0]["text"] 
+
+    @classmethod
+    async def capture_document(cls, file: UploadFile, user_id: str, document_id: str):
+        print("working capturing")
+        file_path = GetDocument._get_file_path("files", "jpg")
+        await GetDocument._upload_file(file_path, file)
+        base64_image = await cls._encode_image_to_base64(file_path)
+        body = cls._get_body(base64_image, 3000, cls._get_prompt())
+        extracted_text = cls._get_extracted_text(body)
+        print(extracted_text)
 
 if __name__ == "__main__":  
     # html = asyncio.run(GetDocument.get_document_from_link(["https://python.langchain.com/v0.1/docs/integrations/document_loaders/async_chromium/"]))

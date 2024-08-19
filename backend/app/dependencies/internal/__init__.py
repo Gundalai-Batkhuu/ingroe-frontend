@@ -7,7 +7,8 @@ from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from app.dependencies.internal.create_documents import (
-        GetDocument
+        GetDocument,
+        CaptureDocument
     ) 
     from app.dependencies.internal.store_documents import (
         StoreDocument
@@ -27,7 +28,8 @@ __all__ = [
     "StoreDocument",
     "QueryDocument",
     "StoreAssets",
-    "DeleteDocument"
+    "DeleteDocument",
+    "CaptureDocument"
 ]
 
 _module_lookup = {
@@ -35,7 +37,8 @@ _module_lookup = {
     "StoreDocument": "app.dependencies.internal.store_documents",
     "QueryDocument": "app.dependencies.internal.query_documents",
     "StoreAssets": "app.dependencies.internal.store_assets",
-    "DeleteDocument": "app.dependencies.internal.delete_documents"
+    "DeleteDocument": "app.dependencies.internal.delete_documents",
+    "CaptureDocument": "app.dependencies.internal.create_documents"
 }
 
 def __getattr__(name: str) -> Any:

@@ -2,7 +2,7 @@ from fastapi import APIRouter, File, UploadFile, Form, HTTPException
 from fastapi.responses import JSONResponse
 from typing import Dict, Optional, List
 from app.model.pydantic_model import (SearchQuery, CreateDocument, QueryDocument, DeleteDocument)
-from app.controller.doc_action import (Search, Create, Query, Store, document_exists, Delete)
+from app.controller.doc_action import (Search, Create, Query, Store, document_exists, Delete, Capture)
 from pydantic import Field
 from uuid import uuid4
 from app.const import GraphLabel
@@ -116,6 +116,17 @@ async def delete_document(payload: DeleteDocument):
         status_code=200,
         content={"message": "Documents from provided sources stored successfully!!"}
     )
+
+@router.post("/capture-document")
+async def capture_document(file: UploadFile, user_id: str = Form(...), document_id: Optional[str] = Form(None)):
+    if document_id is not None:
+        if not document_exists(document_id, user_id):
+            # raise HTTPException(status_code=400, detail="The supplied document id does not exist. Please provide the right id or leave blank.")
+            pass
+    else:
+        document_id = uuid4().hex 
+    await Capture.capture_document(file, user_id, document_id)
+    return user_id
 
 def _get_source_payload_from_file_map(file_map: Dict[str,str]) -> DocumentSource:
     """Provides a source payload from the file map.
