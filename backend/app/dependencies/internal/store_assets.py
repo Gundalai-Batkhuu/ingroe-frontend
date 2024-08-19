@@ -29,18 +29,37 @@ class StoreAssets:
         self.unsuppported_file_links = source_payload.unsupported_file_links
         self.files = source_payload.files
 
-    def store(self) -> None:
+    def store(self, isUpdate: bool) -> None:
         """Stores the asset information to the database.
         """
+        if isUpdate:
+            self._update_document()
+        else:   
+            self._create_document() 
+            
+    def _create_document(self):
+        """Creates a document record containing the assets in the database.
+        """
         db = get_session()
-        # store the source in the database.    
         DocumentCRUD.create_document(
-            db=db, 
+                db=db, 
+                document_id=self.document_root_id,
+                user_id=self.user_id,
+                vanilla_links=self.vanilla_links,
+                file_links=self.file_links,
+                unsupported_file_links=self.unsuppported_file_links,
+                files=self.files        
+        )
+
+    def _update_document(self):
+        """Updates the assets in the database.
+        """
+        db = get_session()
+        DocumentCRUD.update_document(
+            db=db,
             document_id=self.document_root_id,
-            user_id=self.user_id,
             vanilla_links=self.vanilla_links,
             file_links=self.file_links,
             unsupported_file_links=self.unsuppported_file_links,
-            files=self.files
-        )
-  
+            files=self.files  
+            )    

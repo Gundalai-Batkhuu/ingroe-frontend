@@ -59,9 +59,11 @@ async def create_document_selection(payload: CreateDocument):
 @router.post("/create-document-manually")
 async def create_document_manually(link: Optional[str] = Form(None), file: Optional[UploadFile] = File(None), user_id: str = Form(...), document_id: Optional[str] = Form(None)):
     print(file)
+    updateRequired = False
     if link is None and file is None:
         raise HTTPException(status_code=400, detail="You must provide either a link or file.")
     if document_id is not None:
+        updateRequired = True
         pass
         # if not document_exists(document_id, user_id):
         #     raise HTTPException(status_code=400, detail="The supplied document id does not exist. Please provide the right id or leave blank.")
@@ -80,9 +82,9 @@ async def create_document_manually(link: Optional[str] = Form(None), file: Optio
         documents_from_link, source = await Create.create_documents_from_selection([link], user_id)
         source.files = [file_map]
         combined_documents = documents_from_file + documents_from_link
-        Store.store_document(combined_documents, parent_node, user_id)
+        # Store.store_document(combined_documents, parent_node, user_id)
         storer = StoreAssets(user_id=user_id, document_root_id=document_id, source_payload=source)
-        storer.store()
+        storer.store(updateRequired)
         return JSONResponse(
         status_code=200,
         content={"message": "Documents from provided sources stored successfully!!"}
@@ -100,7 +102,7 @@ async def create_document_manually(link: Optional[str] = Form(None), file: Optio
         documents, source = await Create.create_documents_from_selection([link], user_id)
     # Store.store_document(documents, parent_node, user_id)  
     storer = StoreAssets(user_id=user_id, document_root_id=document_id, source_payload=source)
-    storer.store() 
+    storer.store(updateRequired) 
     return JSONResponse(
         status_code=200,
         content={"message": "Documents from provided sources stored successfully!!"}
