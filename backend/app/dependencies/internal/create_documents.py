@@ -301,9 +301,9 @@ class GetDocument:
         S3 storage.
 
         Args:
-        file: Uploaded file by the client.
-        user_id: Id of the user uploading the file.
-        document_id: Id of the document root that holds all the document entities for a particular topic.
+        file (UploadFile): Uploaded file by the client.
+        user_id (str): Id of the user uploading the file.
+        document_id (str): Id of the document root that holds all the document entities for a particular topic.
 
         Returns:
         Tuple[List[Document], Dict[str, str]] | int: A tuple containing a list of documents and file map or 0 if the file is outside of the downloadable file types.

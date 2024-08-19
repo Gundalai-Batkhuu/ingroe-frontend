@@ -66,4 +66,34 @@ class DocumentCRUD:
             db.commit()
             db.refresh(document)
 
+    @classmethod
+    def delete_document(cls, db: Session, document_id: str) -> None:
+        """Deletes a document record from the database.
+
+        Args:
+        db (Session): The database session object.
+        document_id (str): The id of the document root in the neo4j database.
+        """
+        document = db.query(Document).filter(Document.document_id == document_id).first() 
+        db.delete(document)
+        db.commit()
+
+    @classmethod
+    def document_exists_for_user(cls, document_id: str, user_id: str, db: Session) -> bool:
+        """Checks if the document exists under a user account.
+
+        Args:
+        user_id (str): Id of the user uploading the file.
+        document_id (str): The id of the document root in the neo4j database.
+        db (Session): The database session object.
+
+        Returns:
+        bool: True if document exists and False if it does not.
+        """
+        document_exists = db.query(Document).filter(
+            Document.document_id == document_id,
+            Document.user_id == user_id
+        ).first()
+        return document_exists is not None    
+    
         

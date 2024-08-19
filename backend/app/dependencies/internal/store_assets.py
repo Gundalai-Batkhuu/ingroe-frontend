@@ -1,7 +1,6 @@
 from typing import List
 from app.model.pydantic_model.payload import DocumentSource
 from app.scripts.db import DocumentCRUD
-from sqlalchemy.orm import Session
 from app.database import get_session
 from fastapi import Depends
 
