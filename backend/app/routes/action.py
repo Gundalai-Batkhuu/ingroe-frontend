@@ -1,8 +1,8 @@
 from fastapi import APIRouter, File, UploadFile, Form, HTTPException
 from fastapi.responses import JSONResponse
 from typing import Dict, Optional, List
-from app.model.pydantic_model import (SearchQuery, CreateDocument, QueryDocument)
-from app.controller.doc_action import (Search, Create, Query, Store, document_exists)
+from app.model.pydantic_model import (SearchQuery, CreateDocument, QueryDocument, DeleteDocument)
+from app.controller.doc_action import (Search, Create, Query, Store, document_exists, Delete)
 from pydantic import Field
 from uuid import uuid4
 from app.const import GraphLabel
@@ -25,15 +25,6 @@ def index() -> Dict[str,str]:
 async def search(payload: SearchQuery):
     results = await Search.search_documents(payload)
     return results
-
-# @router.post("/create-document")
-# async def create_document(payload: CreateDocument):
-#     documents = await Create.create_document_from_links(payload)
-#     parent_id = payload.document_id
-#     parent_label = "Owner"
-#     parent_node = {"label": parent_label, "id": parent_id}
-#     Store.store_document(documents, parent_node)
-#     return payload
 
 @router.post("/create-document-selection")
 async def create_document_selection(payload: CreateDocument):
@@ -63,26 +54,23 @@ async def create_document_manually(link: Optional[str] = Form(None), file: Optio
     if link is None and file is None:
         raise HTTPException(status_code=400, detail="You must provide either a link or file.")
     if document_id is not None:
+        if not document_exists(document_id, user_id):
+            raise HTTPException(status_code=400, detail="The supplied document id does not exist. Please provide the right id or leave blank.")
         updateRequired = True
-        pass
-        # if not document_exists(document_id, user_id):
-        #     raise HTTPException(status_code=400, detail="The supplied document id does not exist. Please provide the right id or leave blank.")
     else:
         document_id = uuid4().hex  
     parent_node = {"label": GraphLabel.DOCUMENT_ROOT, "id": document_id}
     if file is not None and link is not None:
-        # document = "both"
-        # print(document)
-        # document_from_file = get_doc_from_file()
-        # document_from_link, source = get_doc()
-        # combined_documents = document_from_file + document_from_link
-        # print(combined_documents)
-        documents_from_file, file_map = await Create.create_document_from_file(file, user_id, document_id) # we need to get file path from this function
-        # # documents_from_link = await Create.create_document_from_links([link])
-        documents_from_link, source = await Create.create_documents_from_selection([link], user_id)
+        document_from_file, file_map = get_doc_from_file()
+        document_from_link, source = get_doc()
         source.files = [file_map]
-        combined_documents = documents_from_file + documents_from_link
-        # Store.store_document(combined_documents, parent_node, user_id)
+        combined_documents = document_from_file + document_from_link
+        # print(combined_documents)
+        # documents_from_file, file_map = await Create.create_document_from_file(file, user_id, document_id) 
+        # documents_from_link, source = await Create.create_documents_from_selection([link], user_id)
+        # source.files = [file_map]
+        # combined_documents = documents_from_file + documents_from_link
+        Store.store_document(combined_documents, parent_node, user_id)
         storer = StoreAssets(user_id=user_id, document_root_id=document_id, source_payload=source)
         storer.store(updateRequired)
         return JSONResponse(
@@ -91,18 +79,39 @@ async def create_document_manually(link: Optional[str] = Form(None), file: Optio
     )
     if file: 
         print("from file")
-        # documents = get_doc_from_file()
-        documents, file_map = await Create.create_document_from_file(file, user_id, document_id) 
+        documents, file_map = get_doc_from_file()
+        # documents, file_map = await Create.create_document_from_file(file, user_id, document_id) 
         source = _get_source_payload_from_file_map(file_map)
         print("source done")
     else: 
         print("from link")
-        # documents, source = get_doc()
-        # documents = await Create.create_document_from_links([link])
-        documents, source = await Create.create_documents_from_selection([link], user_id)
-    # Store.store_document(documents, parent_node, user_id)  
+        documents, source = get_doc()
+        # documents, source = await Create.create_documents_from_selection([link], user_id)
+    Store.store_document(documents, parent_node, user_id)  
     storer = StoreAssets(user_id=user_id, document_root_id=document_id, source_payload=source)
     storer.store(updateRequired) 
+    return JSONResponse(
+        status_code=200,
+        content={"message": "Documents from provided sources stored successfully!!"}
+    )
+
+@router.post("/query-document")
+async def query_document(payload: QueryDocument):
+    response = await Query.query_document(payload.query, payload.document_id)
+    return response
+
+@router.post("/query-document-quick")
+async def query_document_quick(payload: QueryDocument):
+    response = await Query.query_document_quick(payload.query, payload.document_id)
+    return response
+
+@router.delete("/delete-document")
+async def delete_document(payload: DeleteDocument):
+    isDeleted = await Delete.delete_document(payload.document_id, payload.user_id)
+    if isDeleted is None:
+        raise HTTPException(status_code=500, detail="Error occurred while deletion!")
+    if isDeleted is False:
+        raise HTTPException(status_code=400, detail="Please provide a valid document id.")
     return JSONResponse(
         status_code=200,
         content={"message": "Documents from provided sources stored successfully!!"}
@@ -120,21 +129,6 @@ def _get_source_payload_from_file_map(file_map: Dict[str,str]) -> DocumentSource
     source_payload = DocumentSource()
     source_payload.files = [file_map]
     return source_payload
-
-# @router.post("/create-document-from-file")
-# async def create_document_from_file(file: UploadFile, user_id: str = File(...)):
-#     await Create.create_document_from_file(file, user_id)
-#     return file.filename
-
-@router.post("/query-document")
-async def query_document(payload: QueryDocument):
-    response = await Query.query_document(payload.query, payload.document_id)
-    return response
-
-@router.post("/query-document-quick")
-async def query_document_quick(payload: QueryDocument):
-    response = await Query.query_document_quick(payload.query, payload.document_id)
-    return response
 
 # for passing the links and files as a list, we need change the types of the function first
 # and then for links, we use await Create.create_document_from_links(links) and

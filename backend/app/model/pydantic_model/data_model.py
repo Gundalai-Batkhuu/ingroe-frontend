@@ -64,10 +64,20 @@ class CreateDocument(BaseModel):
     links: List[str]
 
 class QueryDocument(BaseModel):
+    """Data model for querying the document.
+    """
     query: str 
     document_id: str    
 
 class User(BaseModel):
+    """Data model for creating the user in the user table.
+    """
     name: str
     email: str
-    user_id: str       
+    user_id: str   
+
+class DeleteDocument(BaseModel):
+    """Data Model for deleting the document from all applicable databases and storage.
+    """
+    document_id: str
+    user_id: str        

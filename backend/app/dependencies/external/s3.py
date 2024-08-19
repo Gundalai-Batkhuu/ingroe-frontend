@@ -95,7 +95,6 @@ class S3:
             s3_new_file_name = cls._generate_new_filename(bucket_name, s3_key_root, s3_file_name)
             s3_key = f"{s3_key_root}/{s3_new_file_name}"
 
-            # Upload the file
             s3.upload_file(local_file_path, bucket_name, s3_key)
             file_url = cls._get_file_url(bucket_name, s3_key)
 
@@ -107,3 +106,27 @@ class S3:
         except NoCredentialsError:
             raise ValueError("Credentials not available")
 
+    @classmethod
+    def delete_from_s3_bucket(cls, bucket_name: str, s3_main_folder: str, s3_sub_folder: str) -> None:
+        """Deletes all the files inside a folder. The folder is determined by the s3_sub_folder.
+
+        Args:
+        bucket_name (str): The name of the S3 bucket.
+        s3_main_folder (str): The folder to store user files, usually the user id of the user.
+        s3_sub_folder (str): The folder storing the documents, usually the document id, and 
+        everything inside this folder will be deleted.
+        """
+        s3 = boto3.resource("s3")
+        bucket = s3.Bucket(bucket_name)
+        s3_key_root = f"users/{s3_main_folder}/{s3_sub_folder}"
+        objects_to_delete = bucket.objects.filter(Prefix=s3_key_root)
+        for object in objects_to_delete:
+            print(f"Deleting {object.key}")
+            object.delete()
+        print(f"All files in {s3_sub_folder} have been deleted.")    
+
+        folder_object = s3.Object(bucket_name, s3_key_root)
+        try:
+            folder_object.delete()
+        except s3.meta.client.exceptions.NoSuchKey:
+            print(f"No folder object found for {s3_key_root}.")    
