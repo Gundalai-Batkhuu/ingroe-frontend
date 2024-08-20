@@ -132,16 +132,53 @@ export async function saveChat(chat: Chat) {
   const session = await auth()
 
   if (session && session.user) {
+    // Sanitize the chat object
+    const sanitizedChat = sanitizeChatObject(chat)
+
     const pipeline = kv.pipeline()
-    pipeline.hmset(`chat:${chat.id}`, chat)
-    pipeline.zadd(`user:chat:${chat.userId}`, {
+    pipeline.hmset(`chat:${sanitizedChat.id}`, sanitizedChat)
+    pipeline.zadd(`user:chat:${sanitizedChat.userId}`, {
       score: Date.now(),
-      member: `chat:${chat.id}`
+      member: `chat:${sanitizedChat.id}`
     })
-    await pipeline.exec()
+
+    try {
+      await pipeline.exec()
+      console.log(`Chat saved successfully: ${sanitizedChat.id}`)
+    } catch (error) {
+      console.error('Error saving chat:', error)
+      throw error
+    }
   } else {
+    console.log('No active session, chat not saved')
     return
   }
+}
+
+function sanitizeChatObject(chat: Chat): Chat {
+  return Object.fromEntries(
+    Object.entries(chat).map(([key, value]) => {
+      if (Array.isArray(value)) {
+        // Handle arrays (like messages) separately
+        return [key, value.map(item =>
+          typeof item === 'object'
+            ? JSON.stringify(sanitizeObject(item))
+            : (item ?? '')
+        )];
+      }
+      if (typeof value === 'object' && value !== null) {
+        // Recursively sanitize nested objects
+        return [key, sanitizeObject(value)];
+      }
+      return [key, value === null || value === undefined ? '' : value];
+    })
+  ) as Chat;
+}
+
+function sanitizeObject(obj: Record<string, any>): Record<string, any> {
+  return Object.fromEntries(
+    Object.entries(obj).map(([k, v]) => [k, v === null || v === undefined ? '' : v])
+  );
 }
 
 export async function refreshHistory(path: string) {

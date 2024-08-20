@@ -1,6 +1,6 @@
 import React, { useState, useRef, FormEvent, ChangeEvent } from 'react';
 import { COUNTRIES, Country } from "@/app/lib/countries";
-
+import { ApiEndpoint } from '@/app/enums';
 interface SearchBarProps {
     placeholder?: string;
     setResults: (value: any) => void;
@@ -8,7 +8,6 @@ interface SearchBarProps {
     countrySpecificSearch: boolean;
     searchType: "strict" | "medium" | "open";
     fileType: string | null;
-    mix: boolean;
     results: number;
     before: number | null;
     after: number | null;
@@ -22,7 +21,6 @@ export const SearchBar: React.FC<SearchBarProps> = ({
     countrySpecificSearch,
     searchType,
     fileType,
-    mix,
     results,
     before,
     after,
@@ -41,7 +39,6 @@ export const SearchBar: React.FC<SearchBarProps> = ({
             countrySpecificSearch,
             searchType,
             fileType,
-            mix,
             results,
             before,
             after,
@@ -49,7 +46,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
         });
 
         try {
-            const response = await fetch('http://localhost:5000/api/v1/items/search-document', {
+            const response = await fetch(ApiEndpoint.SEARCH_DOCUMENT, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -61,7 +58,6 @@ export const SearchBar: React.FC<SearchBarProps> = ({
                     country_specific_search: countrySpecificSearch,
                     search_type: searchType,
                     file_type: fileType,
-                    mix: mix,
                     results: results,
                     before: before,
                     after: after,

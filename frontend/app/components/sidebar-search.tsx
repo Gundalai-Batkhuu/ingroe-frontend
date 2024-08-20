@@ -14,8 +14,6 @@ export interface SidebarProps extends React.ComponentProps<'div'> {
     setSearchType: (value: "strict" | "medium" | "open") => void;
     fileType: string | null;
     setFileType: (value: string | null) => void;
-    mix: boolean;
-    setMix: (value: boolean) => void;
     results: number;
     setResults: (value: number) => void;
     before: number | null;
@@ -31,7 +29,6 @@ export function SidebarSearch({
                                   countrySpecificSearch, setCountrySpecificSearch,
                                   searchType, setSearchType,
                                   fileType, setFileType,
-                                  mix, setMix,
                                   results, setResults,
                                   before, setBefore,
                                   after, setAfter,
@@ -108,20 +105,6 @@ export function SidebarSearch({
                                 onChange={(e) => setFileType(e.target.value || null)}
                                 className="w-full bg-background text-foreground border border-input rounded-md shadow-sm px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
                             />
-                        </div>
-
-                        <div className="mb-10">
-                            <label className="block text-xs font-medium mb-1">
-                                Mix
-                            </label>
-                            <div className="flex items-center">
-                                <input
-                                    type="checkbox"
-                                    checked={mix}
-                                    onChange={(e) => setMix(e.target.checked)}
-                                    className="form-checkbox size-4 text-primary border-input"
-                                />
-                            </div>
                         </div>
 
                         <div className="mb-10">
