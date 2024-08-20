@@ -1,9 +1,9 @@
 'use client'
 
-import { Chat } from '../lib/types'
+import { Chat } from '../../lib/types'
 import { AnimatePresence, motion } from 'framer-motion'
 
-import { removeChat, shareChat } from '@/app/actions'
+import { removeChat, shareChat } from '@/app/components/chat/actions'
 
 import { SidebarActions } from './sidebar-actions'
 import { SidebarItem } from './sidebar-item'
