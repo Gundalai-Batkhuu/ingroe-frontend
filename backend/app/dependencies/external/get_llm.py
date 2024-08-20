@@ -36,13 +36,27 @@ class LLM:
             model = "gpt-3.5-turbo-0125"
             return self._get_openai(model)        
 
-    def _get_groq(self, model) -> ChatGroq:
-        """Get the llm model from groq."""
+    def _get_groq(self, model: str) -> ChatGroq:
+        """Get the llm model from groq.
+        
+        Args: 
+        model (str): The model id.
+
+        Returns:
+        ChatGroq: ChatGroq instance.
+        """
         llm = ChatGroq(temperature=self.temperature, model=model) 
         return llm
     
-    def _get_openai(self, model) -> ChatOpenAI:
-        """Get the llm model of choice from OpenAI."""
+    def _get_openai(self, model: str) -> ChatOpenAI:
+        """Get the llm model of choice from OpenAI.
+        
+        Args: 
+        model (str): The model id.
+
+        Returns:
+        ChatOpenAI: ChatOpenAI instance.
+        """
         llm = ChatOpenAI(temperature=self.temperature, model_name=model)
         return llm    
         
