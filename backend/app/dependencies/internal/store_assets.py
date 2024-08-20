@@ -30,6 +30,9 @@ class StoreAssets:
 
     def store(self, isUpdate: bool) -> None:
         """Stores the document asset information to the database.
+
+        Args:
+        isUpdate (bool): A boolean value to indicate whether a create or update operation is required.
         """
         if isUpdate:
             self._update_document()
@@ -64,6 +67,13 @@ class StoreAssets:
             )   
 
     def store_captured_document(self, files: List[Dict[str, str]]) -> None:
+        """Store or create a record that contains the details about the captured document
+        such as source, file name, query ready status, etc.
+
+        Args:
+        files (List[Dict[str, str]]): List of dictionary containing the information about the captured 
+        document source and file name.
+        """
         db = get_session()
         CapturedDocumentCRUD.create_record(
             db=db,

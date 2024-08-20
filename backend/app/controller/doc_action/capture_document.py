@@ -8,7 +8,6 @@ class Capture(APIEndPoint):
     @classmethod
     async def capture_document(cls, file: UploadFile, user_id: str, document_id: str, document_exists: bool):
         file_map = await CaptureDocument.capture_document(file, user_id, document_id)
-        # file_map = {"file_url": "www", "file_name": "abc"}
         source_payload = DocumentSource()
         storer = StoreAssets(user_id=user_id, document_root_id=document_id, source_payload=source_payload)
         if document_exists:

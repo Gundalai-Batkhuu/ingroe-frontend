@@ -24,6 +24,11 @@ import os
 
 class GetDocument:
     """Get the sequence of documents from the provided link or file.
+
+    Params:
+    allowed_file_types (List[str]): A list of allowed file extension or types.
+    additional_allowe_files (List[str]): A list of extra allowed file extension or types.
+    content_type_map (Dict[str,str]): A dictionary that maps content type with file extension or type.
     """
     allowed_file_types: List[str] = ["pdf", "docx"]
     additional_allowed_files: List[str] = ["md"]
@@ -331,6 +336,13 @@ class GetDocument:
             return ReturnCode.UNSUPPORTED_FILE  
 
 class CaptureDocument:
+    """Class to capture text from the images or scanned documents.
+
+    Params:
+    allowed_file_types (List[str]): A list of allowed file extension or types.
+    content_type_map (Dict[str,str]): A dictionary that maps content type with file extension or type.
+    max_token (int): The maximum number of tokens to generate from an llm.
+    """
     allowed_file_types: List[str] = ["pdf", "jpeg", "png", "webp"]
     content_type_map: Dict[str,str] = {
             "application/pdf": "pdf",
@@ -342,6 +354,14 @@ class CaptureDocument:
 
     @classmethod
     async def _encode_image_to_base64(cls, image_path: str) -> str:
+        """Encodes the image to base64 string asynchronously.
+
+        Args:
+        image_path (str): The path to the image file.
+
+        Returns:
+        str: Encode base64 string from the image.
+        """
         async with aiofiles.open(image_path, "rb") as image_file:
             image_data = await image_file.read()
             encoded_image = base64.b64encode(image_data).decode("utf-8")
@@ -349,6 +369,17 @@ class CaptureDocument:
 
     @classmethod
     def _get_body(cls, base64_image: str, max_tokens: int, prompt: str) -> str:
+        """Provides the json string that is used to pass instruction and configuration to the 
+        llm model from bedrock.
+
+        Args:
+        base64_image (str): Base64 encoded string of an image.
+        max_tokens (int): The maximum token to generate from the llm.
+        prompt (str): Instruction to the llm.
+
+        Returns:
+        str: A json string containing instruction and config for an llm.
+        """
         body = json.dumps(
             {
                 "anthropic_version": "bedrock-2023-05-31",
@@ -376,11 +407,24 @@ class CaptureDocument:
     
     @classmethod
     def _get_prompt(cls) -> str:
+        """Provides the instruction to llm.
+
+        Returns:
+        str: Instruction to llm.
+        """
         prompt = "Extract the text in this image as it is. Do not add extra information. Use <start> tag to indicate start and <end> to indicate end."
         return prompt
 
     @classmethod
     def _get_extracted_text(cls, body: str) -> str:
+        """Provides the extracted text from the image.
+
+        Args:
+        body (str): A json string containing instruction and config.
+
+        Return:
+        str: A plain text extracted from the image.
+        """
         from app.credentials import Credentials
         credentials = Credentials.get_credentials(ServiceProvider.AWS)
         runtime = boto3.client(
@@ -397,26 +441,49 @@ class CaptureDocument:
     
     @classmethod
     def _extract_text_from_scanned_pdf(cls, pdf_path: str) -> str:
-        # Convert PDF pages to images
+        """Extracts the text in the scanned pdf documents. It first converts pdf pages to images.
+        Then it loops over the images created from each pdf page to extract text from the image.
+        Finally, the extracted text is then joined with the existing extracted text to get the
+        complete text.
+
+        Args:
+        pdf_path (str): The path to the pdf file.
+
+        Returns:
+        str: Plain text extracted from the pdf file.
+        """
         images = convert_from_path(pdf_path)
-
-        # Initialize an empty string to hold the extracted text
         extracted_text = ""
-
-        # Loop over each image (PDF page)
-        for i, image in enumerate(images):
-            # Use Tesseract to extract text from the image
+        for _, image in enumerate(images):
             text = pytesseract.image_to_string(image) # a function can be created from this line to process other images
             extracted_text += text + "\n"
         return extracted_text
     
     @classmethod
     async def _save_text_to_file(cls, text: str, output_path: str) -> None:
+        """Saves the provided text to a file location.
+
+        Args:
+        text (str): The text to write/save.
+        output_path (str): The path where the written text/file resides.
+        """
         async with aiofiles.open(output_path, "w") as file:
             await file.write(text)
 
     @classmethod
     def _store_text_file_to_S3(cls, user_id: str, document_id: str, file_path: str, original_file_name: str) -> Dict[str, str]:
+        """Stores the .txt file to S3 bucket inside a captured folder of the document id
+        sub folder.
+
+        Args:
+        user_id (str): The id of the user.
+        document_id (str): The id of the document root node.
+        file_path (str): The local path where the text file resides.
+        original_file_name (str): The original file name containing both filename and extension.
+
+        Returns:
+        Dict[str,str]: A dictionary containing stored text file url and file name.
+        """
         sub_folder = f"{document_id}/captured"
         file_name_without_extension = get_file_name_from_original_file_name(original_file_name)
         new_file_name = f"{file_name_without_extension}.{FileType.TXT}"
@@ -427,6 +494,16 @@ class CaptureDocument:
         
     @classmethod
     async def capture_document(cls, file: UploadFile, user_id: str, document_id: str) -> Dict[str,str]:
+        """Performs necessary operations to capture the information from scanned documents or images.
+
+        Args:
+        file (UploadFile): The file uploaded by the user.
+        user_id (str): The id of the user.
+        document_id (str): The id of the root document that holds other document pieces.
+
+        Returns:
+        Dict[str,str]: A file map containing the source and name of the captured document.
+        """
         file_extension = GetDocument._get_file_extension_from_file(file, cls.content_type_map)
         if file_extension in cls.allowed_file_types:
             file_path = GetDocument._get_file_path("files", file_extension)

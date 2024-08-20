@@ -10,6 +10,7 @@ from fastapi import UploadFile
 
 @pytest.fixture
 def variable_map():
+    """Provides a dictionary of variable with a value."""
     map_variable = {
         "pdf_url": "https://expatsholidays.com/wp-content/uploads/2018/07/Travel-Guide-for-Nepal.pdf",
         "vanilla_url": "https://python.langchain.com/v0.1/docs/modules/data_connection/document_loaders/markdown/",
@@ -24,6 +25,8 @@ def variable_map():
 
 @pytest.fixture
 def get_document():
+    """Provides a Document object that mocks the real Document object.
+    """
     document = [
         Document(
             metadata={
@@ -37,6 +40,15 @@ def get_document():
     return document
 
 def create_upload_file(filename: str, content: bytes) -> UploadFile:
+    """Create a mock upload file.
+
+    Args:
+    filename (str): The name of the mock upload file.
+    content (bytes): The content of the file.
+
+    Returns:
+    UploadFile: The FastAPI UploadFile object.
+    """
     file = BytesIO(content)
     return UploadFile(filename=filename, file=file)
 

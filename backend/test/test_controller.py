@@ -79,6 +79,7 @@ from app.controller.doc_action import document_exists
 
 @pytest.fixture
 def id_map():
+    """Provides a dictionary that maps to various ids."""
     id_map = {
         "correct_document_id": "3e968a71e7644eb595cf9cfab3249ec7",
         "correct_user_id": "1111",
