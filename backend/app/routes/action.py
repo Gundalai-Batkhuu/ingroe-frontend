@@ -87,9 +87,9 @@ async def create_document_manually(link: Optional[str] = Form(None), file: Optio
         print("from link")
         documents, source = get_doc()
         # documents, source = await Create.create_documents_from_selection([link], user_id)
-    Store.store_document(documents, parent_node, user_id)  
-    storer = StoreAssets(user_id=user_id, document_root_id=document_id, source_payload=source)
-    storer.store(updateRequired) 
+    # Store.store_document(documents, parent_node, user_id)  
+    # storer = StoreAssets(user_id=user_id, document_root_id=document_id, source_payload=source)
+    # storer.store(updateRequired) 
     return JSONResponse(
         status_code=200,
         content={"message": "Documents from provided sources stored successfully!!"}
