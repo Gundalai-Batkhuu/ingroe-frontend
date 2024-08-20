@@ -11,7 +11,7 @@ from app.utils import (get_root_directory, generate_unique_string, get_file_type
 import os
 from langchain_community.document_loaders import (PyPDFLoader, UnstructuredMarkdownLoader, Docx2txtLoader)
 from fastapi import UploadFile
-from app.const import (ReturnCode, NameClass, ModelDetails)
+from app.const import (ReturnCode, NameClass, ModelDetails, FileType)
 from app.dependencies.external import S3
 import base64
 import aiofiles
@@ -24,7 +24,7 @@ class GetDocument:
     """
     allowed_file_types: List[str] = ["pdf", "docx"]
     additional_allowed_files: List[str] = ["md"]
-    content_type_map = {
+    content_type_map: Dict[str,str] = {
             "application/pdf": "pdf",
             "text/markdown": "md",
         }
@@ -160,13 +160,13 @@ class GetDocument:
         if response is not None:
             file_extension = cls._get_file_extension_from_headers(response)
         if file is not None:
-            file_extension = cls._get_file_extension_from_file(file)    
+            file_extension = cls._get_file_extension_from_file(file, cls.content_type_map)    
         if file_extension == "unknown":
             file_extension = get_file_type_by_extension(path)
         return file_extension 
 
     @classmethod
-    def _get_file_extension_from_file(cls, file: UploadFile) -> str:
+    def _get_file_extension_from_file(cls, file: UploadFile, content_type_map: Dict[str,str]) -> str:
         """Get the file extension based on the Content-Type from the file.
         
         Args:
@@ -176,7 +176,7 @@ class GetDocument:
         A string representing the file extension.
         """
         content_type = file.content_type
-        return cls.content_type_map.get(content_type, "unknown")
+        return content_type_map.get(content_type, "unknown")
 
     @classmethod
     def handle_link(cls, url: str, user_id: str) -> List[Document] | int:
@@ -320,6 +320,7 @@ class GetDocument:
             await cls._upload_file(file_path, file)
             documents = cls.create_documents_from_store(file_extension, file_path)
             file_url, file_name = S3.upload_to_s3_bucket(file_path, NameClass.S3_BUCKET_NAME, user_id, document_id, file.filename)
+            # file_url = file_name = "www"
             cls._clear_file(file_path)
             file_map = cls._get_file_map(file_url, file_name)
             return documents, file_map
@@ -327,13 +328,21 @@ class GetDocument:
             return ReturnCode.UNSUPPORTED_FILE  
 
 class CaptureDocument:
-    
+    allowed_file_types: List[str] = ["pdf", "jpeg", "png", "webp"]
+    content_type_map: Dict[str,str] = {
+            "application/pdf": "pdf",
+            "image/jpeg": "jpeg",
+            "image/png": "png",
+            "image/webp": "webp"
+        }
+    max_token: int = 3000
+
     @classmethod
     async def _encode_image_to_base64(cls, image_path: str) -> str:
         async with aiofiles.open(image_path, "rb") as image_file:
             image_data = await image_file.read()
             encoded_image = base64.b64encode(image_data).decode("utf-8")
-            return encoded_image
+            return encoded_image   
 
     @classmethod
     def _get_body(cls, base64_image: str, max_tokens: int, prompt: str) -> str:
@@ -382,16 +391,23 @@ class CaptureDocument:
         )
         response_body = json.loads(response.get("body").read())  
         return response_body["content"][0]["text"] 
+    
+    @classmethod
+    async def _get_extracted_text_from_pdf(cls, file_path: str):
+        print("base64")
 
     @classmethod
     async def capture_document(cls, file: UploadFile, user_id: str, document_id: str):
-        print("working capturing")
-        file_path = GetDocument._get_file_path("files", "jpg")
-        await GetDocument._upload_file(file_path, file)
-        base64_image = await cls._encode_image_to_base64(file_path)
-        body = cls._get_body(base64_image, 3000, cls._get_prompt())
-        extracted_text = cls._get_extracted_text(body)
-        print(extracted_text)
+        file_extension = GetDocument._get_file_extension_from_file(file, cls.content_type_map)
+        if file_extension in cls.allowed_file_types:
+            file_path = GetDocument._get_file_path("files", file_extension)
+            await GetDocument._upload_file(file_path, file)
+            if file_extension == FileType.PDF:
+                return await cls._get_extracted_text_from_pdf(file_path)
+            base64_image = await cls._encode_image_to_base64(file_path)
+            body = cls._get_body(base64_image, cls.max_token, cls._get_prompt())
+            extracted_text = cls._get_extracted_text(body)
+            print(extracted_text)
 
 if __name__ == "__main__":  
     # html = asyncio.run(GetDocument.get_document_from_link(["https://python.langchain.com/v0.1/docs/integrations/document_loaders/async_chromium/"]))

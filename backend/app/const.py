@@ -21,4 +21,9 @@ class ModelDetails:
     """Provides the model id for a provider.
     """   
     BEDROCK_CLAUDE_HAIKU = "anthropic.claude-3-haiku-20240307-v1:0" 
-    BEDROCK_CLAUDE_SONNET = "anthropic.claude-3-sonnet-20240229-v1:0"    
+    BEDROCK_CLAUDE_SONNET = "anthropic.claude-3-sonnet-20240229-v1:0"  
+
+class FileType:
+    """Contains the file types.
+    """      
+    PDF: str = "pdf"
