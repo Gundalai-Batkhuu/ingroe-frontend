@@ -18,6 +18,9 @@ import aiofiles
 import json
 import boto3
 from app.enum import ServiceProvider
+import pytesseract
+from pdf2image import convert_from_path
+import os
 
 class GetDocument:
     """Get the sequence of documents from the provided link or file.
@@ -393,8 +396,19 @@ class CaptureDocument:
         return response_body["content"][0]["text"] 
     
     @classmethod
-    async def _get_extracted_text_from_pdf(cls, file_path: str):
-        print("base64")
+    def _extract_text_from_scanned_pdf(cls, pdf_path: str) -> str:
+        # Convert PDF pages to images
+        images = convert_from_path(pdf_path)
+
+        # Initialize an empty string to hold the extracted text
+        extracted_text = ""
+
+        # Loop over each image (PDF page)
+        for i, image in enumerate(images):
+            # Use Tesseract to extract text from the image
+            text = pytesseract.image_to_string(image) # a function can be created from this line to process other images
+            extracted_text += text + "\n"
+        return extracted_text
 
     @classmethod
     async def capture_document(cls, file: UploadFile, user_id: str, document_id: str):
@@ -403,11 +417,14 @@ class CaptureDocument:
             file_path = GetDocument._get_file_path("files", file_extension)
             await GetDocument._upload_file(file_path, file)
             if file_extension == FileType.PDF:
-                return await cls._get_extracted_text_from_pdf(file_path)
+                extracted_text = cls._extract_text_from_scanned_pdf(file_path)
+                print(extracted_text)
+                cls._clear_file(file_path)
             base64_image = await cls._encode_image_to_base64(file_path)
             body = cls._get_body(base64_image, cls.max_token, cls._get_prompt())
             extracted_text = cls._get_extracted_text(body)
             print(extracted_text)
+            cls._clear_file(file_path)
 
 if __name__ == "__main__":  
     # html = asyncio.run(GetDocument.get_document_from_link(["https://python.langchain.com/v0.1/docs/integrations/document_loaders/async_chromium/"]))
