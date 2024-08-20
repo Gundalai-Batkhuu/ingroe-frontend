@@ -16,11 +16,26 @@ def generate_unique_string() -> str:
     """Generate a unique string using the current timestamp."""
     return str(int(time.time() * 1000))
 
-def get_file_type_by_extension(file_path):
+def get_file_type_by_extension(file_path: str) -> str:
     """Gives the file type based on the path
 
     Args:
     file_path: A string representing a file path or a url
+
+    Returns:
+    str: A string representing the file extension.
     """
     _, extension = os.path.splitext(file_path)
     return extension.lstrip('.').lower()  
+
+def get_file_name_from_original_file_name(original_file_name: str) -> str:
+    """Extracts the name part from the file name excluding the extension.
+
+    Args:
+    original_file_name (str): A string representing the original file name.
+
+    Returns:
+    str: The name of the file.
+    """
+    file_name, _ = os.path.splitext(original_file_name)
+    return file_name

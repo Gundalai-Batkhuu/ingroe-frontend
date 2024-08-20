@@ -27,3 +27,4 @@ class FileType:
     """Contains the file types.
     """      
     PDF: str = "pdf"
+    TXT: str = "txt"

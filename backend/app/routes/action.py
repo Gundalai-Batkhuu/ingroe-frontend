@@ -37,7 +37,7 @@ async def create_document_selection(payload: CreateDocument):
     print(parent_node)
     # Store.store_document(documents, parent_node, payload.user_id)
     storer = StoreAssets(user_id=payload.user_id, document_root_id=payload.document_id, source_payload=source)
-    storer.store()
+    storer.store(False)
     return JSONResponse(
         status_code=200,
         content={
@@ -119,13 +119,15 @@ async def delete_document(payload: DeleteDocument):
 
 @router.post("/capture-document")
 async def capture_document(file: UploadFile, user_id: str = Form(...), document_id: Optional[str] = Form(None)):
+    document_exists = False
     if document_id is not None:
         if not document_exists(document_id, user_id):
             # raise HTTPException(status_code=400, detail="The supplied document id does not exist. Please provide the right id or leave blank.")
             pass
+        document_exists = True
     else:
         document_id = uuid4().hex 
-    await Capture.capture_document(file, user_id, document_id)
+    await Capture.capture_document(file, user_id, document_id, document_exists)
     return user_id
 
 def _get_source_payload_from_file_map(file_map: Dict[str,str]) -> DocumentSource:

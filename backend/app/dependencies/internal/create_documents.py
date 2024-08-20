@@ -7,7 +7,7 @@ import asyncio
 import requests
 from urllib.parse import urlparse
 import mimetypes
-from app.utils import (get_root_directory, generate_unique_string, get_file_type_by_extension, get_current_directory)
+from app.utils import (get_root_directory, generate_unique_string, get_file_type_by_extension, get_current_directory, get_file_name_from_original_file_name)
 import os
 from langchain_community.document_loaders import (PyPDFLoader, UnstructuredMarkdownLoader, Docx2txtLoader)
 from fastapi import UploadFile
@@ -375,12 +375,12 @@ class CaptureDocument:
         return body
     
     @classmethod
-    def _get_prompt(cls):
+    def _get_prompt(cls) -> str:
         prompt = "Extract the text in this image as it is. Do not add extra information. Use <start> tag to indicate start and <end> to indicate end."
         return prompt
 
     @classmethod
-    def _get_extracted_text(cls, body: str):
+    def _get_extracted_text(cls, body: str) -> str:
         from app.credentials import Credentials
         credentials = Credentials.get_credentials(ServiceProvider.AWS)
         runtime = boto3.client(
@@ -409,22 +409,39 @@ class CaptureDocument:
             text = pytesseract.image_to_string(image) # a function can be created from this line to process other images
             extracted_text += text + "\n"
         return extracted_text
+    
+    @classmethod
+    async def _save_text_to_file(cls, text: str, output_path: str) -> None:
+        async with aiofiles.open(output_path, "w") as file:
+            await file.write(text)
 
     @classmethod
-    async def capture_document(cls, file: UploadFile, user_id: str, document_id: str):
+    def _store_text_file_to_S3(cls, user_id: str, document_id: str, file_path: str, original_file_name: str) -> Dict[str, str]:
+        sub_folder = f"{document_id}/captured"
+        file_name_without_extension = get_file_name_from_original_file_name(original_file_name)
+        new_file_name = f"{file_name_without_extension}.{FileType.TXT}"
+        file_url, file_name = S3.upload_to_s3_bucket(file_path, NameClass.S3_BUCKET_NAME, user_id, sub_folder, new_file_name)
+        GetDocument._clear_file(file_path)
+        file_map = GetDocument._get_file_map(file_url, file_name)
+        return file_map
+        
+    @classmethod
+    async def capture_document(cls, file: UploadFile, user_id: str, document_id: str) -> Dict[str,str]:
         file_extension = GetDocument._get_file_extension_from_file(file, cls.content_type_map)
         if file_extension in cls.allowed_file_types:
             file_path = GetDocument._get_file_path("files", file_extension)
             await GetDocument._upload_file(file_path, file)
             if file_extension == FileType.PDF:
                 extracted_text = cls._extract_text_from_scanned_pdf(file_path)
-                print(extracted_text)
-                cls._clear_file(file_path)
-            base64_image = await cls._encode_image_to_base64(file_path)
-            body = cls._get_body(base64_image, cls.max_token, cls._get_prompt())
-            extracted_text = cls._get_extracted_text(body)
-            print(extracted_text)
-            cls._clear_file(file_path)
+            else: 
+                base64_image = await cls._encode_image_to_base64(file_path)
+                body = cls._get_body(base64_image, cls.max_token, cls._get_prompt())
+                extracted_text = cls._get_extracted_text(body)
+            GetDocument._clear_file(file_path)
+            output_file_path = GetDocument._get_file_path("files", FileType.TXT)
+            await cls._save_text_to_file(extracted_text, output_file_path)
+            file_map = cls._store_text_file_to_S3(user_id, document_id, output_file_path, file.filename)
+            return file_map
 
 if __name__ == "__main__":  
     # html = asyncio.run(GetDocument.get_document_from_link(["https://python.langchain.com/v0.1/docs/integrations/document_loaders/async_chromium/"]))
