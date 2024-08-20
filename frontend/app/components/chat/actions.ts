@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation'
 import { kv } from '@vercel/kv'
 
 import { auth } from '@/auth'
-import { type Chat } from './lib/types'
+import { type Chat } from '@/app/lib/types'
 
 export async function getChats(userId?: string | null) {
   if (!userId) {
@@ -31,13 +31,17 @@ export async function getChats(userId?: string | null) {
 }
 
 export async function getChat(id: string, userId: string) {
-  const chat = await kv.hgetall<Chat>(`chat:${id}`)
+  console.log(`Attempting to fetch chat. id: ${id}, userId: ${userId}`);
+  const chat = await kv.hgetall<Chat>(`chat:${id}`);
+  console.log('Retrieved chat:', chat);
 
   if (!chat || (userId && chat.userId !== userId)) {
-    return null
+    console.log('Returning null from getChat');
+    return null;
   }
 
-  return chat
+  console.log('Returning chat from getChat:', chat);
+  return chat;
 }
 
 export async function removeChat({ id, path }: { id: string; path: string }) {
@@ -132,53 +136,16 @@ export async function saveChat(chat: Chat) {
   const session = await auth()
 
   if (session && session.user) {
-    // Sanitize the chat object
-    const sanitizedChat = sanitizeChatObject(chat)
-
     const pipeline = kv.pipeline()
-    pipeline.hmset(`chat:${sanitizedChat.id}`, sanitizedChat)
-    pipeline.zadd(`user:chat:${sanitizedChat.userId}`, {
+    pipeline.hmset(`chat:${chat.id}`, chat)
+    pipeline.zadd(`user:chat:${chat.userId}`, {
       score: Date.now(),
-      member: `chat:${sanitizedChat.id}`
+      member: `chat:${chat.id}`
     })
-
-    try {
-      await pipeline.exec()
-      console.log(`Chat saved successfully: ${sanitizedChat.id}`)
-    } catch (error) {
-      console.error('Error saving chat:', error)
-      throw error
-    }
+    await pipeline.exec()
   } else {
-    console.log('No active session, chat not saved')
     return
   }
-}
-
-function sanitizeChatObject(chat: Chat): Chat {
-  return Object.fromEntries(
-    Object.entries(chat).map(([key, value]) => {
-      if (Array.isArray(value)) {
-        // Handle arrays (like messages) separately
-        return [key, value.map(item =>
-          typeof item === 'object'
-            ? JSON.stringify(sanitizeObject(item))
-            : (item ?? '')
-        )];
-      }
-      if (typeof value === 'object' && value !== null) {
-        // Recursively sanitize nested objects
-        return [key, sanitizeObject(value)];
-      }
-      return [key, value === null || value === undefined ? '' : value];
-    })
-  ) as Chat;
-}
-
-function sanitizeObject(obj: Record<string, any>): Record<string, any> {
-  return Object.fromEntries(
-    Object.entries(obj).map(([k, v]) => [k, v === null || v === undefined ? '' : v])
-  );
 }
 
 export async function refreshHistory(path: string) {

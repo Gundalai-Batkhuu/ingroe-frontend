@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 import * as React from 'react'
 import { toast } from 'sonner'
 
-import { ServerActionResult, type Chat } from '../lib/types'
+import { ServerActionResult, type Chat } from '../../lib/types'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,15 +14,15 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle
-} from '../components/ui/alert-dialog'
-import { Button } from '../components/ui/button'
-import { IconShare, IconSpinner, IconTrash } from '../components/ui/icons'
-import { ChatShareDialog } from './chat/chat-share-dialog'
+} from '../ui/alert-dialog'
+import { Button } from '../ui/button'
+import { IconShare, IconSpinner, IconTrash } from '../ui/icons'
+import { ChatShareDialog } from '../chat/chat-share-dialog'
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger
-} from '../components/ui/tooltip'
+} from '../ui/tooltip'
 
 interface SidebarActionsProps {
   chat: Chat

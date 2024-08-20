@@ -7,16 +7,16 @@ import { usePathname } from 'next/navigation'
 
 import { motion } from 'framer-motion'
 
-import { buttonVariants } from './ui/button'
-import { IconMessage, IconUsers } from './ui/icons'
+import { buttonVariants } from '../ui/button'
+import { IconMessage, IconUsers } from '../ui/icons'
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger
-} from './ui/tooltip'
-import { useLocalStorage } from '../lib/hooks/use-local-storage'
-import { type Chat } from '../lib/types'
-import { cn } from '../lib/utils'
+} from '../ui/tooltip'
+import { useLocalStorage } from '../../lib/hooks/use-local-storage'
+import { type Chat } from '../../lib/types'
+import { cn } from '../../lib/utils'
 
 interface SidebarItemProps {
   index: number

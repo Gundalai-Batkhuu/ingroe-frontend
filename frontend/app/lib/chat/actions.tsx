@@ -1,16 +1,9 @@
 import 'server-only'
 import { ApiEndpoint, DocumentId } from '@/app/enums'
-import {
-  createAI,
-  getMutableAIState,
-  getAIState,
-} from 'ai/rsc'
-import {
-  BotMessage,
-  UserMessage
-} from '../../components/chat/message'
+import { createAI, getMutableAIState, getAIState } from 'ai/rsc'
+import { BotMessage, UserMessage } from '../../components/chat/message'
 import { nanoid } from '../../lib/utils'
-import { saveChat } from '@/app/actions'
+import { saveChat } from '@/app/components/chat/actions'
 import { Chat, Message } from '../../lib/types'
 import { auth } from '@/auth'
 
@@ -24,7 +17,9 @@ async function submitUserMessage(content: string) {
   console.log('Document ID: ', documentId)
 
   if (!documentId) {
-    throw new Error('Document ID is missing. Please ensure a document is selected.')
+    throw new Error(
+      'Document ID is missing. Please ensure a document is selected.'
+    )
   }
 
   try {
@@ -53,19 +48,24 @@ async function submitUserMessage(content: string) {
     const response = await fetch(ApiEndpoint.QUERY_DOCUMENT, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(payload)
     })
 
     if (!response.ok) {
-      console.error('API response not OK:', response.status, response.statusText)
+      console.error(
+        'API response not OK:',
+        response.status,
+        response.statusText
+      )
       const responseText = await response.text()
       console.error('Response body:', responseText)
 
       let errorMessage = `Failed to query document: ${response.status} ${response.statusText}`
       if (response.status === 422) {
-        errorMessage += '. The server was unable to process the request. This might be due to invalid input data.'
+        errorMessage +=
+          '. The server was unable to process the request. This might be due to invalid input data.'
       }
 
       throw new Error(errorMessage)
@@ -98,6 +98,11 @@ async function submitUserMessage(content: string) {
   } catch (error) {
     console.error('Error in submitUserMessage:', error)
 
+    // Define a type for the error
+    type AppError = {
+      message: string
+    }
+
     // Update the AI state with an error message
     aiState.update({
       ...aiState.get(),
@@ -106,7 +111,7 @@ async function submitUserMessage(content: string) {
         {
           id: nanoid(),
           role: 'assistant',
-          content: `An error occurred: ${error.message}`
+          content: `An error occurred: ${(error as AppError).message}`
         }
       ]
     })
@@ -114,14 +119,17 @@ async function submitUserMessage(content: string) {
     // Return an error message to be displayed in the UI
     return {
       id: nanoid(),
-      display: <BotMessage content={`An error occurred: ${error.message}`} />
+      display: (
+        <BotMessage
+          content={`An error occurred: ${(error as AppError).message}`}
+        />
+      )
     }
   }
 }
 
 export type AIState = {
   chatId: string
-  documentId: string
   messages: Message[]
 }
 
@@ -135,7 +143,7 @@ export const AI = createAI<AIState, UIState>({
     submitUserMessage
   },
   initialUIState: [],
-  initialAIState: { chatId: nanoid(), documentId: DocumentId.SAMPLE_DOCUMENT_ID, messages: [] },
+  initialAIState: { chatId: nanoid(), messages: [] },
   onGetUIState: async () => {
     'use server'
 
@@ -158,13 +166,13 @@ export const AI = createAI<AIState, UIState>({
     const session = await auth()
 
     if (session && session.user) {
-      const { chatId, documentId, messages } = state
+      const { chatId, messages } = state
 
       const createdAt = new Date()
       const userId = session.user.id as string
       const path = `/chat/${chatId}`
 
-      const firstMessageContent = messages[0]?.content as string || ''
+      const firstMessageContent = (messages[0]?.content as string) || ''
       const title = firstMessageContent.substring(0, 100)
 
       const chat: Chat = {
@@ -173,8 +181,7 @@ export const AI = createAI<AIState, UIState>({
         userId,
         createdAt,
         messages,
-        path,
-        documentId
+        path
       }
 
       try {

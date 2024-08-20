@@ -1,7 +1,7 @@
-import { clearChats, getChats } from '@/app/actions'
-import { ClearHistory } from './clear-history'
+import { clearChats, getChats } from '@/app/components/chat/actions'
+import { ClearHistory } from '../clear-history'
 import { SidebarItems } from './sidebar-items'
-import { ThemeToggle } from './theme-toggle'
+import { ThemeToggle } from '../theme-toggle'
 import { cache } from 'react'
 
 interface SidebarListProps {
