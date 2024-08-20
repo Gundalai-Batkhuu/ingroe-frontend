@@ -1,26 +1,33 @@
-import React, { useState } from "react";
+import React, { useState } from 'react'
+import { CreateDocumentSelection } from '@/app/components/create-document-selection'
 
 export interface SearchResult {
-  title: string;
-  link: string;
-  html_snippet: string;
-  snippet: string;
-  thumbnail: string;
+  title: string
+  link: string
+  html_snippet: string
+  snippet: string
+  thumbnail: string
 }
 
 const truncateText = (text: string, maxLength: number) => {
-  if (text.length <= maxLength) return text;
-  return text.substr(0, maxLength - 1) + "…";
-};
+  if (text.length <= maxLength) return text
+  return text.substr(0, maxLength - 1) + '…'
+}
 
 export const SearchResultsList = ({ results }: { results: SearchResult[] }) => {
-  const [selectedItems, setSelectedItems] = useState<SearchResult[]>([]);
+  const [selectedItems, setSelectedItems] = useState<SearchResult[]>([])
 
   const toggleItemSelection = (result: SearchResult) => {
     setSelectedItems(prev =>
-      prev.includes(result) ? prev.filter(item => item !== result) : [...prev, result]
-    );
-  };
+      prev.includes(result)
+        ? prev.filter(item => item !== result)
+        : [...prev, result]
+    )
+  }
+
+  const selectedLinks = selectedItems.map(item => item.link)
+
+  const userId = 'user123'
 
   return (
     <div className="max-w-2xl mx-auto mt-8">
@@ -29,7 +36,11 @@ export const SearchResultsList = ({ results }: { results: SearchResult[] }) => {
           <div className="flex-grow pr-4">
             <div className="flex items-center mb-1">
               {result.thumbnail && (
-                <img src={result.thumbnail} alt="" className="w-8 h-8 mr-2 rounded-full" />
+                <img
+                  src={result.thumbnail}
+                  alt=""
+                  className="w-8 h-8 mr-2 rounded-full"
+                />
               )}
               <div className="overflow-hidden">
                 <a
@@ -42,9 +53,16 @@ export const SearchResultsList = ({ results }: { results: SearchResult[] }) => {
               </div>
             </div>
             <h3 className="text-xl mb-1">
-              <a href={result.link} className="text-blue-500 hover:underline">{result.title}</a>
+              <a href={result.link} className="text-blue-500 hover:underline">
+                {result.title}
+              </a>
             </h3>
-            <p className="text-sm text-gray-200" dangerouslySetInnerHTML={{ __html: result.html_snippet || result.snippet }} />
+            <p
+              className="text-sm text-gray-200"
+              dangerouslySetInnerHTML={{
+                __html: result.html_snippet || result.snippet
+              }}
+            />
           </div>
           <div className="flex-shrink-0">
             <input
@@ -58,13 +76,20 @@ export const SearchResultsList = ({ results }: { results: SearchResult[] }) => {
       ))}
       {selectedItems.length > 0 && (
         <div className="fixed bottom-0 left-0 right-0 bg-gray-800 p-4 shadow-md">
-          <p className="text-center text-white">
-            {selectedItems.length} item{selectedItems.length > 1 ? 's' : ''} selected
-          </p>
+          <div className="flex justify-between items-center">
+            <div className="w-1/3"></div>
+            <p className="text-center text-white w-1/3">
+              {selectedItems.length} item{selectedItems.length > 1 ? 's' : ''}{' '}
+              selected
+            </p>
+            <div className="w-1/3 flex justify-end">
+              <CreateDocumentSelection userId={userId} links={selectedLinks} />
+            </div>
+          </div>
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default SearchResultsList;
+export default SearchResultsList

@@ -5,10 +5,10 @@ import { Message } from 'ai'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
 
-import { cn } from '../lib/utils'
-import { CodeBlock } from './ui/codeblock'
-import { MemoizedReactMarkdown } from './markdown'
-import { IconOpenAI, IconUser } from './ui/icons'
+import { cn } from '../../lib/utils'
+import { CodeBlock } from '../ui/codeblock'
+import { MemoizedReactMarkdown } from '../markdown'
+import { IconOpenAI, IconUser } from '../ui/icons'
 import { ChatMessageActions } from './chat-message-actions'
 
 export interface ChatMessageProps {

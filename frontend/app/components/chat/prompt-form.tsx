@@ -5,30 +5,31 @@ import Textarea from 'react-textarea-autosize'
 
 import { useActions, useUIState } from 'ai/rsc'
 
-import { UserMessage } from './stocks/message'
-import { type AI } from '../lib/chat/actions'
-import { Button } from './ui/button'
-import { IconArrowElbow, IconPlus } from './ui/icons'
+import { UserMessage } from '../chat/message'
+import { type AI } from '../../lib/chat/actions'
+import { Button } from '../ui/button'
+import { IconArrowElbow, IconPlus } from '../ui/icons'
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger
-} from './ui/tooltip'
-import { useEnterSubmit } from '../lib/hooks/use-enter-submit'
+} from '../ui/tooltip'
+import { useEnterSubmit } from '../../lib/hooks/use-enter-submit'
 import { nanoid } from 'nanoid'
 import { useRouter } from 'next/navigation'
 
 export function PromptForm({
   input,
-  setInput
+  setInput,
+  onSubmit  // Add this prop
 }: {
   input: string
   setInput: (value: string) => void
+  onSubmit: (value: string) => Promise<void>  // Add this prop type
 }) {
   const router = useRouter()
   const { formRef, onKeyDown } = useEnterSubmit()
   const inputRef = React.useRef<HTMLTextAreaElement>(null)
-  const { submitUserMessage } = useActions()
   const [_, setMessages] = useUIState<typeof AI>()
 
   React.useEffect(() => {
@@ -37,35 +38,24 @@ export function PromptForm({
     }
   }, [])
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    // Blur focus on mobile
+    if (window.innerWidth < 600) {
+      inputRef.current?.blur()
+    }
+
+    const value = input.trim()
+    setInput('')
+    if (!value) return
+
+    // Call the onSubmit prop instead of directly handling the submission here
+    await onSubmit(value)
+  }
+
   return (
-    <form
-      ref={formRef}
-      onSubmit={async (e: any) => {
-        e.preventDefault()
-
-        // Blur focus on mobile
-        if (window.innerWidth < 600) {
-          e.target['message']?.blur()
-        }
-
-        const value = input.trim()
-        setInput('')
-        if (!value) return
-
-        // Optimistically add user message UI
-        setMessages(currentMessages => [
-          ...currentMessages,
-          {
-            id: nanoid(),
-            display: <UserMessage>{value}</UserMessage>
-          }
-        ])
-
-        // Submit and get response message
-        const responseMessage = await submitUserMessage(value)
-        setMessages(currentMessages => [...currentMessages, responseMessage])
-      }}
-    >
+    <form ref={formRef} onSubmit={handleSubmit}>
       <div className="relative flex max-h-60 w-full grow flex-col overflow-hidden bg-background px-8 sm:rounded-md sm:border sm:px-12">
         <Tooltip>
           <TooltipTrigger asChild>
