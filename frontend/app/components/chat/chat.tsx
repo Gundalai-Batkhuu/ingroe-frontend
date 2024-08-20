@@ -1,15 +1,15 @@
 'use client'
 
-import { cn } from '../lib/utils'
+import { cn } from '../../lib/utils'
 import { ChatList } from './chat-list'
 import { ChatPanel } from './chat-panel'
-import { EmptyScreen } from './empty-screen'
-import { useLocalStorage } from '../lib/hooks/use-local-storage'
+import { EmptyScreen } from '../empty-screen'
+import { useLocalStorage } from '../../lib/hooks/use-local-storage'
 import { useEffect, useState } from 'react'
 import { useUIState, useAIState } from 'ai/rsc'
-import { Message, Session } from '../lib/types'
+import { Message, Session } from '../../lib/types'
 import { usePathname, useRouter } from 'next/navigation'
-import { useScrollAnchor } from '../lib/hooks/use-scroll-anchor'
+import { useScrollAnchor } from '../../lib/hooks/use-scroll-anchor'
 import { toast } from 'sonner'
 
 export interface ChatProps extends React.ComponentProps<'div'> {
@@ -17,9 +17,10 @@ export interface ChatProps extends React.ComponentProps<'div'> {
   id?: string
   session?: Session
   missingKeys: string[]
+  documentId: string
 }
 
-export function Chat({ id, className, session, missingKeys }: ChatProps) {
+export function Chat({ id, className, session, missingKeys, documentId }: ChatProps) {
   const router = useRouter()
   const path = usePathname()
   const [input, setInput] = useState('')
@@ -78,6 +79,7 @@ export function Chat({ id, className, session, missingKeys }: ChatProps) {
         setInput={setInput}
         isAtBottom={isAtBottom}
         scrollToBottom={scrollToBottom}
+        documentId={documentId}
       />
     </div>
   )
