@@ -3,7 +3,7 @@ import * as React from 'react'
 import Link from 'next/link'
 
 import { cn } from '../../lib/utils'
-import { SidebarList } from '../sidebar-list'
+import { SidebarList } from '../sidebar/sidebar-list'
 import { buttonVariants } from '../button'
 import { IconPlus } from '../icons'
 

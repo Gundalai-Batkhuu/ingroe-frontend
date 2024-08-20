@@ -3,7 +3,7 @@ import { Chat } from '../components/chat/chat'
 import { AI } from '../lib/chat/actions'
 import { auth } from '@/auth'
 import { Session } from '../lib/types'
-import { getMissingKeys } from '@/app/actions'
+import { getMissingKeys } from '@/app/components/chat/actions'
 
 export const metadata = {
   title: 'Legal AI Chatbot'

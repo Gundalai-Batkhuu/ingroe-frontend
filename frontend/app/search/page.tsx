@@ -3,7 +3,7 @@
 import React, {useState} from "react";
 import {SearchBar} from "@/app/components/search-bar";
 import {SearchResultsList} from "@/app/components/search-results";
-import {SidebarSearch} from "@/app/components/sidebar-search";
+import {SidebarSearch} from "@/app/components/sidebar/sidebar-search";
 import {useSidebar} from "@/app/lib/hooks/use-sidebar";
 
 export default function SearchPage() {
