@@ -6,7 +6,7 @@ from langchain_core.documents import Document
 from typing import Sequence, List, Tuple
 from app.const import ReturnCode
 from app.model.pydantic_model.payload import DocumentSource
-from app.temp_test.graph import get_doc
+# from app.temp_test.graph import get_doc
 
 class Create(APIEndPoint):
     # @classmethod

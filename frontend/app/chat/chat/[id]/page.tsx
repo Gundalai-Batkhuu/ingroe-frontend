@@ -3,9 +3,10 @@ import { notFound, redirect } from 'next/navigation'
 
 import { auth } from '@/auth'
 import { getChat, getMissingKeys } from '@/app/actions'
-import { Chat } from '@/app/components/chat'
+import { Chat } from '@/app/components/chat/chat'
 import { AI } from '@/app/lib/chat/actions'
 import { Session } from '@/app/lib/types'
+import { DocumentId } from '@/app/enums'
 
 export interface ChatPageProps {
   params: {
@@ -32,6 +33,8 @@ export default async function ChatPage({ params }: ChatPageProps) {
   const session = (await auth()) as Session
   const missingKeys = await getMissingKeys()
 
+  const documentId = DocumentId.SAMPLE_DOCUMENT_ID // Change it in future
+
   if (!session?.user) {
     redirect(`/login?next=/chat/${params.id}`)
   }
@@ -48,12 +51,13 @@ export default async function ChatPage({ params }: ChatPageProps) {
   }
 
   return (
-    <AI initialAIState={{ chatId: chat.id, messages: chat.messages }}>
+    <AI initialAIState={{ chatId: chat.id, messages: chat.messages, documentId: documentId }}>
       <Chat
         id={chat.id}
         session={session}
         initialMessages={chat.messages}
         missingKeys={missingKeys}
+        documentId={documentId}
       />
     </AI>
   )

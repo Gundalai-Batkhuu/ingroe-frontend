@@ -2,7 +2,7 @@
 
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet'
 
-import { ChatSidebar } from './chat-sidebar'
+import { ChatSidebar } from './chat/chat-sidebar'
 import { Button } from './ui/button'
 
 import { IconSidebar } from './ui/icons'

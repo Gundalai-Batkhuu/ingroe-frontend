@@ -2,10 +2,10 @@
 
 import { type Message } from 'ai'
 
-import { Button } from './ui/button'
-import { IconCheck, IconCopy } from './ui/icons'
-import { useCopyToClipboard } from '../lib/hooks/use-copy-to-clipboard'
-import { cn } from '../lib/utils'
+import { Button } from '../ui/button'
+import { IconCheck, IconCopy } from '../ui/icons'
+import { useCopyToClipboard } from '../../lib/hooks/use-copy-to-clipboard'
+import { cn } from '../../lib/utils'
 
 interface ChatMessageActionsProps extends React.ComponentProps<'div'> {
   message: Message

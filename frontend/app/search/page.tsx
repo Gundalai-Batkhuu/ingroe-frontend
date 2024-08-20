@@ -12,7 +12,6 @@ export default function SearchPage() {
     const [countrySpecificSearch, setCountrySpecificSearch] = useState<boolean>(true);
     const [searchType, setSearchType] = useState<"strict" | "medium" | "open">("medium");
     const [fileType, setFileType] = useState<string | null>(null);
-    const [mix, setMix] = useState<boolean>(false);
     const [results, setResults] = useState<number>(10);
     const [before, setBefore] = useState<number | null>(null);
     const [after, setAfter] = useState<number | null>(null);
@@ -30,8 +29,6 @@ export default function SearchPage() {
                 setSearchType={setSearchType}
                 fileType={fileType}
                 setFileType={setFileType}
-                mix={mix}
-                setMix={setMix}
                 results={results}
                 setResults={setResults}
                 before={before}
@@ -66,7 +63,6 @@ export default function SearchPage() {
                                 countrySpecificSearch={countrySpecificSearch}
                                 searchType={searchType}
                                 fileType={fileType}
-                                mix={mix}
                                 results={results}
                                 before={before}
                                 after={after}

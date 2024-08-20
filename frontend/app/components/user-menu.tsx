@@ -7,7 +7,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger
 } from './ui/dropdown-menu'
-import {ProfileIcon} from "@/app/components/header/profile-icon";
+import {ProfileIcon} from "@/app/components/profile-icon";
 import {SignoutForm} from "@/app/components/signout-form";
 
 

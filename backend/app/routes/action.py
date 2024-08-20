@@ -9,7 +9,7 @@ from app.const import GraphLabel
 from app.model.pydantic_model.payload import DocumentSource
 from app.dependencies.internal import StoreAssets
 
-from app.temp_test.graph import get_doc, get_doc_from_file
+# from app.temp_test.graph import get_doc, get_doc_from_file
 
 router = APIRouter(
     prefix="/store",
