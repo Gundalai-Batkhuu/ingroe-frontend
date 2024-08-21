@@ -21,7 +21,7 @@ class Capture(APIEndPoint):
         return file_map 
 
     @classmethod
-    async def update_document(cls, file: UploadFile, user_id: str, document_id: str):
+    async def update_document(cls, file: UploadFile, user_id: str, document_id: str, file_id: str):
         # file_map = await CaptureDocument.update_document(file, user_id, document_id)
         file_map = {"file_url":"www.xyz.com", "file_name":"new.txt"}
         return file_map
@@ -36,3 +36,18 @@ class Capture(APIEndPoint):
         print("deleting")  
         DeleteAssets.delete_captured_document(document_id, captured_document_id)      
                
+def file_exists(file_id: str, captured_document_id: str, file_name: str) -> bool:
+    """Checks if the file exists or not in the database for a particular file name.
+
+    Args:
+    file_id (str): The id of the captured file.
+    captured_document_id (str): The id of the captured document in the captured document table.
+
+    Returns:
+    bool: True or False depending on the node existence in the graph for an id.
+    """
+    from app.scripts.db import CapturedFileCRUD
+    from app.database import get_session
+
+    db = get_session()
+    return CapturedFileCRUD.file_exists_for_a_name(db, file_id, captured_document_id, file_name)              
