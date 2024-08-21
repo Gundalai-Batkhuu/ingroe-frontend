@@ -2,7 +2,7 @@ from fastapi import APIRouter, File, UploadFile, Form, HTTPException
 from fastapi.responses import JSONResponse
 from typing import Dict, Optional, List
 from app.model.pydantic_model import (SearchQuery, CreateDocument, QueryDocument, DeleteDocument, DeleteCapturedFile, DeleteCapturedDocument)
-from app.controller.doc_action import (Search, Create, Query, Store, document_exists, Delete, Capture)
+from app.controller.doc_action import (Search, Create, Query, Store, document_exists, Delete, Capture, file_exists)
 from pydantic import Field
 from uuid import uuid4
 from app.const import GraphLabel
@@ -142,8 +142,10 @@ async def capture_document(file: UploadFile, user_id: str = Form(...), document_
     )
 
 @router.post("/update-captured-document")
-async def update_capture_document(file: UploadFile, user_id: str = Form(...), document_id: str = Form(...)):
-    file_map = await Capture.update_document(file, user_id, document_id)
+async def update_capture_document(file: UploadFile, user_id: str = Form(...), document_id: str = Form(...), file_id: str = Form(...), captured_document_id: str = Form(...)):
+    if not file_exists(file_id, captured_document_id, file.filename):
+        raise HTTPException(status_code=400, detail="The file cannot be updated. Either the filename is not matching with the original filename or invalid ids are passed.")
+    file_map = await Capture.update_document(file, user_id, document_id, file_id)
     return file_map
 
 @router.delete("/delete-captured-file")
