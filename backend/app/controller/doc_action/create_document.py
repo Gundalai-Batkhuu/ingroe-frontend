@@ -59,4 +59,9 @@ def document_exists(document_id: str, user_id) -> bool:
     Returns:
     bool: True or False depending on the node existence in the graph for an id.
     """
-    return StoreDocument.check_if_node_exists_for_id(document_id, user_id)
+    from app.scripts.db import DocumentCRUD
+    from app.database import get_session
+
+    db = get_session()
+    return DocumentCRUD.document_exists_for_user(document_id, user_id, db)
+    # return StoreDocument.check_if_node_exists_for_id(document_id, user_id)

@@ -12,8 +12,10 @@ The following is tracking which endpoints are available along with their test ca
 - [x] Extract the text from files both pdfs and images 
 - [x] Save the extracted text to the database and file storage
 - [ ] Delete the captured document on the deletion of the document root
-- [ ] Update the captured document
+- [x] Add new captured documents for the same main document
 - [ ] Return the file map containing source to the frontend
+- [ ] Update from the edited document
+- [ ] Create document from the captured document
 
 ## Document Creation
 - [ ] Take name of the document and store it as alias in the PostGres to display later

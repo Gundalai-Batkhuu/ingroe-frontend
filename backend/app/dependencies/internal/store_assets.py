@@ -66,16 +66,18 @@ class StoreAssets:
             files=self.files  
             )   
 
-    def store_captured_document(self, files: List[Dict[str, str]]) -> None:
+    def store_captured_document(self, captured_document_id: str, files: List[Dict[str, str]]) -> None:
         """Store or create a record that contains the details about the captured document
         such as source, file name, query ready status, etc.
 
         Args:
+        captured_document_id (str): The id of the captured document.
         files (List[Dict[str, str]]): List of dictionary containing the information about the captured 
         document source and file name.
         """
         db = get_session()
         CapturedDocumentCRUD.create_record(
             db=db,
+            captured_document_id=captured_document_id,
             document_id=self.document_root_id,
             files=files)
