@@ -47,13 +47,20 @@ export const SearchResultsList = ({ results }: { results: SearchResult[] }) => {
                   href={result.link}
                   className="text-sm text-gray-300 hover:underline block whitespace-nowrap overflow-hidden text-overflow-ellipsis"
                   title={result.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   {truncateText(result.link, 80)}
                 </a>
               </div>
             </div>
             <h3 className="text-xl mb-1">
-              <a href={result.link} className="text-blue-500 hover:underline">
+              <a
+                href={result.link}
+                className="text-blue-500 hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 {result.title}
               </a>
             </h3>
@@ -91,5 +98,3 @@ export const SearchResultsList = ({ results }: { results: SearchResult[] }) => {
     </div>
   )
 }
-
-export default SearchResultsList

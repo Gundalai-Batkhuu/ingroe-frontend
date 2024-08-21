@@ -54,7 +54,7 @@ export function SidebarSearch({
 
                     <div className="mb-6 mt-6">
                       <label className="block text-xs font-medium mb-1">
-                        Country Specific Search
+                        Country specific search
                       </label>
                       <div className="flex items-center">
                         <input
@@ -81,7 +81,7 @@ export function SidebarSearch({
 
                     <div className="mb-10">
                       <label className="block text-xs font-medium mb-1" htmlFor="search-type">
-                        Search Type
+                        Search type
                       </label>
                       <select
                         id="search-type"
@@ -97,7 +97,7 @@ export function SidebarSearch({
 
                     <div className="mb-10">
                       <label className="block text-xs font-medium mb-1" htmlFor="file-type">
-                        File Type
+                        File type
                       </label>
                       <select
                         id="file-type"
@@ -116,7 +116,7 @@ export function SidebarSearch({
 
                     <div className="mb-10">
                       <label className="block text-xs font-medium mb-1" htmlFor="results">
-                        Number of Results
+                        Number of search results
                       </label>
                       <input
                         id="results"
@@ -131,7 +131,7 @@ export function SidebarSearch({
 
                     <div className="mb-10">
                       <label className="block text-xs font-medium mb-1" htmlFor="before">
-                        Before
+                        Before year
                       </label>
                       <input
                         id="before"
@@ -144,7 +144,7 @@ export function SidebarSearch({
 
                     <div className="mb-10">
                       <label className="block text-xs font-medium mb-1" htmlFor="after">
-                        After
+                        After year
                       </label>
                       <input
                         id="after"
@@ -157,7 +157,7 @@ export function SidebarSearch({
 
                     <div className="mb-10">
                       <label className="block text-xs font-medium mb-1" htmlFor="site">
-                        Site
+                        Site specific search
                       </label>
                       <input
                         id="site"
