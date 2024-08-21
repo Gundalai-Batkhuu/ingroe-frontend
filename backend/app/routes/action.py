@@ -1,7 +1,7 @@
 from fastapi import APIRouter, File, UploadFile, Form, HTTPException
 from fastapi.responses import JSONResponse
 from typing import Dict, Optional, List
-from app.model.pydantic_model import (SearchQuery, CreateDocument, QueryDocument, DeleteDocument)
+from app.model.pydantic_model import (SearchQuery, CreateDocument, QueryDocument, DeleteDocument, DeleteCapturedDocument)
 from app.controller.doc_action import (Search, Create, Query, Store, document_exists, Delete, Capture)
 from pydantic import Field
 from uuid import uuid4
@@ -123,21 +123,33 @@ async def capture_document(file: UploadFile, user_id: str = Form(...), document_
     if document_id is not None:
         if not document_exists(document_id, user_id):
             raise HTTPException(status_code=400, detail="The supplied document id does not exist. Please provide the right id or leave blank.")
-            # pass
         document_update = True
     else:
         document_id = uuid4().hex 
-    captured_document_id = uuid4().hex    
-    await Capture.capture_document(file, user_id, document_id, document_update, captured_document_id)
+    captured_document_id = uuid4().hex   
+    file_id = uuid4().hex 
+    file_map = await Capture.capture_document(file, user_id, document_id, document_update, captured_document_id, file_id)
     return JSONResponse(
         status_code=200,
         content={
             "message": "Documents from provided sources stored successfully!!", 
             "user_id": user_id,
             "document_id": document_id,
-            "captured_document_id": captured_document_id
+            "captured_document_id": captured_document_id,
+            "file_map": file_map
             }
     )
+
+@router.post("/update-captured-document")
+async def update_capture_document(file: UploadFile, user_id: str = Form(...), document_id: str = Form(...)):
+    file_map = await Capture.update_document(file, user_id, document_id)
+    return file_map
+
+@router.delete("/delete-captured-document")
+async def delete_capture_document(payload: DeleteCapturedDocument):
+    await Capture.delete_document(payload.captured_document_id, payload.file_names)
+    return "Hello"
+
 
 def _get_source_payload_from_file_map(file_map: Dict[str,str]) -> DocumentSource:
     """Provides a source payload from the file map.

@@ -471,7 +471,22 @@ class CaptureDocument:
             await file.write(text)
 
     @classmethod
-    def _store_text_file_to_S3(cls, user_id: str, document_id: str, file_path: str, original_file_name: str) -> Dict[str, str]:
+    def _get_text_file_name_from_other_file_type(cls, original_file_name: str) -> str:
+        """Provides the text file name from file name that has different extension type.
+        For e.g. mydocument.pdf will become mydocument.txt
+
+        Args:
+        original_file_name (str): The original file name containing both filename and extension.
+
+        Returns:
+        str: A string represnting the original file name with .txt extension.
+        """
+        file_name_without_extension = get_file_name_from_original_file_name(original_file_name)
+        new_file_name = f"{file_name_without_extension}.{FileType.TXT}"
+        return new_file_name
+
+    @classmethod
+    def _store_text_file_to_S3(cls, user_id: str, document_id: str, file_path: str, text_file_name: str) -> Dict[str, str]:
         """Stores the .txt file to S3 bucket inside a captured folder of the document id
         sub folder.
 
@@ -479,15 +494,15 @@ class CaptureDocument:
         user_id (str): The id of the user.
         document_id (str): The id of the document root node.
         file_path (str): The local path where the text file resides.
-        original_file_name (str): The original file name containing both filename and extension.
+        text_file_name (str): File name with .txt extension.
 
         Returns:
         Dict[str,str]: A dictionary containing stored text file url and file name.
         """
         sub_folder = f"{document_id}/captured"
-        file_name_without_extension = get_file_name_from_original_file_name(original_file_name)
-        new_file_name = f"{file_name_without_extension}.{FileType.TXT}"
-        file_url, file_name = S3.upload_to_s3_bucket(file_path, NameClass.S3_BUCKET_NAME, user_id, sub_folder, new_file_name)
+        # file_name_without_extension = get_file_name_from_original_file_name(original_file_name)
+        # new_file_name = f"{file_name_without_extension}.{FileType.TXT}"
+        file_url, file_name = S3.upload_to_s3_bucket(file_path, NameClass.S3_BUCKET_NAME, user_id, sub_folder, text_file_name)
         GetDocument._clear_file(file_path)
         file_map = GetDocument._get_file_map(file_url, file_name)
         return file_map
@@ -517,9 +532,21 @@ class CaptureDocument:
             GetDocument._clear_file(file_path)
             output_file_path = GetDocument._get_file_path("files", FileType.TXT)
             await cls._save_text_to_file(extracted_text, output_file_path)
-            file_map = cls._store_text_file_to_S3(user_id, document_id, output_file_path, file.filename)
+            text_file_name = cls._get_text_file_name_from_other_file_type(file.filename)
+            file_map = cls._store_text_file_to_S3(user_id, document_id, output_file_path, text_file_name)
             return file_map
-
+        
+    @classmethod
+    async def update_document(cls, file:UploadFile, user_id: str, document_id: str):
+        text_content_map = {"text/plain": "txt"}
+        file_extension = GetDocument._get_file_extension_from_file(file, text_content_map)
+        if file_extension == FileType.TXT:
+            print("processable")
+            file_path = GetDocument._get_file_path("files", file_extension)
+            await GetDocument._upload_file(file_path, file)
+            file_map = cls._store_text_file_to_S3(user_id, document_id, file_path, file.filename)
+            return file_map
+                   
 if __name__ == "__main__":  
     # html = asyncio.run(GetDocument.get_document_from_link(["https://python.langchain.com/v0.1/docs/integrations/document_loaders/async_chromium/"]))
     # print(html)   
