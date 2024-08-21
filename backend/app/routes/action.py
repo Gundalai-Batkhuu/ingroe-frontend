@@ -1,7 +1,7 @@
 from fastapi import APIRouter, File, UploadFile, Form, HTTPException
 from fastapi.responses import JSONResponse
 from typing import Dict, Optional, List
-from app.model.pydantic_model import (SearchQuery, CreateDocument, QueryDocument, DeleteDocument, DeleteCapturedFile, DeleteCapturedDocument)
+from app.model.pydantic_model import (SearchQuery, CreateDocument, QueryDocument, DeleteDocument, DeleteCapturedFile, DeleteCapturedDocument, CreateDocumentCapture)
 from app.controller.doc_action import (Search, Create, Query, Store, document_exists, Delete, Capture, file_exists)
 from pydantic import Field
 from uuid import uuid4
@@ -50,13 +50,13 @@ async def create_document_selection(payload: CreateDocument):
 @router.post("/create-document-manually")
 async def create_document_manually(link: Optional[str] = Form(None), file: Optional[UploadFile] = File(None), user_id: str = Form(...), document_id: Optional[str] = Form(None)):
     print(file)
-    updateRequired = False
+    update_required = False
     if link is None and file is None:
         raise HTTPException(status_code=400, detail="You must provide either a link or file.")
     if document_id is not None:
         if not document_exists(document_id, user_id):
             raise HTTPException(status_code=400, detail="The supplied document id does not exist. Please provide the right id or leave blank.")
-        updateRequired = True
+        update_required = True
     else:
         document_id = uuid4().hex  
     parent_node = {"label": GraphLabel.DOCUMENT_ROOT, "id": document_id}
@@ -72,7 +72,7 @@ async def create_document_manually(link: Optional[str] = Form(None), file: Optio
         # combined_documents = documents_from_file + documents_from_link
         Store.store_document(combined_documents, parent_node, user_id)
         storer = StoreAssets(user_id=user_id, document_root_id=document_id, source_payload=source)
-        storer.store(updateRequired)
+        storer.store(update_required)
         return JSONResponse(
         status_code=200,
         content={"message": "Documents from provided sources stored successfully!!"}
@@ -89,7 +89,7 @@ async def create_document_manually(link: Optional[str] = Form(None), file: Optio
         # documents, source = await Create.create_documents_from_selection([link], user_id)
     # Store.store_document(documents, parent_node, user_id)  
     # storer = StoreAssets(user_id=user_id, document_root_id=document_id, source_payload=source)
-    # storer.store(updateRequired) 
+    # storer.store(update_required) 
     return JSONResponse(
         status_code=200,
         content={"message": "Documents from provided sources stored successfully!!"}
@@ -165,6 +165,30 @@ async def delete_captured_document(payload: DeleteCapturedDocument):
         status_code=200,
         content={
             "message": "Provided captured document has been deleted successfully!!", 
+            }
+    )
+
+@router.post("/create-document-from-captured-document")
+async def create_document_from_captured_document(payload: CreateDocumentCapture):
+    if payload.document_id is not None:
+        if not document_exists(payload.document_id, payload.user_id):
+            raise HTTPException(status_code=400, detail="The supplied document id does not exist. Please provide the right id or leave blank.")
+        document_id = payload.document_id
+        update_required = True
+    else:
+        document_id = uuid4().hex 
+        update_required = False
+    documents, source = await Create.create_documents_from_captured_document(links=payload.links) 
+    parent_node = {"label": GraphLabel.DOCUMENT_ROOT, "id": document_id}
+    Store.store_document(documents, parent_node, payload.user_id)  
+    storer = StoreAssets(user_id=payload.user_id, document_root_id=document_id, source_payload=source)
+    storer.store(update_required)       
+    return JSONResponse(
+        status_code=200,
+        content={
+            "message": "Documents from provided sources created successfully!!", 
+            "user_id": payload.user_id,
+            "document_id": document_id
             }
     )
 

@@ -15,7 +15,7 @@ The following is tracking which endpoints are available along with their test ca
 - [x] Add new captured documents for the same main document
 - [x] Return the file map containing source to the frontend
 - [x] Update from the edited document
-- [ ] Create document from the captured document
+- [x] Create document from the captured document
 - [ ] Error Handling
 
 ## Document Creation

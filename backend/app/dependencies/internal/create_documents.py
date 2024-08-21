@@ -9,7 +9,7 @@ from urllib.parse import urlparse
 import mimetypes
 from app.utils import (get_root_directory, generate_unique_string, get_file_type_by_extension, get_current_directory, get_file_name_from_original_file_name)
 import os
-from langchain_community.document_loaders import (PyPDFLoader, UnstructuredMarkdownLoader, Docx2txtLoader)
+from langchain_community.document_loaders import (PyPDFLoader, UnstructuredMarkdownLoader, Docx2txtLoader, TextLoader)
 from fastapi import UploadFile
 from app.const import (ReturnCode, NameClass, ModelDetails, FileType)
 from app.dependencies.external import S3
@@ -30,11 +30,12 @@ class GetDocument:
     additional_allowe_files (List[str]): A list of extra allowed file extension or types.
     content_type_map (Dict[str,str]): A dictionary that maps content type with file extension or type.
     """
-    allowed_file_types: List[str] = ["pdf", "docx"]
+    allowed_file_types: List[str] = ["pdf", "docx", "txt"]
     additional_allowed_files: List[str] = ["md"]
     content_type_map: Dict[str,str] = {
             "application/pdf": "pdf",
             "text/markdown": "md",
+            "text/plain": "txt"
         }
     @classmethod
     async def _get_html_document_from_link(cls, links: List[str]) -> AsyncIterator[Document]:
@@ -218,6 +219,22 @@ class GetDocument:
         except Exception as e:
             print(f"An error occurred: {e}")
             return ReturnCode.ERROR
+        
+    @classmethod
+    def create_documents_from_txt_links(cls, url: str) -> List[Document]:
+        """Creates a document object from the links pointing to a .txt file.
+
+        Args:
+        url: A string representing the link.
+
+        Returns:
+        List[Document]: A list of documents created from the text file type 
+        """
+        file_path = cls._get_file_path("files", FileType.TXT)
+        cls._download_file(url, file_path)
+        documents =  cls.create_documents_from_store(FileType.TXT, file_path) 
+        cls._clear_file(file_path)
+        return documents
 
     @classmethod
     def create_documents_from_store(cls, file_extension: str, file_path: str) -> List[Document]:
@@ -233,11 +250,11 @@ class GetDocument:
         if file_extension == "pdf":
             return cls.get_documents_from_pdf(file_path)
         if file_extension == "md":
-            cls.get_document_from_md(file_path)
-            return
+            return cls.get_document_from_md(file_path)
         if file_extension == "docx":
-            cls.get_document_from_docx(file_path)
-            return
+            return cls.get_document_from_docx(file_path)
+        if file_extension == "txt":
+            return cls.get_document_from_txt(file_path)
 
     @classmethod
     def get_documents_from_pdf(cls, file_path: str) -> List[Document]:
@@ -276,6 +293,19 @@ class GetDocument:
         List[Document]: A list of documents created from the docx or word file.
         """
         loader = Docx2txtLoader(file_path)
+        return loader.load()
+    
+    @classmethod
+    def get_document_from_txt(cls, file_path: str) -> List[Document]:
+        """Creates document from txt file.
+
+        Args:
+        file_path: The path where the downloaded file resides.
+
+        Returns:
+        List[Document]: A list of documents created from the txt file.
+        """
+        loader = TextLoader(file_path)
         return loader.load()
 
     @classmethod
