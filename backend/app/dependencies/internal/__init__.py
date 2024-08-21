@@ -17,7 +17,8 @@ if TYPE_CHECKING:
         QueryDocument
     )
     from app.dependencies.internal.store_assets import (
-        StoreAssets
+        StoreAssets,
+        DeleteAssets
     )
     from app.dependencies.internal.delete_documents import (
         DeleteDocument
@@ -28,6 +29,7 @@ __all__ = [
     "StoreDocument",
     "QueryDocument",
     "StoreAssets",
+    "DeleteAssets",
     "DeleteDocument",
     "CaptureDocument"
 ]
@@ -37,6 +39,7 @@ _module_lookup = {
     "StoreDocument": "app.dependencies.internal.store_documents",
     "QueryDocument": "app.dependencies.internal.query_documents",
     "StoreAssets": "app.dependencies.internal.store_assets",
+    "DeleteAssets": "app.dependencies.internal.store_assets",
     "DeleteDocument": "app.dependencies.internal.delete_documents",
     "CaptureDocument": "app.dependencies.internal.create_documents"
 }
