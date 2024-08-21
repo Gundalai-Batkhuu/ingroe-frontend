@@ -92,4 +92,11 @@ class DeleteCapturedDocument(BaseModel):
     """Data Model for deleting the captured document from the storage and database.
     """  
     document_id: str       
-    captured_document_id: str     
+    captured_document_id: str  
+
+class CreateDocumentCapture(CreateDocument):
+    """Data model for creating documents from captured document.
+
+    It overrides the document id property to allow users to pass it or create automatically later.
+    """ 
+    document_id: str | None = None

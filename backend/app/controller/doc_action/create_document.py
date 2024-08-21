@@ -48,7 +48,17 @@ class Create(APIEndPoint):
         # documents_from_link, source = get_doc()
         documents += documents_from_link
         source = DocumentSource(vanilla_links=vanilla_link, file_links=file_link, error_links=error_link, unsupported_file_links=unallowed_downloadable_links)
-        return documents, source    
+        return documents, source  
+
+    @classmethod
+    async def create_documents_from_captured_document(cls, links: List[str]):
+        print(links)
+        documents = []
+        for link in links:
+            document = GetDocument.create_documents_from_txt_links(link)
+            documents += document
+        source = DocumentSource()   
+        return documents, source  
 
 def document_exists(document_id: str, user_id: str) -> bool:
     """Checks if the document exists or not in the database.
