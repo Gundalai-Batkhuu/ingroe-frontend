@@ -26,8 +26,17 @@ class CapturedFileCRUD:
         db.commit()
         db.refresh(document)
 
-    # @classmethod
-    # def delete_captured_document(cls, db: Session, captured_document_id: str, file_name: str) -> None:   
-    #     document = db.query(CapturedDocument).filter(
-    #         CapturedDocument.captured_document_id == captured_document_id,
-    #     ).first()
+    @classmethod
+    def delete_record(cls, db: Session, file_id: str, captured_document_id: str) -> None:  
+        """Deletes a record from the captured file table based on the file_id.
+
+        Args:
+        db (Session): The database session object.
+        file_id (str): The id of the captured file.
+        captured_document_id (str): The id of the captured document.
+        """ 
+        document = db.query(CapturedFile).filter(
+            CapturedFile.file_id == file_id, CapturedFile.captured_document_id == captured_document_id
+            ).first()
+        db.delete(document)
+        db.commit()

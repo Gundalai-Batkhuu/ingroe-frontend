@@ -87,3 +87,26 @@ class StoreAssets:
             file_url=file_map.get("file_url"),
             file_name=file_map.get("file_name")
         )
+
+class DeleteAssets:
+    @classmethod
+    def delete_captured_file(cls, file_id: str, captured_document_id: str) -> None:
+        """Deletes a record from the captured file table based on the file_id.
+
+        Args:
+        file_id (str): The id of the captured file.
+        captured_document_id (str): The id of the captured document.
+        """ 
+        db = get_session()
+        CapturedFileCRUD.delete_record(db=db, file_id=file_id, captured_document_id=captured_document_id)
+
+    @classmethod
+    def delete_captured_document(cls, document_id: str, captured_document_id: str) -> None:
+        """Deletes a record from the captured document table based on the captured_document_id.
+
+        Args:
+        document_id (str): The id of the document root in the neo4j database.
+        captured_document_id (str): The id of the captured document.
+        """    
+        db = get_session()
+        CapturedDocumentCRUD.delete_record(db=db, document_id=document_id, captured_document_id=captured_document_id)

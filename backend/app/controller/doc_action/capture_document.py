@@ -1,7 +1,7 @@
 from ..core import APIEndPoint
 from fastapi import UploadFile
 from app.dependencies.internal import CaptureDocument
-from app.dependencies.internal import StoreAssets
+from app.dependencies.internal import (StoreAssets, DeleteAssets)
 from app.model.pydantic_model.payload import DocumentSource
 from typing import List
 
@@ -22,10 +22,17 @@ class Capture(APIEndPoint):
 
     @classmethod
     async def update_document(cls, file: UploadFile, user_id: str, document_id: str):
-        file_map = await CaptureDocument.update_document(file, user_id, document_id)
+        # file_map = await CaptureDocument.update_document(file, user_id, document_id)
+        file_map = {"file_url":"www.xyz.com", "file_name":"new.txt"}
         return file_map
     
     @classmethod
-    async def delete_document(cls, captured_document_id: str, file_names: List[str]):
-        print("deleting")
+    async def delete_captured_file(cls, captured_document_id: str, file_ids: List[str]):
+        for file_id in file_ids:
+            DeleteAssets.delete_captured_file(file_id, captured_document_id)
+
+    @classmethod
+    async def delete_captured_document(cls, document_id: str, captured_document_id: str):
+        print("deleting")  
+        DeleteAssets.delete_captured_document(document_id, captured_document_id)      
                

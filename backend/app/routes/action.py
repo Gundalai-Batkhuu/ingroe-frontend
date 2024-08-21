@@ -1,7 +1,7 @@
 from fastapi import APIRouter, File, UploadFile, Form, HTTPException
 from fastapi.responses import JSONResponse
 from typing import Dict, Optional, List
-from app.model.pydantic_model import (SearchQuery, CreateDocument, QueryDocument, DeleteDocument, DeleteCapturedDocument)
+from app.model.pydantic_model import (SearchQuery, CreateDocument, QueryDocument, DeleteDocument, DeleteCapturedFile, DeleteCapturedDocument)
 from app.controller.doc_action import (Search, Create, Query, Store, document_exists, Delete, Capture)
 from pydantic import Field
 from uuid import uuid4
@@ -132,10 +132,11 @@ async def capture_document(file: UploadFile, user_id: str = Form(...), document_
     return JSONResponse(
         status_code=200,
         content={
-            "message": "Documents from provided sources stored successfully!!", 
+            "message": "Documents from provided sources captured successfully!!", 
             "user_id": user_id,
             "document_id": document_id,
             "captured_document_id": captured_document_id,
+            "file_id": file_id,
             "file_map": file_map
             }
     )
@@ -145,11 +146,25 @@ async def update_capture_document(file: UploadFile, user_id: str = Form(...), do
     file_map = await Capture.update_document(file, user_id, document_id)
     return file_map
 
-@router.delete("/delete-captured-document")
-async def delete_capture_document(payload: DeleteCapturedDocument):
-    await Capture.delete_document(payload.captured_document_id, payload.file_names)
-    return "Hello"
+@router.delete("/delete-captured-file")
+async def delete_captured_file(payload: DeleteCapturedFile):
+    await Capture.delete_captured_file(payload.captured_document_id, payload.file_ids)
+    return JSONResponse(
+        status_code=200,
+        content={
+            "message": "Provided captured file has been deleted successfully!!", 
+            }
+    )
 
+@router.delete("/delete-captured-document")
+async def delete_captured_document(payload: DeleteCapturedDocument):
+    await Capture.delete_captured_document(payload.document_id, payload.captured_document_id)
+    return JSONResponse(
+        status_code=200,
+        content={
+            "message": "Provided captured document has been deleted successfully!!", 
+            }
+    )
 
 def _get_source_payload_from_file_map(file_map: Dict[str,str]) -> DocumentSource:
     """Provides a source payload from the file map.

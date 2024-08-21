@@ -22,3 +22,19 @@ class CapturedDocumentCRUD:
         db.add(document)
         db.commit()
         db.refresh(document)
+
+    @classmethod
+    def delete_record(cls, db: Session, captured_document_id: str, document_id: str) -> None:  
+        """Deletes a record from the captured document table based on the captured_document_id.
+
+        Args:
+        db (Session): The database session object.
+        captured_document_id (str): The id of the captured document.
+        document_id (str): The id of the document root in the neo4j database.
+        """ 
+        document = db.query(CapturedDocument).filter(
+            CapturedDocument.captured_document_id == captured_document_id,
+            CapturedDocument.document_id == document_id
+            ).first()
+        db.delete(document)
+        db.commit()    
