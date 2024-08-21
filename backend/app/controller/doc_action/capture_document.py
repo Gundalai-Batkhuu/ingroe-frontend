@@ -6,13 +6,15 @@ from app.model.pydantic_model.payload import DocumentSource
 
 class Capture(APIEndPoint):
     @classmethod
-    async def capture_document(cls, file: UploadFile, user_id: str, document_id: str, document_exists: bool):
-        file_map = await CaptureDocument.capture_document(file, user_id, document_id)
+    async def capture_document(cls, file: UploadFile, user_id: str, document_id: str, document_update: bool, captured_document_id: str):
+        # file_map = await CaptureDocument.capture_document(file, user_id, document_id)
+        file_map = {"file_url":"www.xyz.com", "file_name":"new.txt"}
         source_payload = DocumentSource()
         storer = StoreAssets(user_id=user_id, document_root_id=document_id, source_payload=source_payload)
-        if document_exists:
-            storer.store_captured_document(files=[file_map])
+        if document_update:
+            # further check if there is a capture
+            storer.store_captured_document(captured_document_id=captured_document_id, files=[file_map])
         else:
             storer.store(isUpdate=False)
-            storer.store_captured_document(files=[file_map])
+            storer.store_captured_document(captured_document_id=captured_document_id, files=[file_map])
                

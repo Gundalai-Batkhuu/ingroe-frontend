@@ -11,6 +11,7 @@ class CapturedDocument(Base):
     __tablename__ = "captured_documents"
 
     id = Column(Integer, primary_key=True)
+    captured_document_id = Column(String, index=True, nullable=False, unique=True)
     document_id = Column(String, ForeignKey("documents.document_id"), nullable=False)
     files = Column(JSON, nullable=False) 
     query_ready = Column(Boolean, nullable=False)
