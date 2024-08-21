@@ -4,19 +4,18 @@ import React, {useState} from "react";
 import {SearchBar} from "@/app/components/search-bar";
 import {SearchResultsList} from "@/app/components/search-results";
 import {SidebarSearch} from "@/app/components/sidebar/sidebar-search";
-import {useSidebar} from "@/app/lib/hooks/use-sidebar";
+import { SidebarDocuments } from '@/app/components/sidebar/sidebar-documents'
 
 export default function SearchPage() {
     const [searchResults, setSearchResults] = useState([]);
     const [country, setCountry] = useState<string>("AU");
     const [countrySpecificSearch, setCountrySpecificSearch] = useState<boolean>(true);
     const [searchType, setSearchType] = useState<"strict" | "medium" | "open">("medium");
-    const [fileType, setFileType] = useState<string | null>(null);
+    const [fileType, setFileType] = useState<"pdf" | "docx" | null>(null);
     const [results, setResults] = useState<number>(10);
     const [before, setBefore] = useState<number | null>(null);
     const [after, setAfter] = useState<number | null>(null);
     const [site, setSite] = useState<string | null>(null);
-    const {isSidebarOpen} = useSidebar();
 
     return (
         <div className="flex h-[calc(100vh_-_theme(spacing.16))] overflow-hidden">
@@ -41,8 +40,6 @@ export default function SearchPage() {
             <div
                 className={`
                     flex-1 overflow-y-auto
-                    transition-all duration-300 ease-in-out
-                    ${!isSidebarOpen ? 'lg:mr-[250px] xl:mr-[300px]' : 'ml-0'}
                 `}
             >
                 <div
@@ -75,6 +72,7 @@ export default function SearchPage() {
                     </div>
                 </div>
             </div>
+            <SidebarDocuments />
         </div>
     );
 }
