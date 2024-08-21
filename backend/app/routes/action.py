@@ -114,7 +114,7 @@ async def delete_document(payload: DeleteDocument):
         raise HTTPException(status_code=400, detail="Please provide a valid document id.")
     return JSONResponse(
         status_code=200,
-        content={"message": "Documents from provided sources stored successfully!!"}
+        content={"message": "Documents from provided sources deleted successfully!!"}
     )
 
 @router.post("/capture-document")

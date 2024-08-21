@@ -16,4 +16,4 @@ class User(Base):
     user_id = Column(String, index=True, unique=True, nullable=False)
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
 
-    document = relationship("Document", back_populates="user")
+    document = relationship("Document", back_populates="user", cascade="all, delete-orphan")

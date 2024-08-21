@@ -20,4 +20,4 @@ class Document(Base):
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
 
     user = relationship("User", back_populates="document")
-    captured_document = relationship("CapturedDocument", back_populates="document")
+    captured_document = relationship("CapturedDocument", back_populates="document", cascade="all, delete-orphan")

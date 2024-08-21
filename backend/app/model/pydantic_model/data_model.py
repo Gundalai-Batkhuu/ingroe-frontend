@@ -80,8 +80,8 @@ class DeleteDocument(BaseModel):
     """Data Model for deleting the document from all applicable databases and storage.
     """
     document_id: str
-    user_id: str   
-
+    user_id: str  
+    
 class DeleteCapturedFile(BaseModel):
     """Data Model for deleting the captured file from the storage and database.
     """         
