@@ -17,4 +17,4 @@ class CapturedDocument(Base):
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
 
     document = relationship("Document", back_populates="captured_document")
-    captured_file = relationship("CapturedFile", back_populates="captured_document")
+    captured_file = relationship("CapturedFile", back_populates="captured_document", cascade="all, delete-orphan")
