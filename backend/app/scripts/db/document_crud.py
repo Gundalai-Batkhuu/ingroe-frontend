@@ -108,4 +108,21 @@ class DocumentCRUD:
         ).first()
         return document_exists is not None    
     
+    @classmethod
+    def update_document_info(cls, db: Session, document_id: str, document_alias: str, description: str) -> None:
+        """Updates the document details such as document alias (document name) and description.
+
+        Args:
+            db (Session): The database session object.
+            document_id (str): The id of the document root in the neo4j database.
+            document_alias (str): The name of the document. 
+            description: A short description of the document.
+        """
+        document = db.query(Document).filter(Document.document_id == document_id).first()
+        if len(document_alias) > 0:
+                document.document_alias = document_alias
+        if len(description) > 0:
+            document.description = description 
+        db.commit()
+        db.refresh(document)     
         

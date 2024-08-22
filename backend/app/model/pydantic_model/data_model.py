@@ -102,3 +102,11 @@ class CreateDocumentCapture(CreateDocument):
     It overrides the document id property to force users to pass the id.
     """ 
     document_id: str 
+
+class DocumentInfo(BaseModel):
+    """Data model for performing operations related to document info.
+    """ 
+    user_id: str
+    document_id: str
+    document_alias: str = ""
+    description: str = ""   

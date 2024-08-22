@@ -1,13 +1,13 @@
 from fastapi import APIRouter, File, UploadFile, Form, HTTPException
 from fastapi.responses import JSONResponse
 from typing import Dict, Optional, List
-from app.model.pydantic_model import (SearchQuery, CreateDocument, QueryDocument, DeleteDocument, DeleteCapturedFile, DeleteCapturedDocument, CreateDocumentCapture)
+from app.model.pydantic_model import (SearchQuery, CreateDocument, QueryDocument, DeleteDocument, DeleteCapturedFile, DeleteCapturedDocument, CreateDocumentCapture, DocumentInfo)
 from app.controller.doc_action import (Search, Create, Query, Store, document_exists, Delete, Capture, file_exists)
 from pydantic import Field
 from uuid import uuid4
 from app.const import GraphLabel
 from app.model.pydantic_model.payload import DocumentSource
-from app.dependencies.internal import StoreAssets
+from app.dependencies.internal import (StoreAssets, UpdateAssets)
 
 from app.temp_test.graph import get_doc, get_doc_from_file
 
@@ -184,6 +184,21 @@ async def create_document_from_captured_document(payload: CreateDocumentCapture)
             "document_id": document_id
             }
     )
+
+@router.post("/update-document-info")
+async def update_document_info(payload: DocumentInfo):
+    if not document_exists(payload.document_id, payload.user_id):
+        raise HTTPException(status_code=400, detail="The supplied document id does not exist. Please provide the right id.")
+    UpdateAssets.update_document_info(payload.document_id, payload.document_alias, payload.description)
+    return JSONResponse(
+        status_code=200,
+        content={
+            "message": "Documents info updated successfully!!", 
+            "user_id": payload.user_id,
+            "document_id": payload.document_id
+            }
+    )
+
 
 def _get_source_payload_from_file_map(file_map: Dict[str,str]) -> DocumentSource:
     """Provides a source payload from the file map.
