@@ -62,6 +62,8 @@ class CreateDocument(BaseModel):
     user_id: str
     document_id: str= Field(default_factory=lambda: uuid4().hex) # create automatic id
     links: List[str]
+    document_alias: str = ""
+    description: str = ""
 
 class QueryDocument(BaseModel):
     """Data model for querying the document.
@@ -97,6 +99,6 @@ class DeleteCapturedDocument(BaseModel):
 class CreateDocumentCapture(CreateDocument):
     """Data model for creating documents from captured document.
 
-    It overrides the document id property to allow users to pass it or create automatically later.
+    It overrides the document id property to force users to pass the id.
     """ 
-    document_id: str | None = None
+    document_id: str 

@@ -13,10 +13,12 @@ class Document(Base):
     id = Column(Integer, primary_key=True)
     document_id = Column(String, index=True, nullable=False, unique=True)
     user_id = Column(String, ForeignKey("users.user_id"), nullable=False)
+    document_alias = Column(String, nullable=True)
     vanilla_links = Column(ARRAY(String), nullable=True)
     file_links = Column(ARRAY(String), nullable=True)
     unsupported_file_links = Column(ARRAY(String), nullable=True)
     files = Column(JSON, nullable=True) 
+    description = Column(String, nullable=True)
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
 
     user = relationship("User", back_populates="document")
