@@ -11,22 +11,28 @@ class StoreAssets:
             self,
             user_id: str,
             document_root_id: str, 
-            source_payload: DocumentSource
+            document_alias: str,
+            source_payload: DocumentSource,
+            description: str
             ) -> None:
         """A constructor method to initialise the StoreAssets instance.
 
         Args:
         user_id (str): Id of the user.
         document_root_id (str): Id of the document root holding all the documents.
+        document_alias (str): The name of the document.
         source_payload (DocumentSource): The DocumentSource object containing the asset information.
+        description: A short description of the document.
         """
         self.user_id = user_id
         self.document_root_id = document_root_id
+        self.document_alias = document_alias
         self.vanilla_links = source_payload.vanilla_links
         self.error_links = source_payload.error_links
         self.file_links = source_payload.file_links 
         self.unsuppported_file_links = source_payload.unsupported_file_links
         self.files = source_payload.files
+        self.description = description
 
     def store(self, isUpdate: bool) -> None:
         """Stores the document asset information to the database.
@@ -47,11 +53,14 @@ class StoreAssets:
                 db=db, 
                 document_id=self.document_root_id,
                 user_id=self.user_id,
+                document_alias=self.document_alias,
                 vanilla_links=self.vanilla_links,
                 file_links=self.file_links,
                 unsupported_file_links=self.unsuppported_file_links,
-                files=self.files        
+                files=self.files,  
+                description=self.description      
         )
+        db.close()
 
     def _update_document(self) -> None:
         """Updates the assets in the database.
@@ -87,6 +96,7 @@ class StoreAssets:
             file_url=file_map.get("file_url"),
             file_name=file_map.get("file_name")
         )
+        db.close()
 
 class DeleteAssets:
     @classmethod

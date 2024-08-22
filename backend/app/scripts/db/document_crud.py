@@ -10,23 +10,27 @@ class DocumentCRUD:
         cls, 
         db: Session, 
         document_id: str, 
-        user_id: str, 
+        user_id: str,
+        document_alias: str, 
         vanilla_links: List[str], 
         file_links: List[str], 
         unsupported_file_links: List[str], 
-        files: Optional[List[Dict[str, str]]]) -> None:
+        files: Optional[List[Dict[str, str]]],
+        description: str) -> None:
         """Creates a record in the document table with the relevant fields.
 
         Args:
         db (Session): The database session object.
         document_id (str): The id of the document root in the neo4j database.
         user_id (str): The id of the user.
+        document_alias (str): The name of the document.
         vanilla_links (List[str]): A list of normal links that points to a webpage.
         file_links (List[str]): A list of links pointing to the file.
         unsupported_file_links (List[str]): A list of file_links that are unsupported for document creation.
         files (Optional[List[Dict[str, str]]]): A list of dictionary containing the file url and the name.
+        description: A short description of the document.
         """
-        document = Document(document_id=document_id, user_id=user_id, vanilla_links=vanilla_links, file_links=file_links, unsupported_file_links=unsupported_file_links, files=files)
+        document = Document(document_id=document_id, user_id=user_id, document_alias=document_alias, vanilla_links=vanilla_links, file_links=file_links, unsupported_file_links=unsupported_file_links, files=files, description=description)
         db.add(document)
         db.commit()
         db.refresh(document)
