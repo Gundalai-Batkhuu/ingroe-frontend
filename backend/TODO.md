@@ -20,7 +20,7 @@ The following is tracking which endpoints are available along with their test ca
 
 ## Document Creation
 - [x] Take name of the document and store it as alias in the PostGres to display later
-- [ ] Update alias
-- [ ] Return the document id and neccessary info after document creation
+- [x] Update alias
+- [x] Return the document id and neccessary info after document creation and all routes
 - [x] Create summary text for the document by receiving summary from user (optional). Put it in PostGres.
 - [ ] Provide the complete file structure for a user
