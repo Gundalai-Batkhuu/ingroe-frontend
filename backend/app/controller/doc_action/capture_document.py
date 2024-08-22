@@ -50,4 +50,6 @@ def file_exists(file_id: str, captured_document_id: str, file_name: str) -> bool
     from app.database import get_session
 
     db = get_session()
-    return CapturedFileCRUD.file_exists_for_a_name(db, file_id, captured_document_id, file_name)              
+    status = CapturedFileCRUD.file_exists_for_a_name(db, file_id, captured_document_id, file_name)  
+    db.close()
+    return status            

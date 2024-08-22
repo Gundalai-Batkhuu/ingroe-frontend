@@ -70,10 +70,13 @@ class StoreAssets:
             db=db,
             document_id=self.document_root_id,
             vanilla_links=self.vanilla_links,
+            document_alias=self.document_alias,
             file_links=self.file_links,
             unsupported_file_links=self.unsuppported_file_links,
-            files=self.files  
+            files=self.files,  
+            description=self.description
             )   
+        db.close()
 
     def store_captured_document(self, captured_document_id: str, file_id: str, file_map: Dict[str, str]) -> None:
         """Store or create a record that contains the details about the captured document
@@ -109,6 +112,7 @@ class DeleteAssets:
         """ 
         db = get_session()
         CapturedFileCRUD.delete_record(db=db, file_id=file_id, captured_document_id=captured_document_id)
+        db.close()
 
     @classmethod
     def delete_captured_document(cls, document_id: str, captured_document_id: str) -> None:
@@ -120,3 +124,4 @@ class DeleteAssets:
         """    
         db = get_session()
         CapturedDocumentCRUD.delete_record(db=db, document_id=document_id, captured_document_id=captured_document_id)
+        db.close()
