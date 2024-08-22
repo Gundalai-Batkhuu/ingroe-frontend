@@ -43,7 +43,8 @@ async def create_document_selection(payload: CreateDocument):
         content={
             "message": "Documents from provided sources stored successfully!!", 
             "unsupported_file_links": source.unsupported_file_links,
-            "error_links": source.error_links
+            "error_links": source.error_links,
+            "document_id": payload.document_id
             }
     )
 
@@ -92,18 +93,35 @@ async def create_document_manually(link: Optional[str] = Form(None), file: Optio
     storer.store(update_required) 
     return JSONResponse(
         status_code=200,
-        content={"message": "Documents from provided sources stored successfully!!"}
+        content={
+            "message": "Documents from provided sources stored successfully!!",
+            "document_id": document_id
+            }
     )
 
 @router.post("/query-document")
 async def query_document(payload: QueryDocument):
     response = await Query.query_document(payload.query, payload.document_id)
-    return response
+    return JSONResponse(
+        status_code=200,
+        content={
+            "document_id": payload.document_id,
+            "query": payload.query,
+            "response": response
+            }
+    )
 
 @router.post("/query-document-quick")
 async def query_document_quick(payload: QueryDocument):
     response = await Query.query_document_quick(payload.query, payload.document_id)
-    return response
+    return JSONResponse(
+        status_code=200,
+        content={
+            "document_id": payload.document_id,
+            "query": payload.query,
+            "response": response
+            }
+    )
 
 @router.delete("/delete-document")
 async def delete_document(payload: DeleteDocument):
@@ -146,7 +164,15 @@ async def update_capture_document(file: UploadFile, user_id: str = Form(...), do
     if not file_exists(file_id, captured_document_id, file.filename):
         raise HTTPException(status_code=400, detail="The file cannot be updated. Either the filename is not matching with the original filename or invalid ids are passed.")
     file_map = await Capture.update_document(file, user_id, document_id, file_id)
-    return file_map
+    return JSONResponse(
+        status_code=200,
+        content={
+            "document_id": document_id,
+            "captured_document_id": captured_document_id,
+            "file_id": file_id,
+            "response": file_map
+            }
+    )
 
 @router.delete("/delete-captured-file")
 async def delete_captured_file(payload: DeleteCapturedFile):
