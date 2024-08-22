@@ -40,19 +40,23 @@ class DocumentCRUD:
         cls, 
         db: Session, 
         document_id: str, 
+        document_alias: str,
         vanilla_links: List[str], 
         file_links: List[str], 
         unsupported_file_links: List[str], 
-        files: Optional[List[Dict[str, str]]]) -> None:
+        files: Optional[List[Dict[str, str]]],
+        description: str) -> None:
             """Updates the existing document in the database by adding the new asset.
 
             Args:
             db (Session): The database session object.
             document_id (str): The id of the document root in the neo4j database.
+            document_alias (str): The name of the document.
             vanilla_links (List[str]): A list of normal links that points to a webpage.
             file_links (List[str]): A list of links pointing to the file.
             unsupported_file_links (List[str]): A list of file_links that are unsupported for document creation.
             files (Optional[List[Dict[str, str]]]): A list of dictionary containing the file url and the name.
+            description: A short description of the document.
             """
             document = db.query(Document).filter(Document.document_id == document_id).first()
             if len(vanilla_links) > 0:
@@ -67,6 +71,10 @@ class DocumentCRUD:
             if len(files) > 0:
                 updated_files = document.files + files    
                 document.files = updated_files
+            if len(document_alias) > 0:
+                document.document_alias = document_alias
+            if len(description) > 0:
+                document.description = description        
             db.commit()
             db.refresh(document)
 

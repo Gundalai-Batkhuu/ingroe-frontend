@@ -33,3 +33,5 @@ class Delete(APIEndPoint):
         except Exception as e:
             print(e)
             return None
+        finally:
+            db.close()

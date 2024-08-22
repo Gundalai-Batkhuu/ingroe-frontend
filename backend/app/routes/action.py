@@ -173,15 +173,9 @@ async def create_document_from_captured_document(payload: CreateDocumentCapture)
     if not document_exists(payload.document_id, payload.user_id):
         raise HTTPException(status_code=400, detail="The supplied document id does not exist. Please provide the right id or leave blank.")
     document_id = payload.document_id
-    # update_required = True
-    # else:
-    #     document_id = uuid4().hex 
-    #     update_required = False
-    documents, source = await Create.create_documents_from_captured_document(links=payload.links) 
+    documents = await Create.create_documents_from_captured_document(links=payload.links) 
     parent_node = {"label": GraphLabel.DOCUMENT_ROOT, "id": document_id}
-    # Store.store_document(documents, parent_node, payload.user_id)  
-    # storer = StoreAssets(user_id=payload.user_id, document_root_id=document_id, source_payload=source)
-    # storer.store(update_required)       
+    Store.store_document(documents, parent_node, payload.user_id)  
     return JSONResponse(
         status_code=200,
         content={

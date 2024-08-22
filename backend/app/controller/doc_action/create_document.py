@@ -56,9 +56,8 @@ class Create(APIEndPoint):
         documents = []
         for link in links:
             document = GetDocument.create_documents_from_txt_links(link)
-            documents += document
-        source = DocumentSource()   
-        return documents, source  
+            documents += document  
+        return documents 
 
 def document_exists(document_id: str, user_id: str) -> bool:
     """Checks if the document exists or not in the database.
@@ -74,5 +73,7 @@ def document_exists(document_id: str, user_id: str) -> bool:
     from app.database import get_session
 
     db = get_session()
-    return DocumentCRUD.document_exists_for_user(document_id, user_id, db)
+    status = DocumentCRUD.document_exists_for_user(document_id, user_id, db)
+    db.close()
+    return status
     # return StoreDocument.check_if_node_exists_for_id(document_id, user_id)
