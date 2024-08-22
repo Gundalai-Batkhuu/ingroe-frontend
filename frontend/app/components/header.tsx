@@ -38,7 +38,7 @@ export function Header() {
             className="sticky top-0 z-50 flex items-center justify-between w-full h-16 px-4 border-b shrink-0 bg-gradient-to-b from-background/10 via-background/50 to-background/80 backdrop-blur-xl">
             <div className="flex items-center">
                 <SidebarToggle/>
-                <Link href="/frontend/public" className="text-xl font-bold">
+                <Link href="/" className="ml-4 text-xl font-bold">
                     Legal AI
                 </Link>
 
