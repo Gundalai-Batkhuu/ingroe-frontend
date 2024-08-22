@@ -8,7 +8,7 @@ import {
 } from '@/app/components/search-results'
 import { SidebarSearch } from '@/app/components/sidebar/sidebar-search'
 import { SidebarDocuments } from '@/app/components/sidebar/sidebar-documents'
-import { useSelectedItemsStore } from '@/app/stores/selectedItemsStore'
+import { useSelectedItemsStore } from '@/app/store/selectedItemsStore'
 
 
 export default function SearchPage() {
@@ -87,7 +87,7 @@ export default function SearchPage() {
           </div>
         </div>
       </div>
-      <SidebarDocuments userId={userId} selectedItems={selectedItems} />
+      <SidebarDocuments userId={userId} />
     </div>
   )
 }

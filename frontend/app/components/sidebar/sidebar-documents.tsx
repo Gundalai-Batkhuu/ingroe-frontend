@@ -2,15 +2,15 @@ import React from 'react'
 import { useSidebar } from '@/app/lib/hooks/use-sidebar'
 import { cn } from '@/app/lib/utils'
 import { CreateDocumentSelection } from '@/app/components/create-document-selection'
-import { SearchResult } from '@/app/components/search-results'
+import { useSelectedItemsStore } from '@/app/store/selectedItemsStore'
 
 export interface SidebarProps extends React.ComponentProps<'div'> {
   userId: string
-  selectedItems: SearchResult[]
 }
 
-export function SidebarDocuments({ className, userId, selectedItems }: SidebarProps) {
+export function SidebarDocuments({ className, userId }: SidebarProps) {
   const { isSidebarOpen, isLoading } = useSidebar()
+  const { selectedItems, removeSelectedItem } = useSelectedItemsStore()
   const selectedLinks = selectedItems.map(item => item.link)
 
   return (
@@ -35,9 +35,18 @@ export function SidebarDocuments({ className, userId, selectedItems }: SidebarPr
                 </div>
                 <ul className="space-y-4">
                   {selectedItems.map((item, index) => (
-                    <li key={index} className="bg-white/10 p-3 rounded">
-                      <div className="font-medium text-blue-400">{item.title}</div>
-                      <div className="text-sm text-gray-300 break-all mt-1">{item.link}</div>
+                    <li key={index} className="bg-white/10 p-3 rounded flex justify-between items-start">
+                      <div>
+                        <div className="font-medium text-blue-400">{item.title}</div>
+                        <div className="text-sm text-gray-300 break-all mt-1">{item.link}</div>
+                      </div>
+                      <button
+                        onClick={() => removeSelectedItem(item)}
+                        className="text-gray-400 hover:text-white transition-colors w-6 h-6 flex items-center justify-center"
+                        aria-label="Remove item"
+                      >
+                        &#10005;
+                      </button>
                     </li>
                   ))}
                 </ul>
