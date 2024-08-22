@@ -19,8 +19,8 @@ The following is tracking which endpoints are available along with their test ca
 - [ ] Error Handling
 
 ## Document Creation
-- [ ] Take name of the document and store it as alias in the PostGres to display later
+- [x] Take name of the document and store it as alias in the PostGres to display later
 - [ ] Update alias
 - [ ] Return the document id and neccessary info after document creation
-- [ ] Create summary text for the document by receiving summary from user (optional). Put it in PostGres.
+- [x] Create summary text for the document by receiving summary from user (optional). Put it in PostGres.
 - [ ] Provide the complete file structure for a user

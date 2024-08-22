@@ -102,6 +102,8 @@ class StoreAssets:
         db.close()
 
 class DeleteAssets:
+    """Deals with the deletion of assets from various tables.
+    """
     @classmethod
     def delete_captured_file(cls, file_id: str, captured_document_id: str) -> None:
         """Deletes a record from the captured file table based on the file_id.
@@ -124,4 +126,13 @@ class DeleteAssets:
         """    
         db = get_session()
         CapturedDocumentCRUD.delete_record(db=db, document_id=document_id, captured_document_id=captured_document_id)
+        db.close()
+
+class UpdateAssets:
+    """Deals with the updation of assets from various table.
+    """
+    @classmethod
+    def update_document_info(cls, document_id: str, document_alias: str, description: str) -> None:
+        db = get_session()
+        DocumentCRUD.update_document_info(db=db, document_id=document_id, document_alias=document_alias, description=description)
         db.close()
