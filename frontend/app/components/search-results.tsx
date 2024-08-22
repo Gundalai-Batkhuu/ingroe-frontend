@@ -1,5 +1,4 @@
-import React, { useState } from 'react'
-import { CreateDocumentSelection } from '@/app/components/create-document-selection'
+import React from 'react'
 
 export interface SearchResult {
   title: string
@@ -14,9 +13,15 @@ const truncateText = (text: string, maxLength: number) => {
   return text.substr(0, maxLength - 1) + '…'
 }
 
-export const SearchResultsList = ({ results }: { results: SearchResult[] }) => {
-  const [selectedItems, setSelectedItems] = useState<SearchResult[]>([])
-
+export const SearchResultsList = ({
+  results,
+  selectedItems,
+  setSelectedItems
+}: {
+  results: SearchResult[],
+  selectedItems: SearchResult[],
+  setSelectedItems: React.Dispatch<React.SetStateAction<SearchResult[]>>
+}) => {
   const toggleItemSelection = (result: SearchResult) => {
     setSelectedItems(prev =>
       prev.includes(result)
@@ -24,10 +29,6 @@ export const SearchResultsList = ({ results }: { results: SearchResult[] }) => {
         : [...prev, result]
     )
   }
-
-  const selectedLinks = selectedItems.map(item => item.link)
-
-  const userId = 'user123'
 
   return (
     <div className="max-w-2xl mx-auto mt-8">
@@ -47,13 +48,20 @@ export const SearchResultsList = ({ results }: { results: SearchResult[] }) => {
                   href={result.link}
                   className="text-sm text-gray-300 hover:underline block whitespace-nowrap overflow-hidden text-overflow-ellipsis"
                   title={result.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   {truncateText(result.link, 80)}
                 </a>
               </div>
             </div>
             <h3 className="text-xl mb-1">
-              <a href={result.link} className="text-blue-500 hover:underline">
+              <a
+                href={result.link}
+                className="text-blue-500 hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 {result.title}
               </a>
             </h3>
@@ -74,22 +82,6 @@ export const SearchResultsList = ({ results }: { results: SearchResult[] }) => {
           </div>
         </div>
       ))}
-      {selectedItems.length > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 bg-gray-800 p-4 shadow-md">
-          <div className="flex justify-between items-center">
-            <div className="w-1/3"></div>
-            <p className="text-center text-white w-1/3">
-              {selectedItems.length} item{selectedItems.length > 1 ? 's' : ''}{' '}
-              selected
-            </p>
-            <div className="w-1/3 flex justify-end">
-              <CreateDocumentSelection userId={userId} links={selectedLinks} />
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
-
-export default SearchResultsList
