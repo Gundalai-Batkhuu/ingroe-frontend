@@ -8,6 +8,8 @@ import {
 } from '@/app/components/search-results'
 import { SidebarSearch } from '@/app/components/sidebar/sidebar-search'
 import { SidebarDocuments } from '@/app/components/sidebar/sidebar-documents'
+import { useSelectedItemsStore } from '@/app/stores/selectedItemsStore'
+
 
 export default function SearchPage() {
   const [searchResults, setSearchResults] = useState([])
@@ -22,7 +24,7 @@ export default function SearchPage() {
   const [before, setBefore] = useState<number | null>(null)
   const [after, setAfter] = useState<number | null>(null)
   const [site, setSite] = useState<string | null>(null)
-  const [selectedItems, setSelectedItems] = useState<SearchResult[]>([])
+  const { selectedItems, setSelectedItems } = useSelectedItemsStore()
   const userId = 'user123'
 
   return (
