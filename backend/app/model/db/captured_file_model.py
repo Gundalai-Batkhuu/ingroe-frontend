@@ -12,7 +12,7 @@ class CapturedFile(Base):
 
     id = Column(Integer, primary_key=True)
     file_id = Column(String, index=True, nullable=False, unique=True)
-    captured_document_id = Column(String, ForeignKey("captured_documents.captured_document_id"), nullable=False)
+    captured_document_id = Column(String, ForeignKey("captured_documents.captured_document_id"), index=True, nullable=False)
     file_url = Column(String, nullable=False) 
     file_name = Column(String, nullable=False)
 

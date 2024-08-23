@@ -12,7 +12,7 @@ class Document(Base):
 
     id = Column(Integer, primary_key=True)
     document_id = Column(String, index=True, nullable=False, unique=True)
-    user_id = Column(String, ForeignKey("users.user_id"), nullable=False)
+    user_id = Column(String, ForeignKey("users.user_id"), index=True, nullable=False)
     document_alias = Column(String, nullable=True)
     vanilla_links = Column(ARRAY(String), nullable=True)
     file_links = Column(ARRAY(String), nullable=True)

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from typing import Dict
 from app.model.pydantic_model import User
-from app.scripts.db import UserCRUD
+from app.scripts.db import (UserCRUD, CentralCrud)
 from sqlalchemy.orm import Session
 from app.database import get_db
 from fastapi.responses import JSONResponse
@@ -28,4 +28,9 @@ def create_user(user: User, db: Session = Depends(get_db)):
             "user_email": user.email
             }
     )
-    return user
+    
+@router.get("/get-user-artifacts")
+def get_user_artifacts(user_id: str, db: Session = Depends(get_db)):
+    res = CentralCrud.get_all_artifacts_for_user(db=db, user_id=user_id)
+    # print(res)
+    return "hello"    
