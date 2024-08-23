@@ -12,7 +12,7 @@ class CapturedDocument(Base):
 
     id = Column(Integer, primary_key=True)
     captured_document_id = Column(String, index=True, nullable=False, unique=True)
-    document_id = Column(String, ForeignKey("documents.document_id"), nullable=False)
+    document_id = Column(String, ForeignKey("documents.document_id"), index=True, nullable=False)
     query_ready = Column(Boolean, nullable=False)
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
 
