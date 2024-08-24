@@ -2,7 +2,7 @@
 Provides the modules for the pydantic model.
 """
 
-from app.model.pydantic_model.data_model import (SearchQuery, SearchResult, QueryDocument, CreateDocument, User, DeleteDocument, DeleteCapturedFile, DeleteCapturedDocument, CreateDocumentCapture, DocumentInfo, ShareDocument)
+from app.model.pydantic_model.data_model import (SearchQuery, SearchResult, QueryDocument, CreateDocument, User, DeleteDocument, DeleteCapturedFile, DeleteCapturedDocument, CreateDocumentCapture, DocumentInfo, ShareDocument, AcceptSharedDocument)
 
 __all__ = [
     "SearchQuery",
@@ -15,5 +15,6 @@ __all__ = [
     "DeleteCapturedDocument",
     "CreateDocumentCapture",
     "DocumentInfo",
-    "ShareDocument"
+    "ShareDocument",
+    "AcceptSharedDocument"
 ]
