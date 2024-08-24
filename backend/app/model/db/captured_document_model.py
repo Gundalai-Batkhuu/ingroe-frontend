@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, JSON, DateTime, Boolean
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Boolean, func
 from sqlalchemy.orm import relationship
 from app.database import Base
 from datetime import datetime, timezone
@@ -14,7 +14,7 @@ class CapturedDocument(Base):
     captured_document_id = Column(String, index=True, nullable=False, unique=True)
     document_id = Column(String, ForeignKey("documents.document_id"), index=True, nullable=False)
     query_ready = Column(Boolean, nullable=False)
-    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.current_timestamp(), nullable=False)
 
     document = relationship("Document", back_populates="captured_document")
     captured_file = relationship("CapturedFile", back_populates="captured_document", cascade="all, delete-orphan")

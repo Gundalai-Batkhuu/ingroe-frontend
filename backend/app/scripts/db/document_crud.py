@@ -124,5 +124,4 @@ class DocumentCRUD:
         if len(description) > 0:
             document.description = description 
         db.commit()
-        db.refresh(document)     
-        
+        db.refresh(document)        

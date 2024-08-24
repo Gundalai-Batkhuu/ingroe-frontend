@@ -1,9 +1,11 @@
 from sqlalchemy.orm import Session
-from app.model.db import (User, Document, CapturedDocument, CapturedFile)
+from app.model.db import (User, Document, CapturedDocument, CapturedFile, SharedDocument, SharedDocumentAccessor)
 from sqlalchemy.orm import joinedload
 from typing import List, Any
+from datetime import datetime
+from app.utils import get_secret_token
 
-class CentralCrud:
+class CentralCRUD:
     """Class that contains methods that operates on all or some of the models.
     """
     @classmethod
@@ -56,3 +58,48 @@ class CentralCrud:
                     }
                 documents.append(doc_key)     
         return documents
+    
+    @classmethod
+    def share_document(
+        cls,
+        db:Session, 
+        document_id: str, 
+        user_id: str, 
+        is_shared:bool,
+        share_id: str,
+        open_to_all: bool,
+        accessor_validity: datetime | None,
+        validity: datetime | None = None,
+        accessor_emails : List[str] | None = None) -> None:
+        """Updates the is_shared attribute to received argument to indicate if it is shared
+        or not.
+
+        Args:
+        db (Session): The database session object.
+        document_id (str): The id of the document to be shared. This document is same as 
+        the document root of the node in the Neo4j Database.
+        user_id (str): Id of the user sharing the file.
+        is_shared (bool): Boolean value to indicate if the document is in the sharing state.
+        share_id (str): The id to distinguish the shared document.
+        open_to_all (bool): Indicates whether the document is publicly shared or selectively shared.
+        accessor_validity (datetime): The validity period for different users or email accounts. It is different from the global validity above. This accessor validity is less than or equal to the global validity.
+        validity (datetime | None): Validity of the shared document.
+        accessor_emails (List[str] | None): The list of emails to which the email is shared. 
+        """
+        document = db.query(Document).filter(
+             Document.document_id == document_id,
+             Document.user_id == user_id
+             ).first()
+        document.is_shared = is_shared
+
+        shared_document = SharedDocument(share_id=share_id, document_id=document_id, open_to_all=open_to_all, validity=validity)
+        db.add(shared_document)
+
+        if accessor_emails is not None:
+            for email in accessor_emails:
+                verification_token = get_secret_token(40)
+                document_accessor =  SharedDocumentAccessor(email=email, share_id=share_id, verification_token=verification_token, validity=accessor_validity)
+                db.add(document_accessor)
+
+        db.commit()
+        db.refresh(document)

@@ -39,3 +39,10 @@ def get_file_name_from_original_file_name(original_file_name: str) -> str:
     """
     file_name, _ = os.path.splitext(original_file_name)
     return file_name
+
+def get_secret_token(length: int) -> str:
+    """Returns the secret token of the specified length.
+    """
+    import secrets
+    token =secrets.token_hex(length)
+    return token

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Boolean, Integer
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Boolean, Integer, func
 from sqlalchemy.orm import relationship
 from app.database import Base
 from datetime import datetime, timezone
@@ -23,6 +23,6 @@ class SharedDocumentAccessor(Base):
     verification_token = Column(String)
     verification_code = Column(Integer)
     validity = Column(DateTime(timezone=True), nullable=True)
-    shared_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
+    shared_at = Column(DateTime(timezone=True), server_default=func.current_timestamp(), nullable=False)
 
     shared_document = relationship("SharedDocument", back_populates="shared_document_accessor")
