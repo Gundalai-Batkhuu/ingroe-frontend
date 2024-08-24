@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Boolean
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Boolean, func
 from sqlalchemy.orm import relationship
 from app.database import Base
 from datetime import datetime, timezone
@@ -14,7 +14,7 @@ class SharedDocument(Base):
     document_id = Column(String, ForeignKey("documents.document_id"), index=True, nullable=False)
     open_to_all = Column(Boolean, nullable=False)
     validity = Column(DateTime(timezone=True), nullable=True)
-    shared_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
+    shared_at = Column(DateTime(timezone=True), server_default=func.current_timestamp(), nullable=False)
 
     document = relationship("Document", back_populates="shared_document")
     shared_document_accessor = relationship("SharedDocumentAccessor", back_populates="shared_document", cascade="all, delete-orphan")

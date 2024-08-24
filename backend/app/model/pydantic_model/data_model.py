@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field, model_validator
 from typing import Any, Literal, List
 from pydantic_extra_types.country import CountryShortName
 from uuid import uuid4
+from datetime import datetime
 
 class SearchQuery(BaseModel):
     """Data Model for searching documents.
@@ -109,4 +110,13 @@ class DocumentInfo(BaseModel):
     user_id: str
     document_id: str
     document_alias: str = ""
-    description: str = ""   
+    description: str = ""  
+
+class ShareDocument(BaseModel):
+    """Data model for sharing the document.
+    """  
+    user_id: str
+    document_id: str
+    open_access: bool 
+    validity: datetime | None = None
+    accessor_emails: List[str] | None = None
