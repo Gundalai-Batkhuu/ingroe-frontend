@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, ARRAY, JSON, DateTime
+from sqlalchemy import Column, Integer, String, ForeignKey, ARRAY, JSON, DateTime, Boolean
 from sqlalchemy.orm import relationship
 from app.database import Base
 from datetime import datetime, timezone
@@ -19,7 +19,9 @@ class Document(Base):
     unsupported_file_links = Column(ARRAY(String), nullable=True)
     files = Column(JSON, nullable=True) 
     description = Column(String, nullable=True)
+    is_shared = Column(Boolean, server_default="False")
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
 
     user = relationship("User", back_populates="document")
     captured_document = relationship("CapturedDocument", back_populates="document", cascade="all, delete-orphan")
+    shared_document = relationship("SharedDocument", back_populates="document", cascade="all, delete-orphan")

@@ -23,4 +23,13 @@ The following is tracking which endpoints are available along with their test ca
 - [x] Update alias
 - [x] Return the document id and neccessary info after document creation and all routes
 - [x] Create summary text for the document by receiving summary from user (optional). Put it in PostGres.
-- [ ] Provide the complete file structure for a user
+- [x] Provide the complete file structure for a user
+
+## Share Documents
+- [ ] Share the document to particular ids or public.
+- [ ] Enable the access to others by token verification at the beginning.
+- [ ] Stop the access to a particular document or all.
+- [ ] Delete the sharing status.
+- [ ] After verifying add the document name and description to a user account.
+- [ ] Set the validity of the link that allows the document to be shared.
+- [ ] A table to store the activity on the shared documents.
