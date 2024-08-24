@@ -26,7 +26,7 @@ def init_db():
     We import all the models from which tables are to be produced and create all.
     """
     # Import all the models here to ensure they are registered properly
-    from app.model.db import (User, Document, CapturedDocument, CapturedFile)
+    from app.model.db import (User, Document, CapturedDocument, CapturedFile, SharedDocument, SharedDocumentAccessor)
     Base.metadata.create_all(bind=engine)  
     print("database initialised")      
 

@@ -31,6 +31,11 @@ def create_user(user: User, db: Session = Depends(get_db)):
     
 @router.get("/get-user-artifacts")
 def get_user_artifacts(user_id: str, db: Session = Depends(get_db)):
-    res = CentralCrud.get_all_artifacts_for_user(db=db, user_id=user_id)
-    # print(res)
-    return "hello"    
+    result = CentralCrud.get_all_artifacts_for_user(db=db, user_id=user_id)
+    return JSONResponse(
+        status_code=200,
+        content={
+            "user_id": user_id,
+            "artefact_tree":result
+            }
+    )   
