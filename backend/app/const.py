@@ -28,3 +28,10 @@ class FileType:
     """      
     PDF: str = "pdf"
     TXT: str = "txt"
+
+class ErrorCode:
+    """Contains the error code for different errors.
+    """    
+    FORBIDDEN = 403
+    UNAUTHORIZED = 401
+    NOERROR = 200

@@ -4,6 +4,7 @@ from sqlalchemy.orm import joinedload
 from typing import List, Any
 from datetime import datetime
 from app.utils import get_secret_token
+from app.const import ErrorCode
 
 class CentralCRUD:
     """Class that contains methods that operates on all or some of the models.
@@ -86,10 +87,9 @@ class CentralCRUD:
         validity (datetime | None): Validity of the shared document.
         accessor_emails (List[str] | None): The list of emails to which the email is shared. 
         """
-        document = db.query(Document).filter(
-             Document.document_id == document_id,
-             Document.user_id == user_id
-             ).first()
+        document = db.query(Document).filter(Document.document_id == document_id).first()
+        if document.user_id != user_id:
+            return ErrorCode.UNAUTHORIZED
         document.is_shared = is_shared
 
         shared_document = SharedDocument(share_id=share_id, document_id=document_id, open_to_all=open_to_all, validity=validity)
@@ -103,3 +103,40 @@ class CentralCRUD:
 
         db.commit()
         db.refresh(document)
+        return ErrorCode.NOERROR
+
+    @classmethod
+    def accept_shared_document(
+            cls,
+            db: Session,
+            email: str,
+            share_id: str,
+            user_id: str,
+            verification_token: str,
+            accept_time: datetime) -> int | datetime:
+            """It verifies the token and accept the shared document.
+
+            Args:
+            db (Session): The database session object.
+            email (str): The email of the accessor.
+            user_id (str): Id of the user getting access to the file.
+            is_shared (bool): Boolean value to indicate if the document is in the sharing state.
+            share_id (str): The id to distinguish the shared document.
+            verification_token (str): A long string used for verifying the user before giving access to the document or before being accepted.
+            accept_time (datetime): The time when the user accepted the shared document.
+
+            Returns:
+            int | datetime: An integer representing the error code if there is an error. Otherwise, the 
+            period or date of validity.
+            """
+            record = db.query(SharedDocumentAccessor).filter(SharedDocumentAccessor.email == email).first()
+            if record.validity < accept_time:
+                return ErrorCode.FORBIDDEN
+            if record.verification_token != verification_token or record.share_id != share_id:
+                return ErrorCode.UNAUTHORIZED
+            record.user_id = user_id
+            record.verified = True
+            db.commit()
+            db.refresh(record)
+            return record.validity
+

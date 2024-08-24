@@ -33,3 +33,4 @@ The following is tracking which endpoints are available along with their test ca
 - [ ] After verifying add the document name and description to a user account.
 - [ ] Set the validity of the link that allows the document to be shared.
 - [ ] A table to store the activity on the shared documents.
+- [ ] Send email to accept the shared document if not public.

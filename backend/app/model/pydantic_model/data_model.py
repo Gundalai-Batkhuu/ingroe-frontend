@@ -120,3 +120,28 @@ class ShareDocument(BaseModel):
     open_access: bool 
     validity: datetime | None = None
     accessor_emails: List[str] | None = None
+
+    @model_validator(mode="after")
+    @classmethod
+    def post_validator(cls, values: Any) -> Any:
+        """
+        checks if the combination of values passed as inputs are acceptable.
+        raises Value Error if combination violates the expectation.
+        """
+        open_access = values.open_access
+        accessor_emails = values.accessor_emails
+        
+        if open_access is True and accessor_emails is not None:
+            raise ValueError("Open access must be false when email list is provided.")
+        if open_access is False and accessor_emails is None:
+            raise ValueError("Email list must be provided when open access is disabled.")
+        return values 
+
+class AcceptSharedDocument(BaseModel):
+    """Data model for accepting the shared document.
+    """   
+    email: str
+    share_id: str
+    user_id: str
+    verification_token: str
+    accept_time: datetime
