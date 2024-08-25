@@ -152,3 +152,8 @@ class ValidityUpdate(BaseModel):
     user_id: str
     document_id: str
     updated_validity: datetime
+
+class ScopedValidityUpdate(ValidityUpdate):
+    """Data model for updating the validity for a single user.
+    """   
+    user_email: str

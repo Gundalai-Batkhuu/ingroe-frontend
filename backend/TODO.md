@@ -34,10 +34,11 @@ The following is tracking which endpoints are available along with their test ca
 - [x] Set the validity of the link that allows the document to be shared.
 - [ ] A table to store the activity on the shared documents.
 - [ ] Send email to accept the shared document if not public.
-- [ ] Validity changed email to subscribers.
+- [ ] Validity changed then email to subscribers.
 - [ ] Change the validity of the shared document.
 - [ ] Delete the shared document from the sharee account.
 - [ ] Add new accessor to the existing shared document.
+- [ ] Ask for validity increase for a document.
 
 ## Pydantic model
 - [ ] Use mixin

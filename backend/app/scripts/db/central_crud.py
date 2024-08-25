@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from app.model.db import (User, Document, CapturedDocument, CapturedFile, SharedDocument, SharedDocumentAccessor)
 from sqlalchemy.orm import joinedload
-from typing import List, Any
+from typing import List, Any, Dict
 from datetime import datetime
 from app.utils import get_secret_token
 from app.const import ErrorCode
@@ -139,4 +139,30 @@ class CentralCRUD:
             db.commit()
             db.refresh(record)
             return record.validity
+    
+    @classmethod
+    def increase_document_validity_for_user(cls, db: Session, document_id: str, user_email: str, updated_validity: datetime) -> Dict[int,str]:
+        """Increases the validity of a shared document for a user.
+
+        Args:
+        db (Session): The database session object.
+        document_id (str): The id of the document that is already being shared.
+        user_email (str): The email id of the user for which the validity has been increased.
+        updated_validity (datetime): The new validity of the document.
+
+        Returns:
+        Dict[int,str]: A dictionary containing the status code and the message.
+        """
+        document = db.query(SharedDocument).filter(SharedDocument.document_id == document_id).first()
+        accessor = db.query(SharedDocumentAccessor).filter(SharedDocumentAccessor.email == user_email).first()
+        if updated_validity <= accessor.validity:
+            return {"status_code": ErrorCode.BADREQUEST, "msg": "New validity must be greater than the existing validity."} 
+        accessor.validity = updated_validity
+        central_validity = max(document.validity, updated_validity)
+        document.validity = central_validity
+        db.commit()
+        db.refresh(accessor)
+        db.refresh(document)
+        return {"status_code": ErrorCode.NOERROR, "msg": "Validity increased."} 
+
 
