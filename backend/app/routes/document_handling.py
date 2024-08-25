@@ -1,13 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException
 from typing import Dict
-from app.model.pydantic_model import (ShareDocument, AcceptSharedDocument)
-from app.scripts.db import (UserCRUD, CentralCRUD)
+from app.model.pydantic_model import (ShareDocument, AcceptSharedDocument, ValidityUpdate)
+from app.scripts.db import (CentralCRUD, SharedDocumentCRUD)
 from sqlalchemy.orm import Session
 from app.database import get_db
 from fastapi.responses import JSONResponse
 from uuid import uuid4
 from app.const import ErrorCode
 from fastapi.encoders import jsonable_encoder
+from app.controller.doc_action import document_exists
 
 router = APIRouter(
     prefix="/handle",
@@ -42,4 +43,21 @@ def accept_shared_document(payload: AcceptSharedDocument, db: Session = Depends(
             "share_id": payload.share_id,
             "validity": response
             })
+    )
+
+@router.post("/change-document-validity")
+def change_document_validity(payload: ValidityUpdate, db: Session = Depends(get_db)):
+    if not document_exists(document_id=payload.document_id, user_id=payload.user_id):
+        raise HTTPException(status_code=400, detail="Document does not exist. Please provide a valid document id.")
+    response = SharedDocumentCRUD.increase_validity(db=db, document_id=payload.document_id, updated_validity=payload.updated_validity)
+    response_status_code = response.get("status_code")
+    response_message = response.get("msg")
+    if response_status_code != 200:
+        raise HTTPException(status_code=response_status_code, detail=response_message)
+    return JSONResponse(
+        status_code=200,
+        content=jsonable_encoder({
+            "message": response_message,
+            "new_validity": payload.updated_validity
+        })
     )
