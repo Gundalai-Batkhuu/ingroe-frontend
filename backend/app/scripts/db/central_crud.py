@@ -5,6 +5,7 @@ from typing import List, Any, Dict
 from datetime import datetime
 from app.utils import get_secret_token
 from app.const import ErrorCode
+from uuid import uuid4
 
 class CentralCRUD:
     """Class that contains methods that operates on all or some of the models.
@@ -87,7 +88,7 @@ class CentralCRUD:
         validity (datetime | None): Validity of the shared document.
         accessor_emails (List[str] | None): The list of emails to which the email is shared. 
         """
-        document = db.query(Document).filter(Document.document_id == document_id).first()
+        user, document = db.query(User, Document).filter(Document.document_id == document_id).join(Document, User.user_id == Document.user_id).first()
         if document.user_id != user_id:
             return ErrorCode.UNAUTHORIZED
         document.is_shared = is_shared
@@ -96,9 +97,10 @@ class CentralCRUD:
         db.add(shared_document)
 
         if accessor_emails is not None:
+            if user.email in accessor_emails: accessor_emails.remove(user.email)
             for email in accessor_emails:
                 verification_token = get_secret_token(40)
-                document_accessor =  SharedDocumentAccessor(email=email, share_id=share_id, verification_token=verification_token, validity=accessor_validity)
+                document_accessor = SharedDocumentAccessor(email=email, share_id=share_id, verification_token=verification_token, validity=accessor_validity)
                 db.add(document_accessor)
 
         db.commit()
@@ -129,13 +131,14 @@ class CentralCRUD:
             int | datetime: An integer representing the error code if there is an error. Otherwise, the 
             period or date of validity.
             """
-            record = db.query(SharedDocumentAccessor).filter(SharedDocumentAccessor.email == email).first()
+            record = db.query(SharedDocumentAccessor).filter(SharedDocumentAccessor.email == email, SharedDocumentAccessor.share_id == share_id).first()
             if record.validity < accept_time:
                 return ErrorCode.FORBIDDEN
             if record.verification_token != verification_token or record.share_id != share_id:
                 return ErrorCode.UNAUTHORIZED
             record.user_id = user_id
             record.verified = True
+            record.verification_token = ""
             db.commit()
             db.refresh(record)
             return record.validity
@@ -153,16 +156,16 @@ class CentralCRUD:
         Returns:
         Dict[int,str]: A dictionary containing the status code and the message.
         """
-        document = db.query(SharedDocument).filter(SharedDocument.document_id == document_id).first()
-        accessor = db.query(SharedDocumentAccessor).filter(SharedDocumentAccessor.email == user_email).first()
+        shared_document, document = db.query(SharedDocument, Document).join(Document, SharedDocument.document_id == Document.document_id).filter(Document.document_id == document_id).first()
+        accessor = db.query(SharedDocumentAccessor).filter(SharedDocumentAccessor.email == user_email, SharedDocumentAccessor.share_id == shared_document.share_id).first()
         if updated_validity <= accessor.validity:
             return {"status_code": ErrorCode.BADREQUEST, "msg": "New validity must be greater than the existing validity."} 
         accessor.validity = updated_validity
-        central_validity = max(document.validity, updated_validity)
-        document.validity = central_validity
+        central_validity = max(shared_document.validity, updated_validity)
+        shared_document.validity = central_validity
         db.commit()
         db.refresh(accessor)
-        db.refresh(document)
+        db.refresh(shared_document)
         return {"status_code": ErrorCode.NOERROR, "msg": "Validity increased."} 
     
     @classmethod

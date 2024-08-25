@@ -35,11 +35,13 @@ The following is tracking which endpoints are available along with their test ca
 - [ ] A table to store the activity on the shared documents.
 - [ ] Send email to accept the shared document if not public.
 - [ ] Validity changed then email to subscribers.
-- [ ] Change the validity of the shared document.
+- [x] Change the validity of the shared document.
 - [ ] Delete the shared document from the sharee account.
 - [ ] Add new accessor to the existing shared document.
 - [ ] Ask for validity increase for a document.
-- [ ] Add validity for all subscribers.
+- [x] Add validity for all subscribers.
+- [ ] Replace the query operation with join where applicable.
+- [ ] Add auth middleware to check for user.
 
 ## Pydantic model
 - [ ] Use mixin
