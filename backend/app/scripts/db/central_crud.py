@@ -156,8 +156,9 @@ class CentralCRUD:
         Returns:
         Dict[int,str]: A dictionary containing the status code and the message.
         """
-        shared_document, document = db.query(SharedDocument, Document).join(Document, SharedDocument.document_id == Document.document_id).filter(Document.document_id == document_id).first()
-        accessor = db.query(SharedDocumentAccessor).filter(SharedDocumentAccessor.email == user_email, SharedDocumentAccessor.share_id == shared_document.share_id).first()
+        # shared_document, document = db.query(SharedDocument, Document).join(Document, SharedDocument.document_id == Document.document_id).filter(Document.document_id == document_id).first()
+        # accessor = db.query(SharedDocumentAccessor).filter(SharedDocumentAccessor.email == user_email, SharedDocumentAccessor.share_id == shared_document.share_id).first()
+        document, shared_document, accessor = db.query(Document, SharedDocument, SharedDocumentAccessor).join(SharedDocument, Document.id == SharedDocument.id).join(SharedDocumentAccessor, SharedDocumentAccessor.share_id == SharedDocument.share_id).filter(Document.document_id == document_id, SharedDocumentAccessor.email == user_email).first()
         if updated_validity <= accessor.validity:
             return {"status_code": ErrorCode.BADREQUEST, "msg": "New validity must be greater than the existing validity."} 
         accessor.validity = updated_validity
