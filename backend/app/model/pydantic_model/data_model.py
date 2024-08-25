@@ -145,3 +145,10 @@ class AcceptSharedDocument(BaseModel):
     user_id: str
     verification_token: str
     accept_time: datetime
+
+class ValidityUpdate(BaseModel):
+    """Data model for updating the validity.
+    """
+    user_id: str
+    document_id: str
+    updated_validity: datetime

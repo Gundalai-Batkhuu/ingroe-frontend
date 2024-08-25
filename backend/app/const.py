@@ -35,3 +35,4 @@ class ErrorCode:
     FORBIDDEN = 403
     UNAUTHORIZED = 401
     NOERROR = 200
+    BADREQUEST = 400
