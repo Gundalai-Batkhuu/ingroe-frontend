@@ -40,7 +40,7 @@ The following is tracking which endpoints are available along with their test ca
 - [ ] Add new accessor to the existing shared document.
 - [ ] Ask for validity increase for a document.
 - [x] Add validity for all subscribers.
-- [ ] Replace the query operation with join where applicable.
+- [x] Replace the query operation with join where applicable.
 - [ ] Add auth middleware to check for user.
 
 ## Pydantic model
