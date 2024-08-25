@@ -19,7 +19,9 @@ router = APIRouter(
 @router.post("/share-document")
 def share_document(payload: ShareDocument, db: Session = Depends(get_db)):
     share_id = uuid4().hex
-    CentralCRUD.share_document(db=db, document_id=payload.document_id, user_id=payload.user_id, is_shared=True, share_id=share_id, open_to_all=payload.open_access, validity=payload.validity, accessor_emails=payload.accessor_emails, accessor_validity=payload.validity)
+    response = CentralCRUD.share_document(db=db, document_id=payload.document_id, user_id=payload.user_id, is_shared=True, share_id=share_id, open_to_all=payload.open_access, validity=payload.validity, accessor_emails=payload.accessor_emails, accessor_validity=payload.validity)
+    if response == ErrorCode.UNAUTHORIZED:
+        raise HTTPException(status_code=401, detail="Authentication Error!")
     return JSONResponse(
         status_code=200,
         content=jsonable_encoder({

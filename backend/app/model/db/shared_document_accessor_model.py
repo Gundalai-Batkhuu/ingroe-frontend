@@ -14,7 +14,7 @@ class SharedDocumentAccessor(Base):
     __tablename__ = "shared_document_accessors"
 
     id = Column(Integer, primary_key=True)
-    email = Column(String, unique=True, nullable=False, index=True)
+    email = Column(String, nullable=False, index=True)
     share_id = Column(String, ForeignKey("shared_documents.share_id"), index=True, nullable=False)
     user_id = Column(String, nullable=True)
     verified = Column(Boolean, server_default="False")
