@@ -49,7 +49,7 @@ def accept_shared_document(payload: AcceptSharedDocument, db: Session = Depends(
 def change_document_validity(payload: ValidityUpdate, db: Session = Depends(get_db)):
     if not document_exists(document_id=payload.document_id, user_id=payload.user_id):
         raise HTTPException(status_code=400, detail="Document does not exist. Please provide a valid document id.")
-    response = SharedDocumentCRUD.increase_validity(db=db, document_id=payload.document_id, updated_validity=payload.updated_validity)
+    response = CentralCRUD.increase_validity(db=db, document_id=payload.document_id, updated_validity=payload.updated_validity, down_propagate=payload.down_propagate)
     response_status_code = response.get("status_code")
     response_message = response.get("msg")
     if response_status_code != 200:
