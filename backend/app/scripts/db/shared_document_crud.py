@@ -29,23 +29,3 @@ class SharedDocumentCRUD:
         db.add(document)
         db.commit()
         db.refresh(document)
-
-    @classmethod
-    def increase_validity(cls, db: Session, document_id: str, updated_validity: datetime) -> Dict[int,str]:
-            """Increase the validity of the existing shared document.
-
-            Args:
-            db (Session): The database session object.
-            document_id (str): The id of the document that is already being shared.
-            updated_validity (datetime): The new validity of the document.
-
-            Returns:
-            Dict[int,str]: A dictionary containing the status code and the message.
-            """
-            document = db.query(SharedDocument).filter(SharedDocument.document_id == document_id).first()
-            if updated_validity <= document.validity:
-                 return {"status_code": ErrorCode.BADREQUEST, "msg": "New validity must be greater than the existing validity."}
-            document.validity = updated_validity
-            db.commit()
-            db.refresh(document)
-            return {"status_code": ErrorCode.NOERROR, "msg": "Validity has increased."}

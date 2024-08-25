@@ -147,11 +147,13 @@ class AcceptSharedDocument(BaseModel):
     accept_time: datetime
 
 class ValidityUpdate(BaseModel):
-    """Data model for updating the validity.
+    """Data model for updating the validity. Down propagate indicates if the visibility need to be
+    increased for the accessors too if the document has open to all access as false.
     """
     user_id: str
     document_id: str
     updated_validity: datetime
+    down_propagate: bool = False
 
 class ScopedValidityUpdate(ValidityUpdate):
     """Data model for updating the validity for a single user.

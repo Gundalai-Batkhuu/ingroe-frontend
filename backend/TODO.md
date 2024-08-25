@@ -39,6 +39,7 @@ The following is tracking which endpoints are available along with their test ca
 - [ ] Delete the shared document from the sharee account.
 - [ ] Add new accessor to the existing shared document.
 - [ ] Ask for validity increase for a document.
+- [ ] Add validity for all subscribers.
 
 ## Pydantic model
 - [ ] Use mixin

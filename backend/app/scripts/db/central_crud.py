@@ -164,5 +164,31 @@ class CentralCRUD:
         db.refresh(accessor)
         db.refresh(document)
         return {"status_code": ErrorCode.NOERROR, "msg": "Validity increased."} 
+    
+    @classmethod
+    def increase_validity(cls, db: Session, document_id: str, updated_validity: datetime, down_propagate: bool) -> Dict[int,str]:
+            """Increase the validity of the existing shared document. If the down propagate
+            is true and the document provides selective access, then the validity is increased 
+            for the accessors as well.
+
+            Args:
+            db (Session): The database session object.
+            document_id (str): The id of the document that is already being shared.
+            updated_validity (datetime): The new validity of the document.
+
+            Returns:
+            Dict[int,str]: A dictionary containing the status code and the message.
+            """
+            document = db.query(SharedDocument).filter(SharedDocument.document_id == document_id).first()
+            if updated_validity <= document.validity:
+                 return {"status_code": ErrorCode.BADREQUEST, "msg": "New validity must be greater than the existing validity."}
+            document.validity = updated_validity
+            if down_propagate and not document.open_to_all:
+                 accessors = db.query(SharedDocumentAccessor).filter(SharedDocumentAccessor.share_id == document.share_id).all()
+                 for accessor in accessors:
+                      accessor.validity = updated_validity
+            db.commit()
+            db.refresh(document)
+            return {"status_code": ErrorCode.NOERROR, "msg": "Validity has increased."}
 
 
