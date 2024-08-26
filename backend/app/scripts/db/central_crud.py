@@ -108,7 +108,7 @@ class CentralCRUD:
             return ErrorCode.UNAUTHORIZED
         document.is_shared = is_shared
 
-        shared_document = SharedDocument(share_id=share_id, document_id=document_id, open_to_all=open_to_all, validity=validity)
+        shared_document = SharedDocument(share_id=share_id, document_id=document_id, open_to_all=open_to_all, validity=validity, user_count=len(accessor_emails))
         db.add(shared_document)
 
         if accessor_emails is not None:
@@ -327,6 +327,7 @@ class CentralCRUD:
                     "access_open": shared_record.access_open,
                     "access_blocked_at": shared_record.access_blocked_at,
                     "access_opened_at": shared_record.access_opened_at,
+                    "accessor_count": shared_record.user_count,
                     "accessor": shared_accessors
                 }
                 shared_documents.append(shared_key)
@@ -361,6 +362,24 @@ class CentralCRUD:
             db.delete(shared_document)
             db.commit()
             return {"status_code": ErrorCode.NOERROR, "msg": "Document has been removed from sharing state."}  
+        
+    @classmethod
+    def remove_shared_document_from_sharee_account(cls, db:Session, document_id: str, user_id: str) -> None:
+        """Removes the shared document from the user account. The user is a sharee not the owner.
+
+        Args:
+        db (Session): The database session object.
+        document_id (str): The id of the document that is already being shared.
+        user_id (str): The id of the user who wants to remove the shared document as a sharee.
+        """
+        shared_document, accessor = db.query(SharedDocument, SharedDocumentAccessor).join(SharedDocumentAccessor, SharedDocument.share_id == SharedDocumentAccessor.share_id).filter(SharedDocument.document_id == document_id, SharedDocumentAccessor.user_id == user_id).first() 
+        print(accessor.email)  
+        total_users = shared_document.user_count
+        shared_document.user_count = total_users - 1
+
+        db.delete(accessor) 
+        db.commit()
+        
 
         
 
