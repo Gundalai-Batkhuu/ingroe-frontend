@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from typing import Dict, Tuple
-from app.model.pydantic_model import (ShareDocument, AcceptSharedDocument, ValidityUpdate, ScopedValidityUpdate, Access, ScopedAccess)
+from app.model.pydantic_model import (ShareDocument, AcceptSharedDocument, ValidityUpdate, ScopedValidityUpdate, Access, ScopedAccess, DocumentStatus, DocumentSharingRemoval)
 from app.scripts.db import (CentralCRUD, SharedDocumentCRUD)
 from sqlalchemy.orm import Session
 from app.database import get_db
@@ -99,6 +99,19 @@ def block_document_access_for_user(payload: ScopedAccess, db: Session = Depends(
     if not document_exists(document_id=payload.document_id, user_id=payload.user_id):
         raise HTTPException(status_code=400, detail="Document does not exist. Please provide a valid document id.")
     response = CentralCRUD.change_document_access_user(db=db, share_id=payload.share_id, emails=payload.emails, access_change_reason=payload.access_change_reason, block_access=payload.block_access)
+    response_status_code, response_message = break_db_response_payload(response)
+    if response_status_code != 200:
+        raise HTTPException(status_code=response_status_code, detail=response_message)
+    return JSONResponse(
+        status_code=200,
+        content={
+            "message": response_message,
+        }
+    )
+
+@router.delete("/remove-share-state")
+def remove_share_state(payload: DocumentSharingRemoval, db: Session = Depends(get_db)):
+    response = CentralCRUD.remove_share_state(db=db, document_id=payload.document_id, current_timestamp=payload.current_timestamp)
     response_status_code, response_message = break_db_response_payload(response)
     if response_status_code != 200:
         raise HTTPException(status_code=response_status_code, detail=response_message)

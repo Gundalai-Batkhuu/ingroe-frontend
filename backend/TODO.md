@@ -45,6 +45,7 @@ The following is tracking which endpoints are available along with their test ca
 - [ ] Auto delete after the validity has passed.
 - [ ] Change from selective access to public.
 - [x] Get list of shared documents that are owned.
+- [ ] Delete after notice period ends. Develop as a middleware.
 
 ## Pydantic model
 - [ ] Use mixin
