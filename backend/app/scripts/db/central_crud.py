@@ -147,7 +147,7 @@ class CentralCRUD:
             period or date of validity.
             """
             record = db.query(SharedDocumentAccessor).filter(SharedDocumentAccessor.email == email, SharedDocumentAccessor.share_id == share_id).first()
-            if record.validity < accept_time:
+            if record.validity is not None and record.validity < accept_time:
                 return ErrorCode.FORBIDDEN
             if record.verification_token != verification_token or record.share_id != share_id:
                 return ErrorCode.UNAUTHORIZED
@@ -174,7 +174,7 @@ class CentralCRUD:
         # shared_document, document = db.query(SharedDocument, Document).join(Document, SharedDocument.document_id == Document.document_id).filter(Document.document_id == document_id).first()
         # accessor = db.query(SharedDocumentAccessor).filter(SharedDocumentAccessor.email == user_email, SharedDocumentAccessor.share_id == shared_document.share_id).first()
         document, shared_document, accessor = db.query(Document, SharedDocument, SharedDocumentAccessor).join(SharedDocument, Document.id == SharedDocument.id).join(SharedDocumentAccessor, SharedDocumentAccessor.share_id == SharedDocument.share_id).filter(Document.document_id == document_id, SharedDocumentAccessor.email == user_email).first()
-        if updated_validity <= accessor.validity:
+        if accessor.validity is not None and updated_validity <= accessor.validity:
             return {"status_code": ErrorCode.BADREQUEST, "msg": "New validity must be greater than the existing validity."} 
         accessor.validity = updated_validity
         central_validity = max(shared_document.validity, updated_validity)
@@ -199,7 +199,7 @@ class CentralCRUD:
             Dict[int,str]: A dictionary containing the status code and the message.
             """
             document = db.query(SharedDocument).filter(SharedDocument.document_id == document_id).first()
-            if updated_validity <= document.validity:
+            if document.validity is not None and updated_validity <= document.validity:
                 return {"status_code": ErrorCode.BADREQUEST, "msg": "New validity must be greater than the existing validity."}
             document.validity = updated_validity
             if down_propagate and not document.open_to_all:
@@ -330,6 +330,37 @@ class CentralCRUD:
                     "accessor": shared_accessors
                 }
                 shared_documents.append(shared_key)
-        return shared_documents        
+        return shared_documents   
+
+    @classmethod
+    def remove_share_state(cls, db: Session, document_id: str, current_timestamp: datetime) -> Dict[int,str]:
+        """Removes the document from the shared table only if it satisfies all the below conditions:
+         1. if there are no accessors for the document.
+         2. if the document validity is not None i.e. the document is not public.
+         3. if the document has its validity expired.
+         Owner need to notify the users or public giving the deadline before deleting in such cases.
+
+        Args:
+        db (Session): The database session object.
+        document_id (str): The id of the document that is already being shared.
+        current_timestamp (datetime): The time when the request to remove from shared table is made.
+
+        Returns:
+        Dict[int,str]: A dictionary containing the status code and the message.
+        """
+        records = db.query(SharedDocument, SharedDocumentAccessor).outerjoin(SharedDocumentAccessor, SharedDocument.share_id == SharedDocumentAccessor.share_id).filter(SharedDocument.document_id == document_id).all()
+        for record in records:
+            shared_document, shared_accessor = record
+            if shared_accessor is not None:
+                return {"status_code": ErrorCode.BADREQUEST, "msg": "Document is still accessed by other users. Cannot remove from shared state."}
+            if shared_document.validity is None:
+                return {"status_code": ErrorCode.BADREQUEST, "msg": "Document is a public document. Cannot remove from shared state."}
+            if shared_document.validity >= current_timestamp:
+                return {"status_code": ErrorCode.BADREQUEST, "msg": "Document has validity. Cannot remove from shared state."}
+            
+            db.delete(shared_document)
+            db.commit()
+            return {"status_code": ErrorCode.NOERROR, "msg": "Document has been removed from sharing state."}  
+
         
 

@@ -180,4 +180,11 @@ class DocumentStatus(BaseModel):
     """    
     document_id: str
     user_id: str
+
+class DocumentSharingRemoval(BaseModel):
+    """Data model for operations related to removing the sharing of the document.
+    """    
+    document_id: str
+    user_id: str 
+    current_timestamp: datetime   
     
