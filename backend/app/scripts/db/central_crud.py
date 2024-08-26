@@ -1,8 +1,7 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from app.model.db import (User, Document, CapturedDocument, CapturedFile, SharedDocument, SharedDocumentAccessor)
-from sqlalchemy.orm import joinedload
 from typing import List, Any, Dict, Tuple
-from datetime import datetime
+from datetime import datetime, timezone
 from app.utils import get_secret_token
 from app.const import ErrorCode
 from uuid import uuid4
@@ -63,7 +62,7 @@ class CentralCRUD:
                     }
                 documents.append(doc_key)    
 
-        shared_records = db.query(SharedDocumentAccessor, SharedDocument, Document).join(SharedDocument, SharedDocumentAccessor.share_id == SharedDocument.share_id).join(Document, SharedDocument.document_id == Document.document_id).filter(SharedDocumentAccessor.user_id == user_id).all()
+        shared_records = db.query(SharedDocumentAccessor, SharedDocument, Document).join(SharedDocument, SharedDocumentAccessor.share_id == SharedDocument.share_id).join(Document, SharedDocument.document_id == Document.document_id).filter(SharedDocumentAccessor.user_id == user_id, SharedDocumentAccessor.access_open == True).all()
         shared_documents = []
         for record in shared_records:
             _, _, document = record
@@ -200,14 +199,90 @@ class CentralCRUD:
             """
             document = db.query(SharedDocument).filter(SharedDocument.document_id == document_id).first()
             if updated_validity <= document.validity:
-                 return {"status_code": ErrorCode.BADREQUEST, "msg": "New validity must be greater than the existing validity."}
+                return {"status_code": ErrorCode.BADREQUEST, "msg": "New validity must be greater than the existing validity."}
             document.validity = updated_validity
             if down_propagate and not document.open_to_all:
-                 accessors = db.query(SharedDocumentAccessor).filter(SharedDocumentAccessor.share_id == document.share_id).all()
-                 for accessor in accessors:
-                      accessor.validity = updated_validity
+                accessors = db.query(SharedDocumentAccessor).filter(SharedDocumentAccessor.share_id == document.share_id).all()
+                for accessor in accessors:
+                    accessor.validity = updated_validity
             db.commit()
             db.refresh(document)
             return {"status_code": ErrorCode.NOERROR, "msg": "Validity has increased."}
+    
+    @classmethod
+    def change_document_access(cls, db:Session, document_id: str, access_change_reason: str, block_access: bool) -> Dict[int,str]:
+        """Change the document access from open to close or close to open. It is used for changing
+        the access at the top level. If the document is not shared publicly then, the access is
+        blocked for all the accessors as well.
 
+        Args:
+        db (Session): The database session object.
+        document_id (str): The id of the document that is already being shared.
+        access_change_reason (str): The reason for changing the access.
+        block_access (bool): A boolean value whether to close or open the access.
+
+        Returns:
+        Dict[int,str]: A dictionary containing the status code and the message.
+        """
+        document = db.query(SharedDocument).filter(SharedDocument.document_id == document_id).first()
+        if document.access_open != block_access:
+            return {"status_code": ErrorCode.BADREQUEST, "msg": "No change required"}
+        document.access_open = not block_access
+        access_change_time = datetime.now(timezone.utc)
+        if block_access:
+            document.access_blocked_at = access_change_time
+            block_count = document.access_blocked_count
+            document.access_blocked_count = block_count + 1
+        else:
+            document.access_opened_at = access_change_time
+        document.access_change_reason = access_change_reason
+
+        if not document.open_to_all:
+            accessors = db.query(SharedDocumentAccessor).filter(SharedDocumentAccessor.share_id == document.share_id).all() 
+            for accessor in accessors:
+                accessor.access_open = not block_access  
+                if block_access:
+                    accessor.access_blocked_at = access_change_time
+                else:
+                    accessor.access_opened_at = access_change_time
+                accessor.access_change_reason = access_change_reason
+
+        db.commit()
+        db.refresh(document)                
+        return {"status_code": ErrorCode.NOERROR, "msg": "Access changed."}
+    
+    @classmethod
+    def change_document_access_user(cls, db:Session, share_id: str, emails: List[str], access_change_reason: str, block_access: bool) -> Dict[int,str]:
+        """Changes the document access for users present in the email list. If the block
+        access is true and access is already closed then nothing happens and vice-versa. 
+
+        Args:
+        db (Session): The database session object.
+        share_id (str): The share id of the document that is being shared.
+        emails (List[str]): The list of emails for which the access needs to be modified.
+        access_change_reason (str): The reason for changing the access.
+        block_access (bool): A boolean value whether to close or open the access.
+
+        Returns:
+        Dict[int,str]: A dictionary containing the status code and the message.
+        """
+        documents = db.query(SharedDocumentAccessor).filter(SharedDocumentAccessor.share_id == share_id).all()
+        if len(documents) == 0:
+            return {"status_code": ErrorCode.NOERROR, "msg": "Document does not exists."}   
+        for email in emails:
+            for document in documents:
+                if email == document.email:
+                    if document.access_open != block_access: 
+                        continue
+                    document.access_open = not block_access
+                    access_change_time = datetime.now(timezone.utc)
+                    if block_access:
+                        document.access_blocked_at = access_change_time
+                        block_count = document.access_blocked_count
+                        document.access_blocked_count = block_count + 1
+                    else:
+                        document.access_opened_at = access_change_time 
+                    document.access_change_reason = access_change_reason 
+        db.commit()             
+        return {"status_code": ErrorCode.NOERROR, "msg": "Access changed."}                
 
