@@ -31,11 +31,12 @@ def create_user(user: User, db: Session = Depends(get_db)):
     
 @router.get("/get-user-artifacts")
 def get_user_artifacts(user_id: str, db: Session = Depends(get_db)):
-    result = CentralCRUD.get_all_artifacts_for_user(db=db, user_id=user_id)
+    documents, shared_documents = CentralCRUD.get_all_artifacts_for_user(db=db, user_id=user_id)
     return JSONResponse(
         status_code=200,
         content={
             "user_id": user_id,
-            "artefact_tree":result
+            "artefact_tree":documents,
+            "shared_artifacts": shared_documents
             }
     )   
