@@ -194,5 +194,13 @@ class AccessorUpdate(BaseModel):
     share_id: str
     document_id: str
     user_id: str
-    accessor_email: str 
-    
+    accessor_email: str
+
+class SwitchShareType(BaseModel):
+    """Data model for switching the access of a shared document from selective to public.
+    """     
+    share_id: str
+    document_id: str
+    user_id: str
+    current_timestamp: datetime
+    validity: datetime | None = None

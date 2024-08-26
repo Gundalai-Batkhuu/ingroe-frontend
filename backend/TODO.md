@@ -37,15 +37,17 @@ The following is tracking which endpoints are available along with their test ca
 - [ ] Validity changed then email to subscribers.
 - [x] Change the validity of the shared document.
 - [x] Delete the shared document from the sharee account.
-- [ ] Add new accessor to the existing shared document.
+- [x] Add new accessor to the existing shared document.
 - [ ] Ask for validity increase for a document.
 - [x] Add validity for all subscribers.
 - [x] Replace the query operation with join where applicable.
 - [ ] Add auth middleware to check for user.
 - [ ] Auto delete after the validity has passed.
-- [ ] Change from selective access to public.
+- [x] Change from selective access to public.
 - [x] Get list of shared documents that are owned.
 - [ ] Delete after notice period ends. Develop as a middleware.
+- [ ] Delete all expired documents.
+- [ ] Set validity for public document that have none validityor reduce validity.
 
 ## Pydantic model
 - [ ] Use mixin
