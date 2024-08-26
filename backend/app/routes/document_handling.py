@@ -111,6 +111,8 @@ def block_document_access_for_user(payload: ScopedAccess, db: Session = Depends(
 
 @router.delete("/remove-share-state")
 def remove_share_state(payload: DocumentSharingRemoval, db: Session = Depends(get_db)):
+    if not document_exists(document_id=payload.document_id, user_id=payload.user_id):
+        raise HTTPException(status_code=400, detail="Document does not exist. Please provide a valid document id.")
     response = CentralCRUD.remove_share_state(db=db, document_id=payload.document_id, current_timestamp=payload.current_timestamp)
     response_status_code, response_message = break_db_response_payload(response)
     if response_status_code != 200:
@@ -119,6 +121,16 @@ def remove_share_state(payload: DocumentSharingRemoval, db: Session = Depends(ge
         status_code=200,
         content={
             "message": response_message,
+        }
+    )
+
+@router.delete("/remove-shared-document-by-sharee")
+def remove_shared_document_by_user(payload:DocumentStatus, db: Session = Depends(get_db)):
+    CentralCRUD.remove_shared_document_from_sharee_account(db=db, document_id=payload.document_id, user_id=payload.user_id)
+    return JSONResponse(
+        status_code=200,
+        content={
+            "message": "Document removed from user account",
         }
     )
 

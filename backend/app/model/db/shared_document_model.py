@@ -19,7 +19,7 @@ class SharedDocument(Base):
     access_opened_at = Column(DateTime(timezone=True))
     access_blocked_count = Column(Integer, server_default="0")
     access_change_reason = Column(String)
-    sharing_termination_reason = Column(String)
+    user_count = Column(Integer, server_default="0")
     shared_at = Column(DateTime(timezone=True), server_default=func.current_timestamp(), nullable=False)
 
     document = relationship("Document", back_populates="shared_document")
