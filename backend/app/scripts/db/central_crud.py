@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session, joinedload
 from app.model.db import (User, Document, CapturedDocument, CapturedFile, SharedDocument, SharedDocumentAccessor)
-from typing import List, Any, Dict, Tuple
+from typing import List, Any, Dict, Tuple, Optional
 from datetime import datetime, timezone
 from app.utils import get_secret_token
 from app.const import ErrorCode
@@ -405,5 +405,38 @@ class CentralCRUD:
         db.commit()
         return {"status_code": ErrorCode.NOERROR, "msg": "Accessor added for the document."}
     
-        
+    @classmethod    
+    def share_document_to_public(cls, db: Session, document_id: str, current_timestamp: datetime, validity: Optional[datetime]) -> Dict[int, str]:
+        """Makes the privately shared document to public document. It only makes it public when the
+        validity has expired or in case when the validity has not expired, the user accessing this
+        document must be zero. Otherwise, we cannot make the document public or wait till the desired
+        condition is achieved.
 
+        Args:
+        db (Session): The database session object.
+        document_id (str): The id of the document that is being shared privately.
+        current_timestamp (datetime): The time when the request to change access is made.
+        validity (Optional[datetime]): New validity for the document fixed or infinite.
+
+        Returns:
+        Dict[int,str]: A dictionary containing the status code and the message.
+        """
+        shared_document = db.query(SharedDocument).filter(SharedDocument.document_id == document_id).first()
+        if current_timestamp <= shared_document.validity:
+            if shared_document.user_count != 0:
+                return {"status_code": ErrorCode.BADREQUEST, "msg": "Document is still valid and is accessed by users. Cannot make it public if it's valid and accessed by users."}
+
+        if shared_document.user_count > 0:
+            records = db.query(SharedDocumentAccessor).filter(SharedDocumentAccessor.share_id == shared_document.share_id).all()
+            for record in records:
+                db.delete(record)
+        shared_document.user_count = 0
+        shared_document.open_to_all = True
+        shared_document.validity = validity
+        db.commit()
+        db.refresh(shared_document)
+        return {"status_code": ErrorCode.NOERROR, "msg": "Made the document public."}
+
+
+        
+        
