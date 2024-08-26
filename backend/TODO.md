@@ -29,7 +29,7 @@ The following is tracking which endpoints are available along with their test ca
 - [x] Share the document to particular ids or public.
 - [x] Enable the access to others by token verification at the beginning.
 - [ ] Stop the access to a particular document or all.
-- [ ] Delete the sharing status.
+- [ ] Delete the sharing status only after validity has passed.
 - [ ] After verifying add the document name and description to a user account.
 - [x] Set the validity of the link that allows the document to be shared.
 - [ ] A table to store the activity on the shared documents.

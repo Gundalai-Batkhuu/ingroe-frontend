@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from app.model.db import (User, Document, CapturedDocument, CapturedFile, SharedDocument, SharedDocumentAccessor)
 from sqlalchemy.orm import joinedload
-from typing import List, Any, Dict
+from typing import List, Any, Dict, Tuple
 from datetime import datetime
 from app.utils import get_secret_token
 from app.const import ErrorCode
@@ -11,16 +11,19 @@ class CentralCRUD:
     """Class that contains methods that operates on all or some of the models.
     """
     @classmethod
-    def get_all_artifacts_for_user(cls, db: Session, user_id: str) -> List[dict]:
+    def get_all_artifacts_for_user(cls, db: Session, user_id: str) -> Tuple[List[dict], List[dict]]:
         """Returns the document hierarchy or structure for a user id. Based on the user id,
-        a dictionary of artifacts or a nested dictionary of artifacts are returned.
+        a dictionary of artifacts or a nested dictionary of artifacts are returned. It also 
+        provides the list of documents that has been shared. Only the shared documents that has 
+        been accepted will be returned. 
 
         Args:
         db (Session): The database session object.
         user_id (str): Id of the user accessing the artefacts.
 
         Returns:
-        List[dict]: A list of dictionary containing artifacts.
+        Tuple[List[dict], List[dict]]: A tuple containing a list of dictionary with artifacts and a 
+        list of dictionary with shared artifacts.
         """
         result = db.query(User).options(
         joinedload(User.document).joinedload(
@@ -58,8 +61,20 @@ class CentralCRUD:
                     "description": document_record.description,
                     "captured_documents": captured_documents
                     }
-                documents.append(doc_key)     
-        return documents
+                documents.append(doc_key)    
+
+        shared_records = db.query(SharedDocumentAccessor, SharedDocument, Document).join(SharedDocument, SharedDocumentAccessor.share_id == SharedDocument.share_id).join(Document, SharedDocument.document_id == Document.document_id).filter(SharedDocumentAccessor.user_id == user_id).all()
+        shared_documents = []
+        for record in shared_records:
+            _, _, document = record
+            shared_key = {
+                 "document_alias": document.document_alias,
+                 "document_id": document.document_id,
+                 "description": document.description
+            }
+            shared_documents.append(shared_key)
+
+        return documents, shared_documents  
     
     @classmethod
     def share_document(
