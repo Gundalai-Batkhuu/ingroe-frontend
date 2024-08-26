@@ -44,6 +44,7 @@ The following is tracking which endpoints are available along with their test ca
 - [ ] Add auth middleware to check for user.
 - [ ] Auto delete after the validity has passed.
 - [ ] Change from selective access to public.
+- [x] Get list of shared documents that are owned.
 
 ## Pydantic model
 - [ ] Use mixin

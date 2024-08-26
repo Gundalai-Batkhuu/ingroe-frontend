@@ -58,12 +58,13 @@ class CentralCRUD:
                     "file_links": document_record.file_links,
                     "files": document_record.files,
                     "description": document_record.description,
+                    "is_shared": document_record.is_shared,
                     "captured_documents": captured_documents
                     }
                 documents.append(doc_key)    
 
         shared_records = db.query(SharedDocumentAccessor, SharedDocument, Document).join(SharedDocument, SharedDocumentAccessor.share_id == SharedDocument.share_id).join(Document, SharedDocument.document_id == Document.document_id).filter(SharedDocumentAccessor.user_id == user_id, SharedDocumentAccessor.access_open == True).all()
-        shared_documents = []
+        shared_documents_loaned = []
         for record in shared_records:
             _, _, document = record
             shared_key = {
@@ -71,9 +72,9 @@ class CentralCRUD:
                  "document_id": document.document_id,
                  "description": document.description
             }
-            shared_documents.append(shared_key)
+            shared_documents_loaned.append(shared_key)
 
-        return documents, shared_documents  
+        return documents, shared_documents_loaned 
     
     @classmethod
     def share_document(
@@ -284,5 +285,51 @@ class CentralCRUD:
                         document.access_opened_at = access_change_time 
                     document.access_change_reason = access_change_reason 
         db.commit()             
-        return {"status_code": ErrorCode.NOERROR, "msg": "Access changed."}                
+        return {"status_code": ErrorCode.NOERROR, "msg": "Access changed."}   
+
+    @classmethod
+    def get_shared_document_state(cls, db: Session, user_id: str, document_id: str) -> List[dict]:
+        """Provides the state of the document that has been shared.
+
+        Args:
+        db (Session): The database session object.
+        user_id (str): The id of the user who owns the shared document.
+        document_id (str): The id of the document that is already being shared.
+
+        Returns:
+        List[dict]: A list of dictionary that contains the shared document state.
+        """
+        result = db.query(Document).options(
+        joinedload(Document.shared_document).joinedload(
+            SharedDocument.shared_document_accessor)
+        ).filter(Document.document_id == document_id, Document.user_id == user_id).all()
+        for record in result:
+            shared_documents = []
+            for shared_record in record.shared_document:
+                shared_accessors = []
+                for accessor_record in shared_record.shared_document_accessor:
+                    accessor_key = {
+                        "accessor_email": accessor_record.email,
+                        "accessor_user_id": accessor_record.user_id,
+                        "access_accepted": accessor_record.verified,
+                        "access_open": accessor_record.access_open,
+                        "document_present": accessor_record.is_alive,
+                        "access_validity": accessor_record.validity,
+                        "shared_at": accessor_record.shared_at,
+                        "access_blocked_at": accessor_record.access_blocked_at,
+                        "access_opened_at": accessor_record.access_opened_at,
+                    }
+                    shared_accessors.append(accessor_key)
+                shared_key = {
+                    "open_to_all": shared_record.open_to_all,
+                    "validity": shared_record.validity,
+                    "shared_at": shared_record.shared_at,
+                    "access_open": shared_record.access_open,
+                    "access_blocked_at": shared_record.access_blocked_at,
+                    "access_opened_at": shared_record.access_opened_at,
+                    "accessor": shared_accessors
+                }
+                shared_documents.append(shared_key)
+        return shared_documents        
+        
 
