@@ -28,9 +28,9 @@ The following is tracking which endpoints are available along with their test ca
 ## Share Documents
 - [x] Share the document to particular ids or public.
 - [x] Enable the access to others by token verification at the beginning.
-- [ ] Stop the access to a particular document or all.
+- [x] Stop the access to a particular document or all.
 - [ ] Delete the sharing status only after validity has passed.
-- [ ] After verifying add the document name and description to a user account.
+- [x] After verifying add the document name and description to a user account.
 - [x] Set the validity of the link that allows the document to be shared.
 - [ ] A table to store the activity on the shared documents.
 - [ ] Send email to accept the shared document if not public.
@@ -42,6 +42,8 @@ The following is tracking which endpoints are available along with their test ca
 - [x] Add validity for all subscribers.
 - [x] Replace the query operation with join where applicable.
 - [ ] Add auth middleware to check for user.
+- [ ] Auto delete after the validity has passed.
+- [ ] Change from selective access to public.
 
 ## Pydantic model
 - [ ] Use mixin

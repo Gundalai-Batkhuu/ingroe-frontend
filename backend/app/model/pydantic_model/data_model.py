@@ -159,3 +159,19 @@ class ScopedValidityUpdate(ValidityUpdate):
     """Data model for updating the validity for a single user.
     """   
     user_email: str
+
+class Access(BaseModel):
+    """Data model for changing the access. If block access is true then we need to block
+    the access. If it is false, then we need to open the access.
+    """  
+    document_id: str
+    user_id: str
+    access_change_reason: str  
+    block_access: bool
+
+class ScopedAccess(Access):
+    """Data model for changing the access permission of users or a user.
+    """ 
+    share_id: str
+    emails: List[str]  
+    

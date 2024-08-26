@@ -14,6 +14,11 @@ class SharedDocument(Base):
     document_id = Column(String, ForeignKey("documents.document_id"), index=True, nullable=False)
     open_to_all = Column(Boolean, nullable=False)
     validity = Column(DateTime(timezone=True), nullable=True)
+    access_open = Column(Boolean, server_default="True")
+    access_blocked_at = Column(DateTime(timezone=True))
+    access_opened_at = Column(DateTime(timezone=True))
+    access_blocked_count = Column(Integer, server_default="0")
+    access_change_reason = Column(String)
     shared_at = Column(DateTime(timezone=True), server_default=func.current_timestamp(), nullable=False)
 
     document = relationship("Document", back_populates="shared_document")
