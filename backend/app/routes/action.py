@@ -129,7 +129,7 @@ async def delete_document(payload: DeleteDocument):
     if isDeleted is None:
         raise HTTPException(status_code=500, detail="Error occurred while deletion!")
     if isDeleted is False:
-        raise HTTPException(status_code=400, detail="Please provide a valid document id.")
+        raise HTTPException(status_code=400, detail="Invalid document id or the document is being shared.")
     return JSONResponse(
         status_code=200,
         content={"message": "Documents from provided sources deleted successfully!!"}

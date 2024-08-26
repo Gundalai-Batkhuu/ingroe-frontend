@@ -321,6 +321,7 @@ class CentralCRUD:
                     }
                     shared_accessors.append(accessor_key)
                 shared_key = {
+                    "share_id": shared_record.share_id,
                     "open_to_all": shared_record.open_to_all,
                     "validity": shared_record.validity,
                     "shared_at": shared_record.shared_at,
@@ -380,6 +381,29 @@ class CentralCRUD:
         db.delete(accessor) 
         db.commit()
         
+    @classmethod
+    def add_new_accessor(cls, db: Session, document_id: str, share_id: str, email: str) -> Dict[int,str]:
+        """Adds an accessor to the existing shared document.
 
+        Args:
+        db (Session): The database session object.
+        document_id (str): The id of the document that is already being shared.
+        share_id (str): The id that distinguishes shared document in the share document table.
+        email (str): The email of the accessor.
+
+        Returns:
+        Dict[int,str]: A dictionary containing the status code and the message.
+        """
+        document = db.query(SharedDocument).filter(SharedDocument.document_id == document_id).first()
+        if document.open_to_all == True:
+            return {"status_code": ErrorCode.BADREQUEST, "msg": "Accessor cannot be added to the public document."}
+        existing_count = document.user_count
+        document.user_count = existing_count + 1
+        verification_token = get_secret_token(40)
+        document_accessor = SharedDocumentAccessor(email=email, share_id=share_id, verification_token=verification_token, validity=document.validity)
+        db.add(document_accessor)
+        db.commit()
+        return {"status_code": ErrorCode.NOERROR, "msg": "Accessor added for the document."}
+    
         
 
