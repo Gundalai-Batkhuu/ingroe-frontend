@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends
 from typing import Dict
-from app.model.pydantic_model import User
+from app.model.pydantic_model import (User, DocumentStatus)
 from app.scripts.db import (UserCRUD, CentralCRUD)
 from sqlalchemy.orm import Session
 from app.database import get_db
 from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
 
 router = APIRouter(
     prefix="/user",
@@ -31,12 +32,23 @@ def create_user(user: User, db: Session = Depends(get_db)):
     
 @router.get("/get-user-artifacts")
 def get_user_artifacts(user_id: str, db: Session = Depends(get_db)):
-    documents, shared_documents = CentralCRUD.get_all_artifacts_for_user(db=db, user_id=user_id)
+    documents, shared_documents_loaned = CentralCRUD.get_all_artifacts_for_user(db=db, user_id=user_id)
     return JSONResponse(
         status_code=200,
         content={
             "user_id": user_id,
             "artefact_tree":documents,
-            "shared_artifacts": shared_documents
+            "shared_artifacts_loaned": shared_documents_loaned
             }
-    )   
+    )
+
+@router.get("/get-shared-document-state")
+def get_shared_document_state(payload:DocumentStatus, db: Session = Depends(get_db)):
+    documents = CentralCRUD.get_shared_document_state(db=db, user_id=payload.user_id, document_id=payload.document_id)
+    return JSONResponse(
+        status_code=200,
+        content=jsonable_encoder({
+            "document_id": payload.document_id,
+            "documents":documents,
+            })
+    )

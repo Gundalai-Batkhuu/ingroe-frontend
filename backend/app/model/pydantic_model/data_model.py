@@ -174,4 +174,10 @@ class ScopedAccess(Access):
     """ 
     share_id: str
     emails: List[str]  
+
+class DocumentStatus(BaseModel):
+    """Data model for operations related to getting the document status.
+    """    
+    document_id: str
+    user_id: str
     
