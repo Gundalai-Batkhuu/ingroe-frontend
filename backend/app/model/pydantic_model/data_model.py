@@ -187,4 +187,12 @@ class DocumentSharingRemoval(BaseModel):
     document_id: str
     user_id: str 
     current_timestamp: datetime   
+
+class AccessorUpdate(BaseModel):
+    """Data model for updating the accessor for a shared document.
+    """   
+    share_id: str
+    document_id: str
+    user_id: str
+    accessor_email: str 
     

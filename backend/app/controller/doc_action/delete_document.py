@@ -1,5 +1,5 @@
 from ..core import APIEndPoint
-from app.scripts.db import DocumentCRUD
+from app.scripts.db import (DocumentCRUD, SharedDocumentCRUD)
 from app.database import get_session
 from app.dependencies.internal import DeleteDocument
 from app.dependencies.external import S3
@@ -23,6 +23,8 @@ class Delete(APIEndPoint):
         """
         try:
             db = get_session()
+            is_document_shared = SharedDocumentCRUD.check_if_document_is_shared(db, document_id)
+            if is_document_shared: return False
             document_exists = DocumentCRUD.document_exists_for_user(document_id, user_id, db)
             if document_exists:
                 # DeleteDocument.delete_document_from_graph(document_id)

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from typing import Dict, Tuple
-from app.model.pydantic_model import (ShareDocument, AcceptSharedDocument, ValidityUpdate, ScopedValidityUpdate, Access, ScopedAccess, DocumentStatus, DocumentSharingRemoval)
+from app.model.pydantic_model import (ShareDocument, AcceptSharedDocument, ValidityUpdate, ScopedValidityUpdate, Access, ScopedAccess, DocumentStatus, DocumentSharingRemoval, AccessorUpdate)
 from app.scripts.db import (CentralCRUD, SharedDocumentCRUD)
 from sqlalchemy.orm import Session
 from app.database import get_db
@@ -131,6 +131,21 @@ def remove_shared_document_by_user(payload:DocumentStatus, db: Session = Depends
         status_code=200,
         content={
             "message": "Document removed from user account",
+        }
+    )
+
+@router.post("/add-new-accessor")
+def add_new_accessor(payload: AccessorUpdate, db: Session = Depends(get_db)):
+    if not document_exists(document_id=payload.document_id, user_id=payload.user_id):
+        raise HTTPException(status_code=400, detail="Document does not exist. Please provide a valid document id.")
+    response = CentralCRUD.add_new_accessor(db=db, document_id=payload.document_id, share_id=payload.share_id, email=payload.accessor_email)
+    response_status_code, response_message = break_db_response_payload(response)
+    if response_status_code != 200:
+        raise HTTPException(status_code=response_status_code, detail=response_message)
+    return JSONResponse(
+        status_code=200,
+        content={
+            "message": response_message,
         }
     )
 

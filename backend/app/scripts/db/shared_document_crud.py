@@ -29,3 +29,8 @@ class SharedDocumentCRUD:
         db.add(document)
         db.commit()
         db.refresh(document)
+
+    @classmethod
+    def check_if_document_is_shared(cls, db: Session, document_id: str) -> bool:
+        document_exists = db.query(SharedDocument).filter(SharedDocument.document_id == document_id).first()
+        return document_exists is not None 
