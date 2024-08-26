@@ -31,7 +31,7 @@ def share_document(payload: ShareDocument, db: Session = Depends(get_db)):
             })
     )
 
-@router.post("/accept-shared-document")
+@router.patch("/accept-shared-document")
 def accept_shared_document(payload: AcceptSharedDocument, db: Session = Depends(get_db)):
     response = CentralCRUD.accept_shared_document(db=db, email=payload.email, share_id=payload.share_id, user_id=payload.user_id, verification_token=payload.verification_token, accept_time=payload.accept_time)
     if response == ErrorCode.FORBIDDEN:
@@ -47,7 +47,7 @@ def accept_shared_document(payload: AcceptSharedDocument, db: Session = Depends(
             })
     )
 
-@router.post("/change-document-validity")
+@router.patch("/change-document-validity")
 def change_document_validity(payload: ValidityUpdate, db: Session = Depends(get_db)):
     if not document_exists(document_id=payload.document_id, user_id=payload.user_id):
         raise HTTPException(status_code=400, detail="Document does not exist. Please provide a valid document id.")
@@ -63,7 +63,7 @@ def change_document_validity(payload: ValidityUpdate, db: Session = Depends(get_
         })
     )
 
-@router.post("/change-document-validity-for-user")
+@router.patch("/change-document-validity-for-user")
 def change_document_validity_for_user(payload: ScopedValidityUpdate, db: Session = Depends(get_db)):
     if not document_exists(document_id=payload.document_id, user_id=payload.user_id):
         raise HTTPException(status_code=400, detail="Document does not exist. Please provide a valid document id.")
@@ -79,7 +79,7 @@ def change_document_validity_for_user(payload: ScopedValidityUpdate, db: Session
         })
     )
 
-@router.post("/block-document-access")
+@router.patch("/block-document-access")
 def block_document_access(payload: Access, db: Session = Depends(get_db)):
     if not document_exists(document_id=payload.document_id, user_id=payload.user_id):
         raise HTTPException(status_code=400, detail="Document does not exist. Please provide a valid document id.")
@@ -94,7 +94,7 @@ def block_document_access(payload: Access, db: Session = Depends(get_db)):
         }
     )
 
-@router.post("/block-document-access-for-user")
+@router.patch("/block-document-access-for-user")
 def block_document_access_for_user(payload: ScopedAccess, db: Session = Depends(get_db)):
     if not document_exists(document_id=payload.document_id, user_id=payload.user_id):
         raise HTTPException(status_code=400, detail="Document does not exist. Please provide a valid document id.")
