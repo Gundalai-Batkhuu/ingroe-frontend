@@ -159,7 +159,7 @@ async def capture_document(file: UploadFile, user_id: str = Form(...), document_
             }
     )
 
-@router.post("/update-captured-document")
+@router.patch("/update-captured-document")
 async def update_capture_document(file: UploadFile, user_id: str = Form(...), document_id: str = Form(...), file_id: str = Form(...), captured_document_id: str = Form(...)):
     if not file_exists(file_id, captured_document_id, file.filename):
         raise HTTPException(status_code=400, detail="The file cannot be updated. Either the filename is not matching with the original filename or invalid ids are passed.")
@@ -211,7 +211,7 @@ async def create_document_from_captured_document(payload: CreateDocumentCapture)
             }
     )
 
-@router.post("/update-document-info")
+@router.patch("/update-document-info")
 async def update_document_info(payload: DocumentInfo):
     if not document_exists(payload.document_id, payload.user_id):
         raise HTTPException(status_code=400, detail="The supplied document id does not exist. Please provide the right id.")
