@@ -4,7 +4,7 @@ from langchain_core.documents import Document
 from langchain_experimental.graph_transformers import LLMGraphTransformer
 from app.dependencies.external import LLM
 from langchain_community.graphs.graph_document import GraphDocument
-from app.temp_test.graph import get_graph_doc
+# from app.temp_test.graph import get_graph_doc
 # from ..internal.customised.neo4j_graph import Neo4jGraph
 from app.dependencies.internal.customised import Neo4jGraph
 from langchain_community.vectorstores import Neo4jVector
