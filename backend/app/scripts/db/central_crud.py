@@ -10,7 +10,7 @@ class CentralCRUD:
     """Class that contains methods that operates on all or some of the models.
     """
     @classmethod
-    def get_all_artifacts_for_user(cls, db: Session, user_id: str) -> Tuple[List[dict], List[dict]]:
+    def get_all_artifacts_for_user(cls, db: Session, user_id: str) -> Tuple[List[dict], List[dict], List[dict]]:
         """Returns the document hierarchy or structure for a user id. Based on the user id,
         a dictionary of artifacts or a nested dictionary of artifacts are returned. It also 
         provides the list of documents that has been shared. Only the shared documents that has 
@@ -21,8 +21,7 @@ class CentralCRUD:
         user_id (str): Id of the user accessing the artefacts.
 
         Returns:
-        Tuple[List[dict], List[dict]]: A tuple containing a list of dictionary with artifacts and a 
-        list of dictionary with shared artifacts.
+        Tuple[List[dict], List[dict], List[dict]]: A tuple containing a list of dictionary with artifacts and a list of dictionary with shared artifacts and a list of shared artifacts that are owned.
         """
         result = db.query(User).options(
         joinedload(User.document).joinedload(
@@ -66,15 +65,30 @@ class CentralCRUD:
         shared_records = db.query(SharedDocumentAccessor, SharedDocument, Document).join(SharedDocument, SharedDocumentAccessor.share_id == SharedDocument.share_id).join(Document, SharedDocument.document_id == Document.document_id).filter(SharedDocumentAccessor.user_id == user_id, SharedDocumentAccessor.access_open == True).all()
         shared_documents_loaned = []
         for record in shared_records:
-            _, _, document = record
+            _, shared_document, document = record
             shared_key = {
                  "document_alias": document.document_alias,
                  "document_id": document.document_id,
-                 "description": document.description
+                 "description": document.description,
+                 "validity": shared_document.validity
             }
             shared_documents_loaned.append(shared_key)
 
-        return documents, shared_documents_loaned 
+        owned_shared_records = db.query(Document, SharedDocument).join(SharedDocument, Document.document_id ==SharedDocument.document_id).filter(Document.user_id == user_id).all() 
+        owned_records = []
+        for record in owned_shared_records:
+               document, shared_document = record
+               owned_key = {
+                   "document_id": document.document_id,
+                   "validity": shared_document.validity,
+                   "accessor": shared_document.user_count,
+                   "public_access": shared_document.open_to_all,
+                   "access_open": shared_document.access_open,
+                   "shared_at": shared_document.shared_at
+               }
+               owned_records.append(owned_key)       
+
+        return documents, shared_documents_loaned, owned_records 
     
     @classmethod
     def share_document(
