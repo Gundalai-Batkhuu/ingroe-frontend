@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from typing import Dict, Tuple
-from app.model.pydantic_model import (ShareDocument, AcceptSharedDocument, ValidityUpdate, ScopedValidityUpdate, Access, ScopedAccess, DocumentStatus, DocumentSharingRemoval, AccessorUpdate, SwitchShareType)
+from app.model.pydantic_model import (ShareDocument, AcceptSharedDocument, ValidityUpdate, ScopedValidityUpdate, Access, ScopedAccess, DocumentStatus, DocumentSharingRemoval, AccessorUpdate, SwitchShareType, SharedDocumentSelection)
 from app.scripts.db import (CentralCRUD, SharedDocumentCRUD)
 from sqlalchemy.orm import Session
 from app.database import get_db
@@ -161,6 +161,17 @@ def share_document_to_public(payload: SwitchShareType, db: Session = Depends(get
         status_code=200,
         content={
             "message": response_message,
+        }
+    )
+
+@router.delete("/remove-all-expired-documents")
+def remove_all_expired_documents(payload: SharedDocumentSelection, db: Session = Depends(get_db)):
+    removal_count = CentralCRUD.remove_all_expired_documents(db=db, user_id=payload.user_id, current_timestamp=payload.current_timestamp)
+    return JSONResponse(
+        status_code=200,
+        content={
+            "message": "Removal of expired documents completed successfully!",
+            "removed_document_count": removal_count
         }
     )
 

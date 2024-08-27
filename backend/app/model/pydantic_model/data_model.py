@@ -204,3 +204,9 @@ class SwitchShareType(BaseModel):
     user_id: str
     current_timestamp: datetime
     validity: datetime | None = None
+
+class SharedDocumentSelection(BaseModel):
+    """Data model for selecting the shared documents for a user.
+    """    
+    user_id: str
+    current_timestamp: datetime
