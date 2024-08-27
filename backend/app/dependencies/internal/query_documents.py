@@ -257,7 +257,7 @@ class QueryDocument:
 
         Returns:
         RunnableBranch: A runnable branch that decides to take an action based on the presence of
-        chat_hsitory key.
+        chat_history key.
         """
         return RunnableBranch(
         # If input includes chat_history, we condense it with the follow-up question

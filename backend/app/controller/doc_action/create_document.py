@@ -9,12 +9,6 @@ from app.model.pydantic_model.payload import DocumentSource
 # from app.temp_test.graph import get_doc
 
 class Create(APIEndPoint):
-    # @classmethod
-    # async def create_document_from_link(cls, document_payload: CreateDocument) -> Sequence[Document]:
-    #     page_link = document_payload.link
-    #     documents = await GetDocument.get_document_from_link([page_link])
-    #     # print(documents)
-    #     return documents
 
     @classmethod
     async def create_document_from_links(cls, page_links: List[str]) -> Sequence[Document]:
@@ -23,10 +17,10 @@ class Create(APIEndPoint):
         return documents
 
     @classmethod
-    async def create_document_from_file(cls, file: UploadFile, user_id: str) -> List[Document]:
-        documents = await GetDocument.get_document_from_file(file, user_id)
+    async def create_document_from_file(cls, file: UploadFile, user_id: str, document_id: str) -> List[Document]:
+        documents, file_map = await GetDocument.get_document_from_file(file, user_id, document_id)
         # print(documents)    
-        return documents
+        return documents, file_map
     
     @classmethod
     async def create_documents_from_selection(cls, links: List[str], user_id: str) -> Tuple[Sequence[Document], DocumentSource]:
@@ -50,18 +44,36 @@ class Create(APIEndPoint):
                 file_link.append(link)
         print(vanilla_link)
         documents_from_link = await cls.create_document_from_links(vanilla_link)
+        # documents_from_link = []
         # documents_from_link, source = get_doc()
         documents += documents_from_link
         source = DocumentSource(vanilla_links=vanilla_link, file_links=file_link, error_links=error_link, unsupported_file_links=unallowed_downloadable_links)
-        return documents, source
+        return documents, source  
 
-def document_exists(document_id: str, user_id) -> bool:
-    """A wrapper for node checker function.
+    @classmethod
+    async def create_documents_from_captured_document(cls, links: List[str]):
+        print(links)
+        documents = []
+        for link in links:
+            document = GetDocument.create_documents_from_txt_links(link)
+            documents += document  
+        return documents 
+
+def document_exists(document_id: str, user_id: str) -> bool:
+    """Checks if the document exists or not in the database.
 
     Args:
     document_id (str): The id of the document node or parent of the documents.
+    user_id (str): The id of the user.
 
     Returns:
     bool: True or False depending on the node existence in the graph for an id.
     """
-    return StoreDocument.check_if_node_exists_for_id(document_id, user_id)
+    from app.scripts.db import DocumentCRUD
+    from app.database import get_session
+
+    db = get_session()
+    status = DocumentCRUD.document_exists_for_user(document_id, user_id, db)
+    db.close()
+    return status
+    # return StoreDocument.check_if_node_exists_for_id(document_id, user_id)
