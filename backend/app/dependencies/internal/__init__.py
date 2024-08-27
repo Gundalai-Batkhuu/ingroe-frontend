@@ -7,7 +7,8 @@ from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from app.dependencies.internal.create_documents import (
-        GetDocument
+        GetDocument,
+        CaptureDocument
     ) 
     from app.dependencies.internal.store_documents import (
         StoreDocument
@@ -16,21 +17,34 @@ if TYPE_CHECKING:
         QueryDocument
     )
     from app.dependencies.internal.store_assets import (
-        StoreAssets
+        StoreAssets,
+        DeleteAssets,
+        UpdateAssets
+    )
+    from app.dependencies.internal.delete_documents import (
+        DeleteDocument
     )
 
 __all__ = [
     "GetDocument",
     "StoreDocument",
     "QueryDocument",
-    "StoreAssets"
+    "StoreAssets",
+    "DeleteAssets",
+    "UpdateAssets",
+    "DeleteDocument",
+    "CaptureDocument"
 ]
 
 _module_lookup = {
     "GetDocument": "app.dependencies.internal.create_documents",
     "StoreDocument": "app.dependencies.internal.store_documents",
     "QueryDocument": "app.dependencies.internal.query_documents",
-    "StoreAssets": "app.dependencies.internal.store_assets"
+    "StoreAssets": "app.dependencies.internal.store_assets",
+    "DeleteAssets": "app.dependencies.internal.store_assets",
+    "UpdateAssets": "app.dependencies.internal.store_assets",
+    "DeleteDocument": "app.dependencies.internal.delete_documents",
+    "CaptureDocument": "app.dependencies.internal.create_documents"
 }
 
 def __getattr__(name: str) -> Any:

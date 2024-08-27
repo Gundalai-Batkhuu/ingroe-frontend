@@ -55,7 +55,6 @@ class StoreDocument:
         Args:
         documents (Sequence[Document]): The list of document object containing information.
         parent_node (Dict[str, Union[str, int]]): The dictionary containing parent label and parent id.
-
         """
         graph_documents = cls._get_graph_documents(documents)
         # graph_documents = get_graph_doc()
@@ -73,7 +72,7 @@ class StoreDocument:
         cls._attach_document_to_user(user_id, document_id)
 
     @classmethod
-    def _create_indexes(cls, graph: Neo4jGraph):
+    def _create_indexes(cls, graph: Neo4jGraph) -> None:
         """Creates one full text index and one property index.
         Args (Neo4jGraph): Neo4jGraph instance. 
         """
