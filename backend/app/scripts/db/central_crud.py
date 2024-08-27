@@ -451,6 +451,27 @@ class CentralCRUD:
         db.refresh(shared_document)
         return {"status_code": ErrorCode.NOERROR, "msg": "Made the document public."}
 
+    @classmethod
+    def remove_all_expired_documents(cls, db: Session, user_id: str, current_timestamp: str) -> int: 
+        """Removes the expired documents from sharing table. It only removes the document which has
+        the validity set and the validity has expired. It does not touch the document with validity 
+        None i.e. that document does not expires.
 
-        
-        
+        Args:
+        db (Session): The database session object.
+        user_id (str): The id of the user owning the expired documents.
+        current_timestamp (datetime): The time when the request to change access is made.
+
+        Returns:
+        int: An integer representing the number of removed documents.
+        """   
+        records = db.query(Document, SharedDocument).join(SharedDocument, Document.document_id == SharedDocument.document_id).filter(Document.user_id == user_id).all()
+        removal_count = 0
+        for record in records:
+            _, shared_document = record
+            current_validity = shared_document.validity
+            if current_validity is not None and current_timestamp > current_validity:
+                db.delete(shared_document)   
+                removal_count += 1  
+        db.commit()
+        return removal_count

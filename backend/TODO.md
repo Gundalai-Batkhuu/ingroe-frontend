@@ -42,7 +42,6 @@ The following is tracking which endpoints are available along with their test ca
 - [x] Add validity for all subscribers.
 - [x] Replace the query operation with join where applicable.
 - [ ] Add auth middleware to check for user.
-- [ ] Auto delete after the validity has passed.
 - [x] Change from selective access to public.
 - [x] Get list of shared documents that are owned.
 - [ ] Delete after notice period ends. Develop as a middleware.
