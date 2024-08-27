@@ -46,8 +46,8 @@ The following is tracking which endpoints are available along with their test ca
 - [x] Change from selective access to public.
 - [x] Get list of shared documents that are owned.
 - [ ] Delete after notice period ends. Develop as a middleware.
-- [ ] Delete all expired documents.
-- [ ] Set validity for public document that have none validityor reduce validity.
+- [ ] Delete all expired documents from sharing.
+- [ ] Set validity for public document that have none validity or reduce validity.
 
 ## Pydantic model
 - [ ] Use mixin
