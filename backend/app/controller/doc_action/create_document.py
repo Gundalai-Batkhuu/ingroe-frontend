@@ -43,8 +43,8 @@ class Create(APIEndPoint):
                 documents += response
                 file_link.append(link)
         print(vanilla_link)
-        # documents_from_link = await cls.create_document_from_links(vanilla_link)
-        documents_from_link = []
+        documents_from_link = await cls.create_document_from_links(vanilla_link)
+        # documents_from_link = []
         # documents_from_link, source = get_doc()
         documents += documents_from_link
         source = DocumentSource(vanilla_links=vanilla_link, file_links=file_link, error_links=error_link, unsupported_file_links=unallowed_downloadable_links)
