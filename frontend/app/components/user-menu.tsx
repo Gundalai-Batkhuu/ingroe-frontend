@@ -9,6 +9,7 @@ import {
 } from './ui/dropdown-menu'
 import {ProfileIcon} from "@/app/components/profile-icon";
 import {SignoutForm} from "@/app/components/signout-form";
+import { RemoveUserForm } from '@/app/components/remove-user-form'
 
 
 export interface UserMenuProps {
@@ -34,6 +35,10 @@ export function UserMenu({user}: UserMenuProps) {
                     <DropdownMenuItem className="flex-col items-start">
                         <div className="text-xs text-zinc-500">{user.email}</div>
                     </DropdownMenuItem>
+                    <DropdownMenuItem className="flex-col items-start text-xs text-zinc-500">
+                        <RemoveUserForm email={user.email}/>
+                    </DropdownMenuItem>
+
                     <DropdownMenuSeparator/>
                     <SignoutForm/>
                 </DropdownMenuContent>

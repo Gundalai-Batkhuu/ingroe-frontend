@@ -1,7 +1,8 @@
 export enum ApiEndpoint {
-  SEARCH_DOCUMENT = 'http://localhost:5000/api/v1/store/search-query',
-  CREATE_DOCUMENT_SELECTION = 'http://localhost:5000/api/v1/store/create-document-selection',
-  QUERY_DOCUMENT= 'http://localhost:5000/api/v1/store/query-document',
+  SEARCH_DOCUMENT = 'http://localhost:5500/api/v1/store/search-query',
+  CREATE_DOCUMENT_SELECTION = 'http://localhost:5500/api/v1/store/create-document-selection',
+  QUERY_DOCUMENT= 'http://localhost:5500/api/v1/store/query-document',
+  MANUAL_DOCUMENT_UPLOAD = 'http://localhost:5500/api/v1/store/create-document-manually',
 }
 
 export enum DocumentId {

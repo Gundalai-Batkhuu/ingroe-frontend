@@ -8,7 +8,7 @@ export interface SidebarProps extends React.ComponentProps<'div'> {
   userId: string
 }
 
-export function SidebarDocuments({ className, userId }: SidebarProps) {
+export function SidebarSelectedDocuments({ className, userId }: SidebarProps) {
   const { isSidebarOpen, isLoading } = useSidebar()
   const { selectedItems, removeSelectedItem } = useSelectedItemsStore()
   const selectedLinks = selectedItems.map(item => item.link)
