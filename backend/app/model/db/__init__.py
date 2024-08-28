@@ -4,6 +4,7 @@ from app.model.db.captured_document_model import CapturedDocument
 from app.model.db.captured_file_model import CapturedFile
 from app.model.db.shared_document_model import SharedDocument
 from app.model.db.shared_document_accessor_model import SharedDocumentAccessor
+from app.model.db.api_key_model import API
 
 __all__ = [
     "User", 
@@ -11,5 +12,6 @@ __all__ = [
     "CapturedDocument", 
     "CapturedFile", 
     "SharedDocument", 
-    "SharedDocumentAccessor"
+    "SharedDocumentAccessor",
+    "API"
     ]
