@@ -1,4 +1,6 @@
-import { SidebarDesktop } from '../components/sidebar/sidebar-desktop'
+import React from 'react'
+import { SidebarChatHistory } from '../components/sidebar/sidebar-chat-history'
+import { DocumentViewerSidebarContainer } from '@/app/components/sidebar/document-viewer-sidebar-container'
 
 interface ChatLayoutProps {
   children: React.ReactNode
@@ -7,8 +9,9 @@ interface ChatLayoutProps {
 export default async function ChatLayout({ children }: ChatLayoutProps) {
   return (
     <div className="relative flex h-[calc(100vh_-_theme(spacing.16))] overflow-hidden">
-      <SidebarDesktop />
-      {children}
+      <SidebarChatHistory />
+      <main className="flex-1 overflow-hidden">{children}</main>
+      <DocumentViewerSidebarContainer />
     </div>
   )
 }
