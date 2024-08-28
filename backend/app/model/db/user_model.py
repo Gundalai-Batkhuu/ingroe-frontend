@@ -17,4 +17,4 @@ class User(Base):
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
 
     document = relationship("Document", back_populates="user", cascade="all, delete-orphan")
-    api_key = relationship("API", back_populates="user", cascade="all, delete-orphan")
+    api_key = relationship("APIKey", back_populates="user", cascade="all, delete-orphan")

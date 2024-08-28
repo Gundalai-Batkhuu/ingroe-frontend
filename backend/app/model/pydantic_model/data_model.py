@@ -210,3 +210,10 @@ class SharedDocumentSelection(BaseModel):
     """    
     user_id: str
     current_timestamp: datetime
+
+class UserIdMixin(BaseModel):
+    """UserId
+
+    This mixin is used to define the user id field for all requests.
+    """
+    user_id: str

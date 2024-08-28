@@ -3,7 +3,7 @@ The backend of the Legal_AI_App.
 """
 
 from fastapi import FastAPI
-from app.routes import (action, user, document_handling)
+from app.routes import (action, user, document_handling, api_key)
 from fastapi.middleware.cors import CORSMiddleware
 from app.database import init_db
 
@@ -12,6 +12,7 @@ prefix = "/api/v1"
 app.include_router(router=action.router, prefix=prefix)
 app.include_router(router=user.router, prefix=prefix)
 app.include_router(router=document_handling.router, prefix=prefix)
+app.include_router(router=api_key.router, prefix=prefix)
 
 app.add_middleware(
     CORSMiddleware,

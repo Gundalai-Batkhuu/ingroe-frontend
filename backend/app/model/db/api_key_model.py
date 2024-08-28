@@ -3,7 +3,7 @@ from app.database import Base
 from datetime import datetime, timezone
 from sqlalchemy.orm import relationship
 
-class API(Base):
+class APIKey(Base):
     """Model for the api key table containing api key hash and key salt. Salt is used for additional security.
     """
     __tablename__ = "api_keys"
