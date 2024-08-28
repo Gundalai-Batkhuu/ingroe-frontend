@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useSidebar } from '@/app/lib/hooks/use-sidebar'
 import { cn } from '@/app/lib/utils'
 import { CreateDocumentSelection } from '@/app/components/create-document-selection'
 import { useSelectedItemsStore } from '@/app/store/selectedItemsStore'
+import { TextInputWithClear } from '@/app/components/ui/text-input-with-clear'
 
 export interface SidebarProps extends React.ComponentProps<'div'> {
   userId: string
@@ -12,6 +13,8 @@ export function SidebarSelectedDocuments({ className, userId }: SidebarProps) {
   const { isSidebarOpen, isLoading } = useSidebar()
   const { selectedItems, removeSelectedItem } = useSelectedItemsStore()
   const selectedLinks = selectedItems.map(item => item.link)
+  const [docAlias, setDocAlias] = useState("")
+  const [docDescription, setDocDescription] = useState("")
 
   return (
     <div
@@ -53,8 +56,19 @@ export function SidebarSelectedDocuments({ className, userId }: SidebarProps) {
               </div>
             )}
           </div>
+
           {selectedItems.length > 0 && (
-            <div className="p-4 flex justify-center">
+            <div className="p-4 flex flex-col items-center space-y-4">
+              <div className="w-full space-y-4">
+                <TextInputWithClear
+                  placeholder="Enter title... (optional)"
+                  onChange={setDocAlias}
+                />
+                <TextInputWithClear
+                  placeholder="Enter description... (optional)"
+                  onChange={setDocDescription}
+                />
+              </div>
               <CreateDocumentSelection
                 userId={userId}
                 links={selectedLinks}

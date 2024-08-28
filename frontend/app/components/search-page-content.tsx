@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { SearchBar } from '@/app/components/search-bar'
+import SearchBar from '@/app/components/search-bar'
 import { SearchResultsList } from '@/app/components/search-results'
 import { SidebarSearch } from '@/app/components/sidebar/sidebar-search'
 import { SidebarSelectedDocuments } from '@/app/components/sidebar/sidebar-selected-documents'
@@ -66,7 +66,6 @@ export default function SearchPageContent({ userId }: SearchPageContentProps) {
             </p>
             <div className="w-full max-w-md">
               <SearchBar
-                placeholder="Type your keywords here ..."
                 setResults={setSearchResults}
                 country={country}
                 countrySpecificSearch={countrySpecificSearch}
