@@ -50,3 +50,8 @@ The following is tracking which endpoints are available along with their test ca
 
 ## Pydantic model
 - [ ] Use mixin
+
+## SDK
+
+- [ ] Api store.
+- [ ] Dummy Service.
