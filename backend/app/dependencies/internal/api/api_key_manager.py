@@ -2,6 +2,7 @@ import os
 import hashlib
 from app.scripts.db import APIKeyCRUD
 from sqlalchemy.orm import Session
+from app.const import Status
 
 class APIKeyManager:
     """Class that manages the operations related to api keys.
@@ -39,4 +40,23 @@ class APIKeyManager:
         Returns:
         str: The hashed key.
         """
-        return hashlib.sha256((key + salt).encode()).hexdigest()    
+        return hashlib.sha256((key + salt).encode()).hexdigest()  
+
+    def validate_api_key(self, api_key: str, user_id: str) -> int:
+        """Validates the api key against a record in the api key table for a user.
+
+        Args:
+        api_key (str): The api key to validate.
+        user_id (str): The id of the user validating the api key.
+
+        Returns:
+        int: Integer that signifies the validity and invalidity of the credentials.
+        """
+        api_records = APIKeyCRUD.get_api_records(db=self.db, user_id=user_id)
+        if len(api_records) == 0:
+            return Status.INVALID
+        for record in api_records:
+            salt = record.key_salt
+            if self._hash_key(api_key, salt) == record.key_hash:
+                return Status.VALID
+        return Status.INVALID    

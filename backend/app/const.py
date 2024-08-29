@@ -36,3 +36,9 @@ class ErrorCode:
     UNAUTHORIZED = 401
     NOERROR = 200
     BADREQUEST = 400
+
+class Status:
+    """Constants that represent the statuses.
+    """
+    VALID = 1
+    INVALID = -1    
