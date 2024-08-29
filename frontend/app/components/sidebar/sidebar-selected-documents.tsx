@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useSidebar } from '@/app/lib/hooks/use-sidebar'
 import { cn } from '@/app/lib/utils'
 import { CreateDocumentSelection } from '@/app/components/create-document-selection'
-import { useSelectedItemsStore } from '@/app/store/selectedItemsStore'
+import { useSelectedItemsStore } from '@/app/lib/store/selectedItemsStore'
 import { TextInputWithClear } from '@/app/components/ui/text-input-with-clear'
 
 export interface SidebarProps extends React.ComponentProps<'div'> {

@@ -45,7 +45,7 @@ const SearchBar = ({
         });
 
         try {
-            const response = await fetch(ApiEndpoint.SEARCH_DOCUMENT, {
+            const response = await fetch(ApiEndpoint.SEARCH_GOOGLE, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',

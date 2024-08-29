@@ -5,7 +5,7 @@ import SearchBar from '@/app/components/search-bar'
 import { SearchResultsList } from '@/app/components/search-results'
 import { SidebarSearch } from '@/app/components/sidebar/sidebar-search'
 import { SidebarSelectedDocuments } from '@/app/components/sidebar/sidebar-selected-documents'
-import { useSelectedItemsStore } from '@/app/store/selectedItemsStore'
+import { useSelectedItemsStore } from '@/app/lib/store/selectedItemsStore'
 import { ManualDocumentUploader } from '@/app/components/sidebar/manual-document-uploader'
 
 interface SearchPageContentProps {

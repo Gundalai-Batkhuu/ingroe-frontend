@@ -7,11 +7,11 @@ import { saveChat } from '@/app/components/chat/actions'
 import { Chat, Message } from '../../lib/types'
 import { auth } from '@/auth'
 
-async function submitUserMessage(content: string) {
+
+async function submitUserMessage(content: string, documentId: string) {
   'use server'
 
   const aiState = getMutableAIState<typeof AI>()
-  const documentId = DocumentId.SAMPLE_DOCUMENT_ID
 
   console.log('Sending the message: ', content)
   console.log('Document ID: ', documentId)
