@@ -217,3 +217,8 @@ class UserIdMixin(BaseModel):
     This mixin is used to define the user id field for all requests.
     """
     user_id: str
+
+class ValidateAPIKey(UserIdMixin):
+    """Data model for validating the api key.
+    """    
+    api_key: str

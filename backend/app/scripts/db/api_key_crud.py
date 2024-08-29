@@ -19,4 +19,16 @@ class APIKeyCRUD:
         db.commit()
         db.refresh(api_record)
 
-        
+    @classmethod
+    def get_api_records(cls, db: Session, user_id: str) -> list:
+        """Returns the records from the api table if matched.
+
+        Args:
+        db (Session): The database session object.
+        user_id (str): The id of the user fetching the records.
+
+        Returns:
+        list: A list of records from the api table.
+        """
+        api_records = db.query(APIKey).filter(APIKey.user_id == user_id).all()
+        return api_records
