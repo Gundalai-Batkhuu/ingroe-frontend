@@ -39,11 +39,20 @@ export function Header() {
             <div className="flex items-center">
                 <SidebarToggle/>
                 <Link href="/" className="ml-4 text-xl font-bold">
-                    Legal AI
+                    AI Chat
                 </Link>
-
             </div>
-            <div className="flex items-center justify-end space-x-6">
+            <div className="flex items-center justify-end space-x-4">
+                <Link href="/chat">
+                    <Button variant="ghost">
+                        Chat
+                    </Button>
+                </Link>
+                <Link href="/search">
+                    <Button variant="ghost">
+                        Search
+                    </Button>
+                </Link>
                 <UserOrLogin/>
             </div>
         </header>

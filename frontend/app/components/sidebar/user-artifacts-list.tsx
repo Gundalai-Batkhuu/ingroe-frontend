@@ -10,6 +10,10 @@ interface UserArtifactsListProps {
   userId: string
 }
 
+const truncateString = (str: string, maxLength: number) => {
+  return str.length > maxLength ? str.slice(0, maxLength - 3) + '...' : str
+}
+
 export function UserArtifactsList({ userId }: UserArtifactsListProps) {
   const { artifacts, isLoading, error, fetchUserArtifacts, selectedArtifactId, setSelectedArtifactId } = useUserArtifactsStore()
   const [expandedId, setExpandedId] = useState<string | null>(null)
@@ -39,34 +43,40 @@ export function UserArtifactsList({ userId }: UserArtifactsListProps) {
   }
 
   return (
-    <div className="space-y-2">
-      {artifacts.artefact_tree.map((artifact: Artifact) => (
-        <div key={artifact.document_id} className="border p-2 rounded">
-          <div className="flex items-center space-x-2">
-            <button onClick={() => toggleExpand(artifact.document_id)} className="p-1">
-              {expandedId === artifact.document_id ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-            </button>
-            <span
-              className={`cursor-pointer ${selectedArtifactId === artifact.document_id ? 'font-bold' : ''}`}
-              onClick={() => handleSelect(artifact.document_id)}
-            >
-              {artifact.document_id}
-            </span>
-          </div>
-          {expandedId === artifact.document_id && (
-            <div className="ml-6 mt-2 text-sm">
-              <p>Name: {artifact.document_name}</p>
-              <p>Description: {artifact.description}</p>
-              <p>Vanilla Links: {artifact.vanilla_links.length}</p>
-              <p>File Links: {artifact.file_links.length}</p>
-              <p>Files: {artifact.files.length}</p>
-              <p>Captured Documents: {artifact.captured_documents.length}</p>
+    <div className="flex flex-col h-full">
+      <div className="flex items-center justify-between pb-4">
+        <h4 className="text-sm font-medium">Document store</h4>
+      </div>
+      <div className="flex-grow overflow-auto">
+        <div className="space-y-2">
+          {artifacts.artefact_tree.map((artifact: Artifact) => (
+            <div key={artifact.document_id}
+                 className={`cursor-pointer ${selectedArtifactId === artifact.document_id ? 'bg-accent' : ''} border p-2 rounded`}>
+              <div className="flex items-center space-x-2 text-sm">
+                <button onClick={() => toggleExpand(artifact.document_id)} className="p-1">
+                  {expandedId === artifact.document_id ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                </button>
+                <span
+                  className={`cursor-pointer ${selectedArtifactId === artifact.document_id ? 'font-bold' : ''} truncate`}
+                  onClick={() => handleSelect(artifact.document_id)}
+                  title={artifact.document_id}
+                >
+                  {truncateString(artifact.document_id, 20)}
+                </span>
+              </div>
+              {expandedId === artifact.document_id && (
+                <div className="ml-6 mt-2 text-sm">
+                  <p>Name: {artifact.document_name}</p>
+                  <p>Description: {artifact.description}</p>
+                  <p>Vanilla Links: {artifact.vanilla_links.length}</p>
+                  <p>File Links: {artifact.file_links.length}</p>
+                  <p>Files: {artifact.files.length}</p>
+                  <p>Captured Documents: {artifact.captured_documents.length}</p>
+                </div>
+              )}
             </div>
-          )}
+          ))}
         </div>
-      ))}
-      <div className="mt-4">
-        <strong>Selected Document ID:</strong> {selectedArtifactId || 'None'}
       </div>
     </div>
   )
