@@ -31,7 +31,8 @@ async def create_document_selection(payload: CreateDocument):
     print(payload.document_id)
     documents, source = await Create.create_documents_from_selection(payload.links, payload.user_id)
     print("received documents")
-    # print(len(documents[:10]))
+    print(len(documents))
+    print(documents)
     # return documents
     parent_node = {"label": GraphLabel.DOCUMENT_ROOT, "id": payload.document_id}
     Store.store_document(documents, parent_node, payload.user_id)
@@ -43,6 +44,7 @@ async def create_document_selection(payload: CreateDocument):
             "message": "Documents from provided sources stored successfully!!", 
             "unsupported_file_links": source.unsupported_file_links,
             "error_links": source.error_links,
+            "unscrapable_links": source.unscrapable_links,
             "document_id": payload.document_id
             }
     )
@@ -74,7 +76,13 @@ async def create_document_manually(link: Optional[str] = Form(None), file: Optio
         storer.store(update_required)
         return JSONResponse(
         status_code=200,
-        content={"message": "Documents from provided sources stored successfully!!"}
+        content={
+            "message": "Documents from provided sources stored successfully!!",
+            "unsupported_file_links": source.unsupported_file_links,
+            "error_links": source.error_links,
+            "unscrapable_links": source.unscrapable_links,
+            "document_id": document_id
+            }
     )
     if file: 
         print("from file")
@@ -93,6 +101,9 @@ async def create_document_manually(link: Optional[str] = Form(None), file: Optio
         status_code=200,
         content={
             "message": "Documents from provided sources stored successfully!!",
+            "unsupported_file_links": source.unsupported_file_links,
+            "error_links": source.error_links,
+            "unscrapable_links": source.unscrapable_links,
             "document_id": document_id
             }
     )

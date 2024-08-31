@@ -120,7 +120,7 @@ class QueryDocument:
             response = graph.query(
                 """CALL db.index.fulltext.queryNodes('entity', $query)
                 YIELD node,score
-                CALL {
+                CALL (node) {
                 WITH node
                 MATCH (node)-[r:!MENTIONS]->(neighbor)
                 RETURN node.id + ' - ' + type(r) + ' -> ' + neighbor.id AS output
