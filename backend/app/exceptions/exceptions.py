@@ -7,4 +7,8 @@ class APIError(Exception):
 
 class DocumentDoesNotExistError(APIError):
     """Exception raised when the document is not found for a particular id"""
-    pass        
+    pass      
+
+class SearchResultRetrievalError(APIError):
+    """Exception raised during the search result retrieval"""
+    pass

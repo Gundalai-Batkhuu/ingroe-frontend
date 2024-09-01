@@ -1,4 +1,4 @@
-from fastapi import APIRouter, File, UploadFile, Form, HTTPException
+from fastapi import APIRouter, File, UploadFile, Form, HTTPException, status
 from fastapi.responses import JSONResponse
 from typing import Dict, Optional, List
 from app.model.pydantic_model import (SearchQuery, CreateDocument, QueryDocument, DeleteDocument, DeleteCapturedFile, DeleteCapturedDocument, CreateDocumentCapture, DocumentInfo)
@@ -8,7 +8,9 @@ from uuid import uuid4
 from app.const import GraphLabel
 from app.model.pydantic_model.payload import DocumentSource
 from app.dependencies.internal import (StoreAssets, UpdateAssets)
-from app.exceptions import (DocumentDoesNotExistError)
+from app.exceptions import (DocumentDoesNotExistError, SearchResultRetrievalError)
+from fastapi.encoders import jsonable_encoder
+from loguru import logger
 
 from app.temp_test.graph import get_doc, get_doc_from_file
 
@@ -24,8 +26,19 @@ def index() -> Dict[str,str]:
 
 @router.post("/search-query")
 async def search(payload: SearchQuery):
-    results = await Search.search_documents(payload)
-    return results
+    try:
+        results = await Search.search_documents(payload)
+        return JSONResponse(
+            status_code=200,
+            content=jsonable_encoder({
+                "results": results
+                })
+        )
+    except SearchResultRetrievalError:
+        raise
+    except Exception as e:
+        logger.error(e)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error occurred while fetching search results.")
 
 @router.post("/create-document-selection")
 async def create_document_selection(payload: CreateDocument):
@@ -150,7 +163,7 @@ async def capture_document(file: UploadFile, user_id: str = Form(...), document_
     document_update = False
     if document_id is not None:
         if not document_exists(document_id, user_id):
-            raise HTTPException(status_code=400, detail="The supplied document id does not exist. Please provide the right id or leave blank.")
+            raise DocumentDoesNotExistError(message=f"The supplied document id {document_id} does not exist", name="Invalid Document Id")
         document_update = True
     else:
         document_id = uuid4().hex 
@@ -172,7 +185,7 @@ async def capture_document(file: UploadFile, user_id: str = Form(...), document_
 @router.patch("/update-captured-document")
 async def update_capture_document(file: UploadFile, user_id: str = Form(...), document_id: str = Form(...), file_id: str = Form(...), captured_document_id: str = Form(...)):
     if not file_exists(file_id, captured_document_id, file.filename):
-        raise HTTPException(status_code=400, detail="The file cannot be updated. Either the filename is not matching with the original filename or invalid ids are passed.")
+        raise DocumentDoesNotExistError(message=f"The supplied file id {file_id} does not exist", name="Invalid File Id")
     file_map = await Capture.update_document(file, user_id, document_id, file_id)
     return JSONResponse(
         status_code=200,
@@ -207,7 +220,7 @@ async def delete_captured_document(payload: DeleteCapturedDocument):
 @router.post("/create-document-from-captured-document")
 async def create_document_from_captured_document(payload: CreateDocumentCapture):
     if not document_exists(payload.document_id, payload.user_id):
-        raise HTTPException(status_code=400, detail="The supplied document id does not exist. Please provide the right id or leave blank.")
+        raise DocumentDoesNotExistError(message=f"The supplied document id {document_id} does not exist", name="Invalid Document Id")
     document_id = payload.document_id
     documents = await Create.create_documents_from_captured_document(links=payload.links) 
     parent_node = {"label": GraphLabel.DOCUMENT_ROOT, "id": document_id}
@@ -224,7 +237,7 @@ async def create_document_from_captured_document(payload: CreateDocumentCapture)
 @router.patch("/update-document-info")
 async def update_document_info(payload: DocumentInfo):
     if not document_exists(payload.document_id, payload.user_id):
-        raise HTTPException(status_code=400, detail="The supplied document id does not exist. Please provide the right id.")
+        raise DocumentDoesNotExistError(message=f"The supplied document id {payload.document_id} does not exist", name="Invalid Document Id")
     UpdateAssets.update_document_info(payload.document_id, payload.document_alias, payload.description)
     return JSONResponse(
         status_code=200,

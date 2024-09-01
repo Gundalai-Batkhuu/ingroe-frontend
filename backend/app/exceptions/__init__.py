@@ -1,9 +1,11 @@
 from .exceptions import (
     APIError,
-    DocumentDoesNotExistError
+    DocumentDoesNotExistError,
+    SearchResultRetrievalError
 )
 
 __all__ = [
     "APIError",
-    "DocumentDoesNotExistError"
+    "DocumentDoesNotExistError",
+    "SearchResultRetrievalError"
 ]
