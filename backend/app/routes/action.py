@@ -73,62 +73,69 @@ async def create_document_selection(payload: CreateDocument):
 
 @router.post("/create-document-manually")
 async def create_document_manually(link: Optional[str] = Form(None), file: Optional[UploadFile] = File(None), user_id: str = Form(...), document_id: Optional[str] = Form(None), document_alias: Optional[str] = Form(""), description: Optional[str] = Form("")):
-    print(file)
-    update_required = False
-    if link is None and file is None:
-        raise HTTPException(status_code=400, detail="You must provide either a link or file.")
-    if document_id is not None:
-        if not document_exists(document_id, user_id):
-            raise DocumentDoesNotExistError(message=f"The supplied document id {document_id} does not exist", name="Invalid Document Id")
-        update_required = True
-    else:
-        document_id = uuid4().hex  
-    parent_node = {"label": GraphLabel.DOCUMENT_ROOT, "id": document_id}
-    if file is not None and link is not None:
-        document_from_file, file_map = get_doc_from_file()
-        document_from_link, source = get_doc()
-        source.files = [file_map]
-        combined_documents = document_from_file + document_from_link
-        # documents_from_file, file_map = await Create.create_document_from_file(file, user_id, document_id) 
-        # documents_from_link, source = await Create.create_documents_from_selection([link], user_id)
-        # source.files = [file_map]
-        # combined_documents = documents_from_file + documents_from_link
-        Store.store_document(combined_documents, parent_node, user_id)
+    try:
+        update_required = False
+        if link is None and file is None:
+            raise HTTPException(status_code=400, detail="You must provide either a link or file.")
+        if document_id is not None:
+            if not document_exists(document_id, user_id):
+                raise DocumentDoesNotExistError(message=f"The supplied document id {document_id} does not exist", name="Invalid Document Id")
+            update_required = True
+        else:
+            document_id = uuid4().hex  
+        parent_node = {"label": GraphLabel.DOCUMENT_ROOT, "id": document_id}
+        if file is not None and link is not None:
+            document_from_file, file_map = get_doc_from_file()
+            document_from_link, source = get_doc()
+            source.files = [file_map]
+            combined_documents = document_from_file + document_from_link
+            # documents_from_file, file_map = await Create.create_document_from_file(file, user_id, document_id) 
+            # documents_from_link, source = await Create.create_documents_from_selection([link], user_id)
+            # source.files = [file_map]
+            # combined_documents = documents_from_file + documents_from_link
+            Store.store_document(combined_documents, parent_node, user_id)
+            storer = StoreAssets(user_id=user_id, document_root_id=document_id, document_alias=document_alias, source_payload=source, description=description)
+            storer.store(update_required)
+            return JSONResponse(
+            status_code=200,
+            content={
+                "message": "Documents from provided sources stored successfully!!",
+                "unsupported_file_links": source.unsupported_file_links,
+                "error_links": source.error_links,
+                "unscrapable_links": source.unscrapable_links,
+                "document_id": document_id
+                }
+        )
+        if file: 
+            print("from file")
+            documents, file_map = get_doc_from_file()
+            documents, file_map = await Create.create_document_from_file(file, user_id, document_id) 
+            source = _get_source_payload_from_file_map(file_map)
+            print("source done")
+        else: 
+            print("from link")
+            documents, source = get_doc()
+            # documents, source = await Create.create_documents_from_selection([link], user_id)
+        Store.store_document(documents, parent_node, user_id)  
         storer = StoreAssets(user_id=user_id, document_root_id=document_id, document_alias=document_alias, source_payload=source, description=description)
-        storer.store(update_required)
+        storer.store(update_required) 
         return JSONResponse(
-        status_code=200,
-        content={
-            "message": "Documents from provided sources stored successfully!!",
-            "unsupported_file_links": source.unsupported_file_links,
-            "error_links": source.error_links,
-            "unscrapable_links": source.unscrapable_links,
-            "document_id": document_id
-            }
-    )
-    if file: 
-        print("from file")
-        documents, file_map = get_doc_from_file()
-        # documents, file_map = await Create.create_document_from_file(file, user_id, document_id) 
-        source = _get_source_payload_from_file_map(file_map)
-        print("source done")
-    else: 
-        print("from link")
-        documents, source = get_doc()
-        # documents, source = await Create.create_documents_from_selection([link], user_id)
-    Store.store_document(documents, parent_node, user_id)  
-    storer = StoreAssets(user_id=user_id, document_root_id=document_id, document_alias=document_alias, source_payload=source, description=description)
-    storer.store(update_required) 
-    return JSONResponse(
-        status_code=200,
-        content={
-            "message": "Documents from provided sources stored successfully!!",
-            "unsupported_file_links": source.unsupported_file_links,
-            "error_links": source.error_links,
-            "unscrapable_links": source.unscrapable_links,
-            "document_id": document_id
-            }
-    )
+            status_code=200,
+            content={
+                "message": "Documents from provided sources stored successfully!!",
+                "unsupported_file_links": source.unsupported_file_links,
+                "error_links": source.error_links,
+                "unscrapable_links": source.unscrapable_links,
+                "document_id": document_id
+                }
+        )
+    except DocumentCreationError:
+        raise
+    except DocumentStorageError:
+        raise
+    except Exception as e:
+        logger.error(e)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error while creating the documents.")
 
 @router.post("/query-document")
 async def query_document(payload: QueryDocument):
