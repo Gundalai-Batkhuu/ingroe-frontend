@@ -7,7 +7,8 @@ from typing import Sequence, List, Tuple
 from app.const import ReturnCode
 from app.model.pydantic_model.payload import DocumentSource
 from app.temp_test.graph import get_doc
-from app.exceptions import DocumentCreationError
+from app.exceptions import (DocumentCreationError, DocumentStorageError)
+from loguru import logger
 
 class Create(APIEndPoint):
 
@@ -17,13 +18,19 @@ class Create(APIEndPoint):
             documents = await GetDocument.get_document_from_links(page_links)
             return documents
         except Exception as e:
+            logger.error(e)
             raise DocumentCreationError(message="Error while creating documents from the links", name="Document Creation")
 
     @classmethod
     async def create_document_from_file(cls, file: UploadFile, user_id: str, document_id: str) -> List[Document]:
-        documents, file_map = await GetDocument.get_document_from_file(file, user_id, document_id)
-        # print(documents)    
-        return documents, file_map
+        try:
+            documents, file_map = await GetDocument.get_document_from_file(file, user_id, document_id)  
+            return documents, file_map
+        except DocumentStorageError:
+            raise
+        except Exception as e:
+            logger.error(e)
+            raise DocumentCreationError(message="Error while creating documents from the files", name="Document Creation")
     
     @classmethod
     async def create_documents_from_selection(cls, links: List[str], user_id: str) -> Tuple[Sequence[Document], DocumentSource]:
