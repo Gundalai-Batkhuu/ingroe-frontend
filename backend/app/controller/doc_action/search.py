@@ -4,6 +4,7 @@ from ...model.pydantic_model.data_model import SearchQuery, SearchResult
 import pycountry
 from typing import Optional, List
 from app.dependencies.external import SearchFunction
+from loguru import logger
 
 class Search(APIEndPoint):
     # class_var: str = "xyz"
@@ -117,6 +118,6 @@ class Search(APIEndPoint):
         A list containing a dictionary of search result properties
         """
         search_query = cls.get_final_search_query(query_object)
-        print(search_query)
+        logger.info(f"The composed search query is: {search_query}")
         results = await SearchFunction.get_result(search_query, query_object.results, query_object.mix)
         return results
