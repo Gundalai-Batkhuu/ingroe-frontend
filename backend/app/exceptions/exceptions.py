@@ -12,3 +12,11 @@ class DocumentDoesNotExistError(APIError):
 class SearchResultRetrievalError(APIError):
     """Exception raised during the search result retrieval"""
     pass
+
+class DocumentCreationError(APIError):
+    """Exception raised while creating the documents"""
+    pass
+
+class DocumentStorageError(APIError):
+    """Exception raised when storing documents in databases whether it's graph or relational"""
+    pass

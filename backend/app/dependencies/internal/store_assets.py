@@ -3,6 +3,8 @@ from app.model.pydantic_model.payload import DocumentSource
 from app.scripts.db import DocumentCRUD
 from app.database import get_session
 from app.scripts.db import (CapturedDocumentCRUD, CapturedFileCRUD)
+from loguru import logger
+from exceptions import DocumentStorageError
 
 class StoreAssets:
     """Class containing methods to store the asset information to the database.
@@ -40,10 +42,14 @@ class StoreAssets:
         Args:
         isUpdate (bool): A boolean value to indicate whether a create or update operation is required.
         """
-        if isUpdate:
-            self._update_document()
-        else:   
-            self._create_document() 
+        try:
+            if isUpdate:
+                self._update_document()
+            else:   
+                self._create_document() 
+        except Exception as e:
+            logger.error(e)
+            raise DocumentStorageError(message="Error while storing the document information in the postgres database", name="Document storage Postgres")        
             
     def _create_document(self) -> None:
         """Creates a document record containing the assets in the database.

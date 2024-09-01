@@ -7,14 +7,17 @@ from typing import Sequence, List, Tuple
 from app.const import ReturnCode
 from app.model.pydantic_model.payload import DocumentSource
 from app.temp_test.graph import get_doc
+from app.exceptions import DocumentCreationError
 
 class Create(APIEndPoint):
 
     @classmethod
     async def create_document_from_links(cls, page_links: List[str]) -> Sequence[Document]:
-        documents = await GetDocument.get_document_from_links(page_links)
-        # print(documents)
-        return documents
+        try:
+            documents = await GetDocument.get_document_from_links(page_links)
+            return documents
+        except Exception as e:
+            raise DocumentCreationError(message="Error while creating documents from the links", name="Document Creation")
 
     @classmethod
     async def create_document_from_file(cls, file: UploadFile, user_id: str, document_id: str) -> List[Document]:

@@ -8,7 +8,7 @@ from uuid import uuid4
 from app.const import GraphLabel
 from app.model.pydantic_model.payload import DocumentSource
 from app.dependencies.internal import (StoreAssets, UpdateAssets)
-from app.exceptions import (DocumentDoesNotExistError, SearchResultRetrievalError)
+from app.exceptions import (DocumentDoesNotExistError, SearchResultRetrievalError, DocumentCreationError, DocumentStorageError)
 from fastapi.encoders import jsonable_encoder
 from loguru import logger
 
@@ -42,26 +42,34 @@ async def search(payload: SearchQuery):
 
 @router.post("/create-document-selection")
 async def create_document_selection(payload: CreateDocument):
-    print(payload.document_id)
-    documents, source = await Create.create_documents_from_selection(payload.links, payload.user_id)
-    print("received documents")
-    print(len(documents))
-    print(documents)
-    # return documents
-    parent_node = {"label": GraphLabel.DOCUMENT_ROOT, "id": payload.document_id}
-    Store.store_document(documents, parent_node, payload.user_id)
-    storer = StoreAssets(user_id=payload.user_id, document_root_id=payload.document_id, document_alias=payload.document_alias, source_payload=source, description=payload.description)
-    storer.store(False)
-    return JSONResponse(
-        status_code=200,
-        content={
-            "message": "Documents from provided sources stored successfully!!", 
-            "unsupported_file_links": source.unsupported_file_links,
-            "error_links": source.error_links,
-            "unscrapable_links": source.unscrapable_links,
-            "document_id": payload.document_id
-            }
-    )
+    try:
+        print(payload.document_id)
+        documents, source = await Create.create_documents_from_selection(payload.links, payload.user_id)
+        print("received documents")
+        print(len(documents))
+        print(documents)
+        # return documents
+        parent_node = {"label": GraphLabel.DOCUMENT_ROOT, "id": payload.document_id}
+        Store.store_document(documents, parent_node, payload.user_id)
+        storer = StoreAssets(user_id=payload.user_id, document_root_id=payload.document_id, document_alias=payload.document_alias, source_payload=source, description=payload.description)
+        storer.store(False)
+        return JSONResponse(
+            status_code=200,
+            content={
+                "message": "Documents from provided sources stored successfully!!", 
+                "unsupported_file_links": source.unsupported_file_links,
+                "error_links": source.error_links,
+                "unscrapable_links": source.unscrapable_links,
+                "document_id": payload.document_id
+                }
+        )
+    except DocumentCreationError:
+        raise
+    except DocumentStorageError:
+        raise    
+    except Exception as e:
+        logger.error(e)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error while creating the documents.")
 
 @router.post("/create-document-manually")
 async def create_document_manually(link: Optional[str] = Form(None), file: Optional[UploadFile] = File(None), user_id: str = Form(...), document_id: Optional[str] = Form(None), document_alias: Optional[str] = Form(""), description: Optional[str] = Form("")):
