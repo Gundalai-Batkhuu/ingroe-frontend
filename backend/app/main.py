@@ -2,10 +2,14 @@
 The backend of the Legal_AI_App.
 """
 
-from fastapi import FastAPI
+from fastapi import FastAPI, status
 from app.routes import (action, user, document_handling, api_key)
 from fastapi.middleware.cors import CORSMiddleware
 from app.database import init_db
+from app.exceptions.handler.exception_handler import create_exception_handler
+from app.exceptions import (
+    DocumentDoesNotExistError
+)
 
 app = FastAPI()
 prefix = "/api/v1"
@@ -21,6 +25,8 @@ app.add_middleware(
     allow_methods=["*"],   
     allow_headers=["*"],  
 )
+
+app.add_exception_handler(exc_class_or_status_code=DocumentDoesNotExistError, handler=create_exception_handler(status.HTTP_400_BAD_REQUEST, "Document does not exist"))
 
 init_db()
 

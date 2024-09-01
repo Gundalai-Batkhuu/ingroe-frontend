@@ -8,6 +8,7 @@ from uuid import uuid4
 from app.const import GraphLabel
 from app.model.pydantic_model.payload import DocumentSource
 from app.dependencies.internal import (StoreAssets, UpdateAssets)
+from app.exceptions import (DocumentDoesNotExistError)
 
 from app.temp_test.graph import get_doc, get_doc_from_file
 
@@ -57,7 +58,7 @@ async def create_document_manually(link: Optional[str] = Form(None), file: Optio
         raise HTTPException(status_code=400, detail="You must provide either a link or file.")
     if document_id is not None:
         if not document_exists(document_id, user_id):
-            raise HTTPException(status_code=400, detail="The supplied document id does not exist. Please provide the right id or leave blank.")
+            raise DocumentDoesNotExistError(message=f"The supplied document id {document_id} does not exist", name="Invalid Document Id")
         update_required = True
     else:
         document_id = uuid4().hex  
