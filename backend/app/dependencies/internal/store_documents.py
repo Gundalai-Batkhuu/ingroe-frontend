@@ -12,6 +12,8 @@ from langchain_openai import OpenAIEmbeddings
 from app.enum import (ModelProvider,)
 from app.const import GraphLabel
 # from langchain_community.graphs import Neo4jGraph
+from app.exceptions import DocumentStorageError
+from loguru import logger
 
 class StoreDocument:
     """
@@ -42,12 +44,16 @@ class StoreDocument:
         Returns:
         List[GraphDocument]: The list of graph documents obtained from the documents.
         """
-        documents = cls._get_document_chunks(documents)
-        llm_selector = LLM(temperature=0)
-        llm = llm_selector.get_model(ModelProvider.BEDROCK_HAIKU)
-        llm_transformer = LLMGraphTransformer(llm=llm)
-        graph_documents = llm_transformer.convert_to_graph_documents(documents)
-        return graph_documents
+        try:
+            documents = cls._get_document_chunks(documents)
+            llm_selector = LLM(temperature=0)
+            llm = llm_selector.get_model(ModelProvider.BEDROCK_HAIKU)
+            llm_transformer = LLMGraphTransformer(llm=llm)
+            graph_documents = llm_transformer.convert_to_graph_documents(documents)
+            return graph_documents
+        except Exception as e:
+            logger.error(e)
+            raise DocumentStorageError(message="Error while creating the graph documents from documents", name="Graph Document Creation")
     
     @classmethod
     def store_documents_in_graph_db(cls, documents: Sequence[Document] | None, parent_node: Dict[str, Union[str, int]], user_id: str) -> None:

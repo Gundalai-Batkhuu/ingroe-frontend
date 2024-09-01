@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.database import init_db
 from app.exceptions.handler.exception_handler import create_exception_handler
 from app.exceptions import (
-    DocumentDoesNotExistError, SearchResultRetrievalError
+    DocumentDoesNotExistError, SearchResultRetrievalError, DocumentCreationError, DocumentStorageError
 )
 
 app = FastAPI()
@@ -28,6 +28,8 @@ app.add_middleware(
 
 app.add_exception_handler(exc_class_or_status_code=DocumentDoesNotExistError, handler=create_exception_handler(status.HTTP_400_BAD_REQUEST, "Document does not exist"))
 app.add_exception_handler(exc_class_or_status_code=SearchResultRetrievalError, handler=create_exception_handler(status.HTTP_500_INTERNAL_SERVER_ERROR, "Search result retrieval error"))
+app.add_exception_handler(exc_class_or_status_code=DocumentCreationError, handler=create_exception_handler(status.HTTP_500_INTERNAL_SERVER_ERROR, "Document creation error"))
+app.add_exception_handler(exc_class_or_status_code=DocumentStorageError, handler=create_exception_handler(status.HTTP_500_INTERNAL_SERVER_ERROR, "Document storage error"))
 
 init_db()
 
