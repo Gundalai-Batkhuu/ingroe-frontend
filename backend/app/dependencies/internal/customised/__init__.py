@@ -25,7 +25,7 @@ __all__ = [
 _module_lookup = {
     "Neo4jGraph": "app.dependencies.internal.customised.neo4j_graph",
     "ScopedNeo4jVector": "app.dependencies.internal.customised.neo4j_vector",
-    "Neo4JCustomGraph": "app.dependencies.internal.neo4j_graph_extended"
+    "Neo4JCustomGraph": "app.dependencies.internal.customised.neo4j_graph_extended"
 }
 
 def __getattr__(name: str) -> Any:
