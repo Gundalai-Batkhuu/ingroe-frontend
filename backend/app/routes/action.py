@@ -1,4 +1,4 @@
-from fastapi import APIRouter, File, UploadFile, Form, HTTPException, status
+from fastapi import APIRouter, File, UploadFile, Form, HTTPException, status, Depends
 from fastapi.responses import JSONResponse
 from typing import Dict, Optional, List
 from app.model.pydantic_model import (SearchQuery, CreateDocument, QueryDocument, DeleteDocument, DeleteCapturedFile, DeleteCapturedDocument, CreateDocumentCapture, DocumentInfo)
@@ -11,6 +11,8 @@ from app.dependencies.internal import (StoreAssets, UpdateAssets)
 from app.exceptions import (DocumentDoesNotExistError, SearchResultRetrievalError, DocumentCreationError, DocumentStorageError)
 from fastapi.encoders import jsonable_encoder
 from loguru import logger
+from sqlalchemy.orm import Session
+from app.database import get_db
 
 from app.temp_test.graph import get_doc, get_doc_from_file
 
@@ -41,7 +43,7 @@ async def search(payload: SearchQuery):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error occurred while fetching search results.")
 
 @router.post("/create-document-selection")
-async def create_document_selection(payload: CreateDocument):
+async def create_document_selection(payload: CreateDocument, db: Session = Depends(get_db)):
     try:
         print(payload.document_id)
         documents, source = await Create.create_documents_from_selection(payload.links, payload.user_id)
@@ -51,7 +53,7 @@ async def create_document_selection(payload: CreateDocument):
         # return documents
         parent_node = {"label": GraphLabel.DOCUMENT_ROOT, "id": payload.document_id}
         # Store.store_document(documents, parent_node, payload.user_id)
-        storer = StoreAssets(user_id=payload.user_id, document_root_id=payload.document_id, document_alias=payload.document_alias, source_payload=source, description=payload.description)
+        storer = StoreAssets(user_id=payload.user_id, document_root_id=payload.document_id, document_alias=payload.document_alias, source_payload=source, description=payload.description, db=db)
         storer.store(False)
         return JSONResponse(
             status_code=200,
@@ -72,7 +74,7 @@ async def create_document_selection(payload: CreateDocument):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error while creating the documents.")
 
 @router.post("/create-document-manually")
-async def create_document_manually(link: Optional[str] = Form(None), file: Optional[UploadFile] = File(None), user_id: str = Form(...), document_id: Optional[str] = Form(None), document_alias: Optional[str] = Form(""), description: Optional[str] = Form("")):
+async def create_document_manually(link: Optional[str] = Form(None), file: Optional[UploadFile] = File(None), user_id: str = Form(...), document_id: Optional[str] = Form(None), document_alias: Optional[str] = Form(""), description: Optional[str] = Form(""), db: Session = Depends(get_db)):
     try:
         update_required = False
         if link is None and file is None:
