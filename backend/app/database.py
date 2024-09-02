@@ -1,8 +1,9 @@
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
+from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 import os
+from sqlalchemy.orm import declarative_base
 
 load_dotenv()
 # DATABASE_URL = "postgresql+psycopg2://username:password@localhost/mydatabase"

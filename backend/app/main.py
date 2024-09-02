@@ -10,8 +10,16 @@ from app.exceptions.handler.exception_handler import create_exception_handler
 from app.exceptions import (
     DocumentDoesNotExistError, SearchResultRetrievalError, DocumentCreationError, DocumentStorageError
 )
+from contextlib import asynccontextmanager
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Initialises the database and if we need to release the resources then we can put that after the yield keyword.
+    """
+    init_db()
+    yield
+
+app = FastAPI(lifespan=lifespan)
 prefix = "/api/v1"
 app.include_router(router=action.router, prefix=prefix)
 app.include_router(router=user.router, prefix=prefix)
@@ -30,8 +38,6 @@ app.add_exception_handler(exc_class_or_status_code=DocumentDoesNotExistError, ha
 app.add_exception_handler(exc_class_or_status_code=SearchResultRetrievalError, handler=create_exception_handler(status.HTTP_500_INTERNAL_SERVER_ERROR, "Search result retrieval error"))
 app.add_exception_handler(exc_class_or_status_code=DocumentCreationError, handler=create_exception_handler(status.HTTP_500_INTERNAL_SERVER_ERROR, "Document creation error"))
 app.add_exception_handler(exc_class_or_status_code=DocumentStorageError, handler=create_exception_handler(status.HTTP_500_INTERNAL_SERVER_ERROR, "Document storage error"))
-
-init_db()
 
 @app.get("/")
 def run_server():

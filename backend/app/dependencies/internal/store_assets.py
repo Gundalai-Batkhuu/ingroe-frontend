@@ -5,6 +5,7 @@ from app.database import get_db
 from app.scripts.db import (CapturedDocumentCRUD, CapturedFileCRUD)
 from loguru import logger
 from app.exceptions import DocumentStorageError
+from sqlalchemy.orm import Session
 
 class StoreAssets:
     """Class containing methods to store the asset information to the database.
@@ -15,7 +16,8 @@ class StoreAssets:
             document_root_id: str, 
             document_alias: str,
             source_payload: DocumentSource,
-            description: str
+            description: str,
+            db: Session
             ) -> None:
         """A constructor method to initialise the StoreAssets instance.
 
@@ -35,6 +37,7 @@ class StoreAssets:
         self.unsuppported_file_links = source_payload.unsupported_file_links
         self.files = source_payload.files
         self.description = description
+        self.db = db
 
     def store(self, isUpdate: bool) -> None:
         """Stores the document asset information to the database.
@@ -54,22 +57,17 @@ class StoreAssets:
     def _create_document(self) -> None:
         """Creates a document record containing the assets in the database.
         """
-        db_generator = get_db()
-        db = next(db_generator)
-        try:
-            DocumentCRUD.create_document(
-                    db=db, 
-                    document_id=self.document_root_id,
-                    user_id=self.user_id,
-                    document_alias=self.document_alias,
-                    vanilla_links=self.vanilla_links,
-                    file_links=self.file_links,
-                    unsupported_file_links=self.unsuppported_file_links,
-                    files=self.files,  
-                    description=self.description      
-            )
-        finally:
-            db_generator.close()
+        DocumentCRUD.create_document(
+                db=self.db, 
+                document_id=self.document_root_id,
+                user_id=self.user_id,
+                document_alias=self.document_alias,
+                vanilla_links=self.vanilla_links,
+                file_links=self.file_links,
+                unsupported_file_links=self.unsuppported_file_links,
+                files=self.files,  
+                description=self.description      
+        )
 
     def _update_document(self) -> None:
         """Updates the assets in the database.
