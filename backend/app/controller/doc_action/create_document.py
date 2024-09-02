@@ -70,6 +70,14 @@ class Create(APIEndPoint):
             document = GetDocument.create_documents_from_txt_links(link)
             documents += document  
         return documents 
+    
+    @classmethod
+    async def create_documents_from_both_links_and_files(cls, file: UploadFile, links: List[str], user_id: str, document_id: str):
+        documents_from_file, file_map = await cls.create_document_from_file(file, user_id, document_id)
+        documents_from_link, source = await cls.create_documents_from_selection(links, user_id)
+        source.files = [file_map]
+        combined_documents = documents_from_file + documents_from_link
+        return combined_documents, source
 
 def document_exists(document_id: str, user_id: str) -> bool:
     """Checks if the document exists or not in the database.
@@ -82,10 +90,13 @@ def document_exists(document_id: str, user_id: str) -> bool:
     bool: True or False depending on the node existence in the graph for an id.
     """
     from app.scripts.db import DocumentCRUD
-    from app.database import get_session
+    from app.database import get_db
 
-    db = get_session()
-    status = DocumentCRUD.document_exists_for_user(document_id, user_id, db)
-    db.close()
-    return status
+    db_generator = get_db()
+    db = next(db_generator)
+    try:
+        status = DocumentCRUD.document_exists_for_user(document_id, user_id, db)
+        return status
+    finally: 
+        db_generator.close()
     # return StoreDocument.check_if_node_exists_for_id(document_id, user_id)

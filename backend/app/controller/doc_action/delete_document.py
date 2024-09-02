@@ -1,6 +1,6 @@
 from ..core import APIEndPoint
 from app.scripts.db import (DocumentCRUD, SharedDocumentCRUD)
-from app.database import get_session
+from app.database import get_db
 from app.dependencies.internal import DeleteDocument
 from app.dependencies.external import S3
 from app.const import NameClass
@@ -21,8 +21,9 @@ class Delete(APIEndPoint):
         bool | None: Returns true if document deletion is successful. False if document does not exist.
         None if error occured.
         """
+        db_generator = get_db()
+        db = next(db_generator)
         try:
-            db = get_session()
             is_document_shared = SharedDocumentCRUD.check_if_document_is_shared(db, document_id)
             if is_document_shared: return False
             document_exists = DocumentCRUD.document_exists_for_user(document_id, user_id, db)
@@ -36,4 +37,4 @@ class Delete(APIEndPoint):
             print(e)
             return None
         finally:
-            db.close()
+            db_generator.close()

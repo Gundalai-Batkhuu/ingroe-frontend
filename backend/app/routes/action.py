@@ -46,11 +46,11 @@ async def create_document_selection(payload: CreateDocument):
         print(payload.document_id)
         documents, source = await Create.create_documents_from_selection(payload.links, payload.user_id)
         print("received documents")
-        print(len(documents))
-        print(documents)
+        # print(len(documents))
+        # print(documents)
         # return documents
         parent_node = {"label": GraphLabel.DOCUMENT_ROOT, "id": payload.document_id}
-        Store.store_document(documents, parent_node, payload.user_id)
+        # Store.store_document(documents, parent_node, payload.user_id)
         storer = StoreAssets(user_id=payload.user_id, document_root_id=payload.document_id, document_alias=payload.document_alias, source_payload=source, description=payload.description)
         storer.store(False)
         return JSONResponse(
@@ -93,6 +93,8 @@ async def create_document_manually(link: Optional[str] = Form(None), file: Optio
             # documents_from_link, source = await Create.create_documents_from_selection([link], user_id)
             # source.files = [file_map]
             # combined_documents = documents_from_file + documents_from_link
+            
+            # combined_documents, source = await Create.create_documents_from_both_links_and_files(file, [link], user_id, document_id)
             Store.store_document(combined_documents, parent_node, user_id)
             storer = StoreAssets(user_id=user_id, document_root_id=document_id, document_alias=document_alias, source_payload=source, description=description)
             storer.store(update_required)
@@ -109,7 +111,7 @@ async def create_document_manually(link: Optional[str] = Form(None), file: Optio
         if file: 
             print("from file")
             documents, file_map = get_doc_from_file()
-            documents, file_map = await Create.create_document_from_file(file, user_id, document_id) 
+            # documents, file_map = await Create.create_document_from_file(file, user_id, document_id) 
             source = _get_source_payload_from_file_map(file_map)
             print("source done")
         else: 
