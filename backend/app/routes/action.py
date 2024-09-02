@@ -48,11 +48,8 @@ async def create_document_selection(payload: CreateDocument, db: Session = Depen
         print(payload.document_id)
         documents, source = await Create.create_documents_from_selection(payload.links, payload.user_id)
         print("received documents")
-        # print(len(documents))
-        # print(documents)
-        # return documents
         parent_node = {"label": GraphLabel.DOCUMENT_ROOT, "id": payload.document_id}
-        # Store.store_document(documents, parent_node, payload.user_id)
+        Store.store_document(documents, parent_node, payload.user_id)
         storer = StoreAssets(user_id=payload.user_id, document_root_id=payload.document_id, document_alias=payload.document_alias, source_payload=source, description=payload.description, db=db)
         storer.store(False)
         return JSONResponse(
