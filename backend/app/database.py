@@ -31,6 +31,6 @@ def init_db():
     Base.metadata.create_all(bind=engine)  
     print("database initialised")      
 
-# def get_session():
-#     """Directly returns a database session."""
-#     return SessionLocal()
+def get_session():
+    """Directly returns a database session."""
+    return SessionLocal()

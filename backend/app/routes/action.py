@@ -77,7 +77,7 @@ async def create_document_manually(link: Optional[str] = Form(None), file: Optio
         if link is None and file is None:
             raise HTTPException(status_code=400, detail="You must provide either a link or file.")
         if document_id is not None:
-            if not document_exists(document_id, user_id):
+            if not document_exists(document_id, user_id, db):
                 raise DocumentDoesNotExistError(message=f"The supplied document id {document_id} does not exist", name="Invalid Document Id")
             update_required = True
         else:
@@ -118,7 +118,7 @@ async def create_document_manually(link: Optional[str] = Form(None), file: Optio
             documents, source = get_doc()
             # documents, source = await Create.create_documents_from_selection([link], user_id)
         Store.store_document(documents, parent_node, user_id)  
-        storer = StoreAssets(user_id=user_id, document_root_id=document_id, document_alias=document_alias, source_payload=source, description=description)
+        storer = StoreAssets(user_id=user_id, document_root_id=document_id, document_alias=document_alias, source_payload=source, description=description, db=db)
         storer.store(update_required) 
         return JSONResponse(
             status_code=200,
@@ -133,6 +133,8 @@ async def create_document_manually(link: Optional[str] = Form(None), file: Optio
     except DocumentCreationError:
         raise
     except DocumentStorageError:
+        raise
+    except DocumentDoesNotExistError:
         raise
     except Exception as e:
         logger.error(e)

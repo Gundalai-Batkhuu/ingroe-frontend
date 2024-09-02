@@ -18,3 +18,7 @@ def override_get_db():
         yield db
     finally:
         db.close()   
+
+def override_get_session():
+    """Directly returns a database session."""
+    return TestingSessionLocal()

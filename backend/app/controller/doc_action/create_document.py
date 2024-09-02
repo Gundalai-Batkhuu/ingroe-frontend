@@ -9,6 +9,7 @@ from app.model.pydantic_model.payload import DocumentSource
 from app.temp_test.graph import get_doc
 from app.exceptions import (DocumentCreationError, DocumentStorageError)
 from loguru import logger
+from sqlalchemy.orm import Session
 
 class Create(APIEndPoint):
 
@@ -79,7 +80,7 @@ class Create(APIEndPoint):
         combined_documents = documents_from_file + documents_from_link
         return combined_documents, source
 
-def document_exists(document_id: str, user_id: str) -> bool:
+def document_exists(document_id: str, user_id: str, db: Session) -> bool:
     """Checks if the document exists or not in the database.
 
     Args:
@@ -90,13 +91,7 @@ def document_exists(document_id: str, user_id: str) -> bool:
     bool: True or False depending on the node existence in the graph for an id.
     """
     from app.scripts.db import DocumentCRUD
-    from app.database import get_db
 
-    db_generator = get_db()
-    db = next(db_generator)
-    try:
-        status = DocumentCRUD.document_exists_for_user(document_id, user_id, db)
-        return status
-    finally: 
-        db_generator.close()
+    status = DocumentCRUD.document_exists_for_user(document_id, user_id, db)
+    return status
     # return StoreDocument.check_if_node_exists_for_id(document_id, user_id)
