@@ -5,7 +5,9 @@ class ModelProvider(Enum):
     """
     GROQ: str = "groq"
     OPENAI: str = "openai" 
-    BEDROCK: str = "bedrock"
+    # BEDROCK: str = "bedrock"
+    BEDROCK_HAIKU: str = "bedrock_haiku"
+    BEDROCK_SONNET: str = "bedrock_sonnet"
 
 class ServiceProvider(Enum):
     """Specifies the name of the service provider.
