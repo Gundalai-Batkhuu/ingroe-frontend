@@ -28,7 +28,7 @@ class Delete(APIEndPoint):
             if is_document_shared: return False
             document_exists = DocumentCRUD.document_exists_for_user(document_id, user_id, db)
             if document_exists:
-                # DeleteDocument.delete_document_from_graph(document_id)
+                DeleteDocument.delete_document_from_graph(document_id)
                 DocumentCRUD.delete_document(db, document_id)
                 S3.delete_from_s3_bucket(NameClass.S3_BUCKET_NAME, user_id, document_id)
                 return True

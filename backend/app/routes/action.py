@@ -14,8 +14,6 @@ from loguru import logger
 from sqlalchemy.orm import Session
 from app.database import get_db
 
-from app.temp_test.graph import get_doc, get_doc_from_file
-
 router = APIRouter(
     prefix="/store",
     tags=["store"],
@@ -83,19 +81,10 @@ async def create_document_manually(link: Optional[str] = Form(None), file: Optio
         else:
             document_id = uuid4().hex  
         parent_node = {"label": GraphLabel.DOCUMENT_ROOT, "id": document_id}
-        if file is not None and link is not None:
-            document_from_file, file_map = get_doc_from_file()
-            document_from_link, source = get_doc()
-            source.files = [file_map]
-            combined_documents = document_from_file + document_from_link
-            # documents_from_file, file_map = await Create.create_document_from_file(file, user_id, document_id) 
-            # documents_from_link, source = await Create.create_documents_from_selection([link], user_id)
-            # source.files = [file_map]
-            # combined_documents = documents_from_file + documents_from_link
-            
-            # combined_documents, source = await Create.create_documents_from_both_links_and_files(file, [link], user_id, document_id)
+        if file is not None and link is not None:    
+            combined_documents, source = await Create.create_documents_from_both_links_and_files(file, [link], user_id, document_id)
             Store.store_document(combined_documents, parent_node, user_id)
-            storer = StoreAssets(user_id=user_id, document_root_id=document_id, document_alias=document_alias, source_payload=source, description=description)
+            storer = StoreAssets(user_id=user_id, document_root_id=document_id, document_alias=document_alias, source_payload=source, description=description, db=db)
             storer.store(update_required)
             return JSONResponse(
             status_code=200,
@@ -109,14 +98,12 @@ async def create_document_manually(link: Optional[str] = Form(None), file: Optio
         )
         if file: 
             print("from file")
-            documents, file_map = get_doc_from_file()
-            # documents, file_map = await Create.create_document_from_file(file, user_id, document_id) 
+            documents, file_map = await Create.create_document_from_file(file, user_id, document_id) 
             source = _get_source_payload_from_file_map(file_map)
             print("source done")
         else: 
             print("from link")
-            documents, source = get_doc()
-            # documents, source = await Create.create_documents_from_selection([link], user_id)
+            documents, source = await Create.create_documents_from_selection([link], user_id)
         Store.store_document(documents, parent_node, user_id)  
         storer = StoreAssets(user_id=user_id, document_root_id=document_id, document_alias=document_alias, source_payload=source, description=description, db=db)
         storer.store(update_required) 
