@@ -76,49 +76,63 @@ def test_get_final_search_query_all():
 
 # --- doc_action -> create_document.py ---
 from app.controller.doc_action import document_exists
+from .db.test_database import override_get_session
 
 @pytest.fixture
 def id_map():
     """Provides a dictionary that maps to various ids."""
     id_map = {
-        "correct_document_id": "3e968a71e7644eb595cf9cfab3249ec7",
-        "correct_user_id": "1111",
+        "correct_document_id": "test_document_123",
+        "correct_user_id": "test_123",
         "incorrect_document_id": "123abc",
         "incorrect_user_id": "zzz"
     }
     return id_map
 
-# this makes a real call to the neo4j database to check the result
-# we need to have the database running, plus the id might change in the development phase
-# as we are deleting the old data when needed. So, look at these factors first if the test fails.
-def test_document_exists_for_right_ids(id_map):
+def test_document_exists_for_right_ids(id_map, test_db):
     """Test if the document exists if we supply the correct document_id and the user_id.
     """
-    document_id = id_map.get("correct_document_id")
-    user_id = id_map.get("correct_user_id")
-    actual_result = document_exists(document_id, user_id)
-    assert actual_result == True
+    db = override_get_session()
+    try:
+        document_id = id_map.get("correct_document_id")
+        user_id = id_map.get("correct_user_id")
+        actual_result = document_exists(document_id, user_id, db)
+        assert actual_result == True
+    finally:
+        db.close()
 
-def test_document_exists_for_false_document_id(id_map):
+def test_document_exists_for_false_document_id(id_map, test_db):
     """Test if the document exists if we supply the incorrect document_id and the right user_id.
     """
-    document_id = id_map.get("incorrect_document_id")
-    user_id = id_map.get("correct_user_id")
-    actual_result = document_exists(document_id, user_id)
-    assert actual_result == False  
+    db = override_get_session()
+    try:
+        document_id = id_map.get("incorrect_document_id")
+        user_id = id_map.get("correct_user_id")
+        actual_result = document_exists(document_id, user_id, db)
+        assert actual_result == False  
+    finally:
+        db.close()    
 
-def test_document_exists_for_false_user_id(id_map):
+def test_document_exists_for_false_user_id(id_map, test_db):
     """Test if the document exists if we supply the correct document_id and incorrect user_id.
     """
-    document_id = id_map.get("correct_document_id")
-    user_id = id_map.get("incorrect_user_id")
-    actual_result = document_exists(document_id, user_id)
-    assert actual_result == False      
+    db = override_get_session()
+    try:
+        document_id = id_map.get("correct_document_id")
+        user_id = id_map.get("incorrect_user_id")
+        actual_result = document_exists(document_id, user_id, db)
+        assert actual_result == False
+    finally:
+        db.close()           
 
-def test_document_exists_for_both_false_ids(id_map):
+def test_document_exists_for_both_false_ids(id_map, test_db):
     """Test if the document exists if we supply false ids for both document and user.
     """
-    document_id = id_map.get("incorrect_document_id")
-    user_id = id_map.get("incorrect_user_id")
-    actual_result = document_exists(document_id, user_id)
-    assert actual_result == False     
+    db = override_get_session()
+    try:
+        document_id = id_map.get("incorrect_document_id")
+        user_id = id_map.get("incorrect_user_id")
+        actual_result = document_exists(document_id, user_id, db)
+        assert actual_result == False         
+    finally:
+        db.close() 

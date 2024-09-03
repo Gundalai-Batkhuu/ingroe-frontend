@@ -1,8 +1,10 @@
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
+from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 import os
+from sqlalchemy.orm import declarative_base
+
 load_dotenv()
 
 database_url = os.getenv("DATABASE_URL")
@@ -25,11 +27,12 @@ def get_db():
         db.close()
 
 def init_db():
-    """Initialize the database with the necessary table creation."""
-    # Import all the models here to ensure they are registered properly
-    from app.model.db import (User, Document, CapturedDocument, CapturedFile, SharedDocument, SharedDocumentAccessor)
-    Base.metadata.create_all(bind=engine)
-    print("database initialized")
+    """Intisalise the database with the necessary table creation.
+    We import all the models from which tables are to be produced and create all.
+    """
+    from app.model.db import (User, Document, CapturedDocument, CapturedFile, SharedDocument, SharedDocumentAccessor, APIKey)
+    Base.metadata.create_all(bind=engine)  
+    print("database initialised")      
 
 def get_session():
     """Directly returns a database session."""

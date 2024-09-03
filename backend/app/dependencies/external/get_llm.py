@@ -2,6 +2,16 @@ from typing import Union
 from langchain_groq import ChatGroq 
 from langchain_openai import ChatOpenAI
 from app.enum import ModelProvider
+from langchain_aws import ChatBedrock
+from dotenv import load_dotenv
+import os
+from app.const import ModelDetails
+
+load_dotenv()
+
+os.environ["AWS_ACCESS_KEY_ID"] = os.getenv("AWS_ACCESS_KEY_ID")
+os.environ["AWS_SECRET_ACCESS_KEY"] = os.getenv("AWS_SECRET_ACCESS_KEY")
+os.environ["AWS_DEFAULT_REGION"] = os.getenv("AWS_REGION_SYD")
 
 class LLM:
     """Provides an option to select the type of llm model.
@@ -30,11 +40,17 @@ class LLM:
         ChatGroq | ChatOpenAI: The llm model either from groq or openai.
         """
         if model_provider == ModelProvider.GROQ:
-            model = "llama3-70b-8192"
+            model = ModelDetails.GROQ_LLAMA_70B
             return self._get_groq(model)
         if model_provider == ModelProvider.OPENAI:
-            model = "gpt-3.5-turbo-0125"
-            return self._get_openai(model)        
+            model = ModelDetails.OPENAI_GPT_TURBO
+            return self._get_openai(model)   
+        if model_provider == ModelProvider.BEDROCK_HAIKU:
+            model = ModelDetails.BEDROCK_CLAUDE_HAIKU
+            return self._get_bedrock(model)   
+        if model_provider == ModelProvider.BEDROCK_SONNET:
+            model = ModelDetails.BEDROCK_CLAUDE_SONNET
+            return self._get_bedrock(model)  
 
     def _get_groq(self, model: str) -> ChatGroq:
         """Get the llm model from groq.
@@ -59,4 +75,19 @@ class LLM:
         """
         llm = ChatOpenAI(temperature=self.temperature, model_name=model)
         return llm    
+    
+    def _get_bedrock(self, model: str) -> ChatBedrock:
+        """Get the llm model of choice from bedrock.
+        
+        Args: 
+        model (str): The model id.
+
+        Returns:
+        ChatBedrock: ChatBedrock instance.
+        """
+        llm = ChatBedrock(
+            model_id=model,
+            model_kwargs=dict(temperature=self.temperature),
+        )
+        return llm
         

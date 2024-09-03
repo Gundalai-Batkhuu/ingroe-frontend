@@ -2,16 +2,29 @@
 The backend of the Legal_AI_App.
 """
 
-from fastapi import FastAPI
-from app.routes import (action, user, document_handling)
+from fastapi import FastAPI, status
+from app.routes import (action, user, document_handling, api_key)
 from fastapi.middleware.cors import CORSMiddleware
 from app.database import init_db
+from app.exceptions.handler.exception_handler import create_exception_handler
+from app.exceptions import (
+    DocumentDoesNotExistError, SearchResultRetrievalError, DocumentCreationError, DocumentStorageError
+)
+from contextlib import asynccontextmanager
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Initialises the database and if we need to release the resources then we can put that after the yield keyword.
+    """
+    init_db()
+    yield
+
+app = FastAPI(lifespan=lifespan)
 prefix = "/api/v1"
 app.include_router(router=action.router, prefix=prefix)
 app.include_router(router=user.router, prefix=prefix)
 app.include_router(router=document_handling.router, prefix=prefix)
+app.include_router(router=api_key.router, prefix=prefix)
 
 app.add_middleware(
     CORSMiddleware,
@@ -21,7 +34,10 @@ app.add_middleware(
     allow_headers=["*"],  
 )
 
-init_db()
+app.add_exception_handler(exc_class_or_status_code=DocumentDoesNotExistError, handler=create_exception_handler(status.HTTP_400_BAD_REQUEST, "Document does not exist"))
+app.add_exception_handler(exc_class_or_status_code=SearchResultRetrievalError, handler=create_exception_handler(status.HTTP_500_INTERNAL_SERVER_ERROR, "Search result retrieval error"))
+app.add_exception_handler(exc_class_or_status_code=DocumentCreationError, handler=create_exception_handler(status.HTTP_500_INTERNAL_SERVER_ERROR, "Document creation error"))
+app.add_exception_handler(exc_class_or_status_code=DocumentStorageError, handler=create_exception_handler(status.HTTP_500_INTERNAL_SERVER_ERROR, "Document storage error"))
 
 @app.get("/")
 def run_server():

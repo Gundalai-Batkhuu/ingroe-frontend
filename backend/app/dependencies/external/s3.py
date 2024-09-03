@@ -3,6 +3,8 @@ import os
 import boto3
 from botocore.exceptions import NoCredentialsError
 from typing import Tuple
+from loguru import logger
+from app.exceptions import DocumentStorageError
 
 load_dotenv()
 
@@ -101,10 +103,12 @@ class S3:
             print(f"File uploaded to {s3_key} in bucket {bucket_name}")
             return file_url, s3_new_file_name
 
-        except FileNotFoundError:
-            raise ValueError("The local file was not found")
-        except NoCredentialsError:
-            raise ValueError("Credentials not available")
+        except FileNotFoundError as e:
+            logger.error(e)
+            raise DocumentStorageError(message="The local file was not found to upload to S3 bucket.", name="S3 Storage")
+        except NoCredentialsError as e:
+            logger.error(e)
+            raise DocumentStorageError(message="Credentials not available to store in S3", name="S3 Storage")
 
     @classmethod
     def delete_from_s3_bucket(cls, bucket_name: str, s3_main_folder: str, s3_sub_folder: str) -> None:

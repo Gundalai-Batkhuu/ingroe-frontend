@@ -21,6 +21,7 @@ from app.enum import ServiceProvider
 import pytesseract
 from pdf2image import convert_from_path
 import os
+from loguru import logger
 
 class GetDocument:
     """Get the sequence of documents from the provided link or file.
@@ -217,7 +218,7 @@ class GetDocument:
             else:
                 return ReturnCode.VANILLA_LINK
         except Exception as e:
-            print(f"An error occurred: {e}")
+            logger.error(e)
             return ReturnCode.ERROR
         
     @classmethod
