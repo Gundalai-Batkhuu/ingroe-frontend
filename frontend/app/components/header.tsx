@@ -53,6 +53,11 @@ export function Header() {
                         Search
                     </Button>
                 </Link>
+                <Link href="/text-editor">
+                    <Button variant="ghost">
+                        Text editor
+                    </Button>
+                </Link>
                 <UserOrLogin/>
             </div>
         </header>

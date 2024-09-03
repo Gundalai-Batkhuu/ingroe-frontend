@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useSidebar } from '@/app/lib/hooks/use-sidebar'
 import { cn } from '@/app/lib/utils'
-import { CreateDocumentSelection } from '@/app/components/create-document-selection'
+import { CreateDocumentButton } from '@/app/components/create-document-button'
 import { useSelectedItemsStore } from '@/app/lib/store/selectedItemsStore'
 import { TextInputWithClear } from '@/app/components/ui/text-input-with-clear'
 
@@ -13,8 +13,8 @@ export function SidebarSelectedDocuments({ className, userId }: SidebarProps) {
   const { isSidebarOpen, isLoading } = useSidebar()
   const { selectedItems, removeSelectedItem } = useSelectedItemsStore()
   const selectedLinks = selectedItems.map(item => item.link)
-  const [docAlias, setDocAlias] = useState("")
-  const [docDescription, setDocDescription] = useState("")
+  const [docAlias, setDocAlias] = useState('')
+  const [docDescription, setDocDescription] = useState('')
 
   return (
     <div
@@ -38,10 +38,17 @@ export function SidebarSelectedDocuments({ className, userId }: SidebarProps) {
                 </div>
                 <ul className="space-y-4">
                   {selectedItems.map((item, index) => (
-                    <li key={index} className="bg-white/10 p-3 rounded flex justify-between items-start">
+                    <li
+                      key={index}
+                      className="bg-white/10 p-3 rounded flex justify-between items-start"
+                    >
                       <div>
-                        <div className="font-medium text-blue-400">{item.title}</div>
-                        <div className="text-sm text-gray-300 break-all mt-1">{item.link}</div>
+                        <div className="font-medium text-blue-400">
+                          {item.title}
+                        </div>
+                        <div className="text-sm text-gray-300 break-all mt-1">
+                          {item.link}
+                        </div>
                       </div>
                       <button
                         onClick={() => removeSelectedItem(item)}
@@ -69,9 +76,11 @@ export function SidebarSelectedDocuments({ className, userId }: SidebarProps) {
                   onChange={setDocDescription}
                 />
               </div>
-              <CreateDocumentSelection
-                userId={userId}
+              <CreateDocumentButton
+                user_id={userId}
                 links={selectedLinks}
+                document_alias={docAlias}
+                description={docDescription}
               />
             </div>
           )}

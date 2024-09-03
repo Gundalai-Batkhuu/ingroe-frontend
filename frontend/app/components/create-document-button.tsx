@@ -1,5 +1,3 @@
-"use client"
-
 import * as React from 'react'
 import { useUserArtifactsStore } from '@/app/lib/store/userArtifactsStore'
 import { Artefact } from '@/app/lib/types'
@@ -53,31 +51,29 @@ export function UserArtifactsList({ userId }: UserArtifactsListProps) {
           {artifacts.artefact_tree.map((artifact: Artefact) => (
             <div
               key={artifact.document_id}
-              className={`cursor-pointer ${selectedArtifactId === artifact.document_id ? 'bg-accent' : ''} border p-2 rounded`}
+              className={`cursor-pointer ${selectedArtifactId === artifact.document_id ? 'bg-accent' : ''} border p-2 rounded relative`}
             >
-              <div className="flex items-center justify-between space-x-2 text-sm">
-                <div className="flex items-center space-x-2 flex-grow">
-                  <button
-                    onClick={() => toggleExpand(artifact.document_id)}
-                    className="p-1"
-                  >
-                    {expandedId === artifact.document_id ? (
-                      <ChevronDown size={16} />
-                    ) : (
-                      <ChevronRight size={16} />
-                    )}
-                  </button>
-                  <span
-                    className={`cursor-pointer ${selectedArtifactId === artifact.document_id ? 'font-bold' : ''} truncate`}
-                    onClick={() => handleSelect(artifact.document_id)}
-                    title={artifact.document_id}
-                  >
-                    {artifact.document_name === ''
-                      ? truncateString(artifact.document_id, 20)
-                      : truncateString(artifact.document_name, 20)}
-                  </span>
-                  <DeleteDocumentButton document_id={artifact.document_id} user_id={userId} />
-                </div>
+              <div className="flex items-center pr-8">
+                <button
+                  onClick={() => toggleExpand(artifact.document_id)}
+                  className="p-1"
+                >
+                  {expandedId === artifact.document_id ? (
+                    <ChevronDown size={16} />
+                  ) : (
+                    <ChevronRight size={16} />
+                  )}
+                </button>
+                <span
+                  className={`cursor-pointer ${selectedArtifactId === artifact.document_id ? 'font-bold' : ''} truncate flex-grow`}
+                  onClick={() => handleSelect(artifact.document_id)}
+                  title={artifact.document_id}
+                >
+                  {artifact.document_name === ''
+                    ? truncateString(artifact.document_id, 20)
+                    : truncateString(artifact.document_name, 20)}
+                </span>
+                <DeleteDocumentButton document_id={artifact.document_id} user_id={userId} />
               </div>
               {expandedId === artifact.document_id && (
                 <div className="ml-6 mt-2 text-sm">

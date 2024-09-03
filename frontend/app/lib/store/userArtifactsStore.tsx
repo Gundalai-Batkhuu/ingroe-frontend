@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { userService } from '@/app/lib/services/user-service'
-import { UserArtifactsResponse, Artifact } from '@/app/lib/types'
+import { UserArtifactsResponse, Artefact } from '@/app/lib/types'
 
 interface UserArtifactsState {
   artifacts: UserArtifactsResponse | null
@@ -8,9 +8,9 @@ interface UserArtifactsState {
   error: string | null
   selectedArtifactId: string | null
   fetchUserArtifacts: (userId: string) => Promise<void>
-  addArtifact: (artifact: Artifact) => void
+  addArtifact: (artifact: Artefact) => void
   removeArtifact: (artifactId: string) => void
-  updateArtifact: (artifact: Artifact) => void
+  updateArtifact: (artifact: Artefact) => void
   setSelectedArtifactId: (artifactId: string | null) => void
 }
 
@@ -35,7 +35,7 @@ export const useUserArtifactsStore = create<UserArtifactsState>((set) => ({
     }
   },
 
-  addArtifact: (artifact: Artifact) => set((state) => ({
+  addArtifact: (artifact: Artefact) => set((state) => ({
     artifacts: state.artifacts
       ? {
           ...state.artifacts,
@@ -55,7 +55,7 @@ export const useUserArtifactsStore = create<UserArtifactsState>((set) => ({
     selectedArtifactId: state.selectedArtifactId === artifactId ? null : state.selectedArtifactId
   })),
 
-  updateArtifact: (updatedArtifact: Artifact) => set((state) => ({
+  updateArtifact: (updatedArtifact: Artefact) => set((state) => ({
     artifacts: state.artifacts
       ? {
           ...state.artifacts,
