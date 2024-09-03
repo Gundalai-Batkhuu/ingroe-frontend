@@ -47,9 +47,12 @@ def file_exists(file_id: str, captured_document_id: str, file_name: str) -> bool
     bool: True or False depending on the node existence in the graph for an id.
     """
     from app.scripts.db import CapturedFileCRUD
-    from app.database import get_session
+    from app.database import get_db
 
-    db = get_session()
-    status = CapturedFileCRUD.file_exists_for_a_name(db, file_id, captured_document_id, file_name)  
-    db.close()
+    db_generator = get_db()
+    db = next(db_generator)
+    try:
+        status = CapturedFileCRUD.file_exists_for_a_name(db, file_id, captured_document_id, file_name)  
+    finally:
+        db_generator.close()
     return status            

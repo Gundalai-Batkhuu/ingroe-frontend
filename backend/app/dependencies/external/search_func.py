@@ -5,6 +5,8 @@ from typing import List, Tuple, Dict, Optional
 from app.model.pydantic_model import SearchResult
 import math
 import re
+from loguru import logger
+from app.exceptions import SearchResultRetrievalError
 
 load_dotenv()
 
@@ -24,9 +26,13 @@ class SearchFunction:
         Returns:
         A list containing a dictionary of search result properties.
         """
-        service = build("customsearch", "v1", developerKey=cls.google_api_key)
-        res = service.cse().list(q=query, cx=cls.google_cse_id, **kwargs).execute()
-        return res["items"]
+        try:
+            service = build("customsearch", "v1", developerKey=cls.google_api_key)
+            res = service.cse().list(q=query, cx=cls.google_cse_id, **kwargs).execute()
+            return res["items"]
+        except Exception as e:
+            logger.error(e)
+            raise SearchResultRetrievalError(message="Error while calling the search api", name=["SearchApiError"])
     
     @classmethod
     def _get_num_of_api_calls(cls, num_of_results: int) -> int:
@@ -139,7 +145,7 @@ class SearchFunction:
         """
         num_of_api_calls = cls._get_num_of_api_calls(num_of_results)
         results = await cls._get_final_results(query, num_of_results, num_of_api_calls, mix_result)
-        print(f"length of search result is {len(results)}")
+        logger.info(f"Length of search result is {len(results)}")
         formatted_results = []
         try:
             for result in results:
@@ -154,5 +160,5 @@ class SearchFunction:
                 formatted_results.append(condensed_result)
             return formatted_results
         except Exception as e:
-            print(e)
-            return [SearchResult()]
+            logger.error(e)
+            raise SearchResultRetrievalError(message="Error while formatting the results from search results.", name="Formatting Error")
