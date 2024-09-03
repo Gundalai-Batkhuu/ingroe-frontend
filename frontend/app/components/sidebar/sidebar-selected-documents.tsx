@@ -1,17 +1,20 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useSidebar } from '@/app/lib/hooks/use-sidebar'
 import { cn } from '@/app/lib/utils'
-import { CreateDocumentSelection } from '@/app/components/create-document-selection'
-import { useSelectedItemsStore } from '@/app/store/selectedItemsStore'
+import { CreateDocumentButton } from '@/app/components/create-document-button'
+import { useSelectedItemsStore } from '@/app/lib/store/selectedItemsStore'
+import { TextInputWithClear } from '@/app/components/ui/text-input-with-clear'
 
 export interface SidebarProps extends React.ComponentProps<'div'> {
   userId: string
 }
 
-export function SidebarDocuments({ className, userId }: SidebarProps) {
+export function SidebarSelectedDocuments({ className, userId }: SidebarProps) {
   const { isSidebarOpen, isLoading } = useSidebar()
   const { selectedItems, removeSelectedItem } = useSelectedItemsStore()
   const selectedLinks = selectedItems.map(item => item.link)
+  const [docAlias, setDocAlias] = useState('')
+  const [docDescription, setDocDescription] = useState('')
 
   return (
     <div
@@ -35,10 +38,17 @@ export function SidebarDocuments({ className, userId }: SidebarProps) {
                 </div>
                 <ul className="space-y-4">
                   {selectedItems.map((item, index) => (
-                    <li key={index} className="bg-white/10 p-3 rounded flex justify-between items-start">
+                    <li
+                      key={index}
+                      className="bg-white/10 p-3 rounded flex justify-between items-start"
+                    >
                       <div>
-                        <div className="font-medium text-blue-400">{item.title}</div>
-                        <div className="text-sm text-gray-300 break-all mt-1">{item.link}</div>
+                        <div className="font-medium text-blue-400">
+                          {item.title}
+                        </div>
+                        <div className="text-sm text-gray-300 break-all mt-1">
+                          {item.link}
+                        </div>
                       </div>
                       <button
                         onClick={() => removeSelectedItem(item)}
@@ -53,11 +63,24 @@ export function SidebarDocuments({ className, userId }: SidebarProps) {
               </div>
             )}
           </div>
+
           {selectedItems.length > 0 && (
-            <div className="p-4 flex justify-center">
-              <CreateDocumentSelection
-                userId={userId}
+            <div className="p-4 flex flex-col items-center space-y-4">
+              <div className="w-full space-y-4">
+                <TextInputWithClear
+                  placeholder="Enter title... (optional)"
+                  onChange={setDocAlias}
+                />
+                <TextInputWithClear
+                  placeholder="Enter description... (optional)"
+                  onChange={setDocDescription}
+                />
+              </div>
+              <CreateDocumentButton
+                user_id={userId}
                 links={selectedLinks}
+                document_alias={docAlias}
+                description={docDescription}
               />
             </div>
           )}

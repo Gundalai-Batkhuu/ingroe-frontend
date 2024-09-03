@@ -1,3 +1,5 @@
+from dotenv import get_key
+
 class GraphLabel:
     """Constants used in the graph.
     """
@@ -13,9 +15,8 @@ class ReturnCode:
     ERROR: int = -1
 
 class NameClass:
-    """Constants representing plain strings.
-    """
-    S3_BUCKET_NAME: str = "lai-app-dev"  
+    """Constants representing plain strings."""
+    S3_BUCKET_NAME: str = get_key(".env", "S3_BUCKET_NAME")
 
 class ModelDetails:
     """Provides the model id for a provider.

@@ -1,17 +1,18 @@
 import 'server-only'
-import { ApiEndpoint, DocumentId } from '@/app/enums'
+import { ApiEndpoint } from '@/app/enums'
 import { createAI, getMutableAIState, getAIState } from 'ai/rsc'
 import { BotMessage, UserMessage } from '../../components/chat/message'
 import { nanoid } from '../../lib/utils'
 import { saveChat } from '@/app/components/chat/actions'
-import { Chat, Message } from '../../lib/types'
+import { Chat, Message, QueryDocument } from '../../lib/types'
 import { auth } from '@/auth'
+import { documentService } from '@/app/lib/services/document-service'
 
-async function submitUserMessage(content: string) {
+
+async function submitUserMessage(content: string, documentId: string) {
   'use server'
 
   const aiState = getMutableAIState<typeof AI>()
-  const documentId = DocumentId.SAMPLE_DOCUMENT_ID
 
   console.log('Sending the message: ', content)
   console.log('Document ID: ', documentId)
@@ -36,7 +37,6 @@ async function submitUserMessage(content: string) {
       ]
     })
 
-    // Prepare the request payload
     const payload = {
       query: content,
       document_id: documentId
@@ -44,40 +44,11 @@ async function submitUserMessage(content: string) {
 
     console.log('Request payload:', payload)
 
-    // Call your custom endpoint
-    const response = await fetch(ApiEndpoint.QUERY_DOCUMENT, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    })
-
-    if (!response.ok) {
-      console.error(
-        'API response not OK:',
-        response.status,
-        response.statusText
-      )
-      const responseText = await response.text()
-      console.error('Response body:', responseText)
-
-      let errorMessage = `Failed to query document: ${response.status} ${response.statusText}`
-      if (response.status === 422) {
-        errorMessage +=
-          '. The server was unable to process the request. This might be due to invalid input data.'
-      }
-
-      throw new Error(errorMessage)
-    }
-
-    const data = await response.json()
+    const data = await documentService.queryDocument(payload)
     console.log('API response data:', data)
 
-    // Use the entire API response as the assistant's message
-    const assistantMessage = JSON.stringify(data)
+    const assistantMessage = data.response
 
-    // Add the assistant's response to the state
     aiState.update({
       ...aiState.get(),
       messages: [
@@ -127,6 +98,7 @@ async function submitUserMessage(content: string) {
     }
   }
 }
+
 
 export type AIState = {
   chatId: string

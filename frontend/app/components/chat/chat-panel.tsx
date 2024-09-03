@@ -1,5 +1,5 @@
 import * as React from 'react'
-
+import { useUserArtifactsStore } from '@/app/lib/store/userArtifactsStore'
 import { shareChat } from './actions'
 import { Button } from '../ui/button'
 import { PromptForm } from './prompt-form'
@@ -33,6 +33,9 @@ export function ChatPanel({
   const { submitUserMessage } = useActions()
   const [shareDialogOpen, setShareDialogOpen] = React.useState(false)
 
+  // Get the selected document ID from the Zustand store
+  const selectedDocumentId = useUserArtifactsStore(state => state.selectedArtifactId)
+
   const handleSubmitMessage = async (message: string) => {
     setMessages(currentMessages => [
       ...currentMessages,
@@ -42,7 +45,8 @@ export function ChatPanel({
       }
     ])
 
-    const responseMessage = await submitUserMessage(message)
+    // Pass both the message and the selectedDocumentId to submitUserMessage
+    const responseMessage = await submitUserMessage(message, selectedDocumentId)
 
     setMessages(currentMessages => [
       ...currentMessages,
