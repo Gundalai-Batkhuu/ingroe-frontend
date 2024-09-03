@@ -1,8 +1,9 @@
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
+from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 import os
+from sqlalchemy.orm import declarative_base
 
 load_dotenv()
 # DATABASE_URL = "postgresql+psycopg2://username:password@localhost/mydatabase"
@@ -26,7 +27,7 @@ def init_db():
     We import all the models from which tables are to be produced and create all.
     """
     # Import all the models here to ensure they are registered properly
-    from app.model.db import (User, Document, CapturedDocument, CapturedFile, SharedDocument, SharedDocumentAccessor)
+    from app.model.db import (User, Document, CapturedDocument, CapturedFile, SharedDocument, SharedDocumentAccessor, APIKey)
     Base.metadata.create_all(bind=engine)  
     print("database initialised")      
 

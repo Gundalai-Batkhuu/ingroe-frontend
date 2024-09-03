@@ -6,11 +6,14 @@ from app.dependencies.external import LLM
 from langchain_community.graphs.graph_document import GraphDocument
 # from app.temp_test.graph import get_graph_doc
 # from ..internal.customised.neo4j_graph import Neo4jGraph
-from app.dependencies.internal.customised import Neo4jGraph
+from app.dependencies.internal.customised import Neo4JCustomGraph
 from langchain_community.vectorstores import Neo4jVector
 from langchain_openai import OpenAIEmbeddings
 from app.enum import (ModelProvider,)
 from app.const import GraphLabel
+# from langchain_community.graphs import Neo4jGraph
+from app.exceptions import DocumentStorageError
+from loguru import logger
 
 class StoreDocument:
     """
@@ -41,12 +44,16 @@ class StoreDocument:
         Returns:
         List[GraphDocument]: The list of graph documents obtained from the documents.
         """
-        documents = cls._get_document_chunks(documents)
-        llm_selector = LLM(temperature=0)
-        llm = llm_selector.get_model(ModelProvider.GROQ)
-        llm_transformer = LLMGraphTransformer(llm=llm)
-        graph_documents = llm_transformer.convert_to_graph_documents(documents)
-        return graph_documents
+        try:
+            documents = cls._get_document_chunks(documents)
+            llm_selector = LLM(temperature=0)
+            llm = llm_selector.get_model(ModelProvider.BEDROCK_HAIKU)
+            llm_transformer = LLMGraphTransformer(llm=llm)
+            graph_documents = llm_transformer.convert_to_graph_documents(documents)
+            return graph_documents
+        except Exception as e:
+            logger.error(e)
+            raise DocumentStorageError(message="Error while creating the graph documents from documents", name="Graph Document Creation")
     
     @classmethod
     def store_documents_in_graph_db(cls, documents: Sequence[Document] | None, parent_node: Dict[str, Union[str, int]], user_id: str) -> None:
@@ -59,7 +66,7 @@ class StoreDocument:
         graph_documents = cls._get_graph_documents(documents)
         # graph_documents = get_graph_doc()
         print(graph_documents)
-        graph = Neo4jGraph()
+        graph = Neo4JCustomGraph()
         graph.add_graph_documents(
             graph_documents,
             parent_node=parent_node,
@@ -72,7 +79,7 @@ class StoreDocument:
         cls._attach_document_to_user(user_id, document_id)
 
     @classmethod
-    def _create_indexes(cls, graph: Neo4jGraph) -> None:
+    def _create_indexes(cls, graph: Neo4JCustomGraph) -> None:
         """Creates one full text index and one property index.
         Args (Neo4jGraph): Neo4jGraph instance. 
         """

@@ -9,6 +9,7 @@ from uuid import uuid4
 from app.const import ErrorCode
 from fastapi.encoders import jsonable_encoder
 from app.controller.doc_action import document_exists
+from app.exceptions import (DocumentDoesNotExistError)
 
 router = APIRouter(
     prefix="/handle",
@@ -50,7 +51,7 @@ def accept_shared_document(payload: AcceptSharedDocument, db: Session = Depends(
 @router.patch("/change-document-validity")
 def change_document_validity(payload: ValidityUpdate, db: Session = Depends(get_db)):
     if not document_exists(document_id=payload.document_id, user_id=payload.user_id):
-        raise HTTPException(status_code=400, detail="Document does not exist. Please provide a valid document id.")
+        raise DocumentDoesNotExistError(message=f"The supplied document id {payload.document_id} does not exist", name="Invalid Document Id")
     response = CentralCRUD.increase_validity(db=db, document_id=payload.document_id, updated_validity=payload.updated_validity, down_propagate=payload.down_propagate)
     response_status_code, response_message = break_db_response_payload(response)
     if response_status_code != 200:
@@ -66,7 +67,7 @@ def change_document_validity(payload: ValidityUpdate, db: Session = Depends(get_
 @router.patch("/change-document-validity-for-user")
 def change_document_validity_for_user(payload: ScopedValidityUpdate, db: Session = Depends(get_db)):
     if not document_exists(document_id=payload.document_id, user_id=payload.user_id):
-        raise HTTPException(status_code=400, detail="Document does not exist. Please provide a valid document id.")
+        raise DocumentDoesNotExistError(message=f"The supplied document id {payload.document_id} does not exist", name="Invalid Document Id")
     response = CentralCRUD.increase_document_validity_for_user(db=db, document_id=payload.document_id, user_email=payload.user_email, updated_validity=payload.updated_validity)
     response_status_code, response_message = break_db_response_payload(response)
     if response_status_code != 200:
@@ -82,7 +83,7 @@ def change_document_validity_for_user(payload: ScopedValidityUpdate, db: Session
 @router.patch("/block-document-access")
 def block_document_access(payload: Access, db: Session = Depends(get_db)):
     if not document_exists(document_id=payload.document_id, user_id=payload.user_id):
-        raise HTTPException(status_code=400, detail="Document does not exist. Please provide a valid document id.")
+        raise DocumentDoesNotExistError(message=f"The supplied document id {payload.document_id} does not exist", name="Invalid Document Id")
     response = CentralCRUD.change_document_access(db=db, document_id=payload.document_id, access_change_reason=payload.access_change_reason, block_access=payload.block_access)
     response_status_code, response_message = break_db_response_payload(response)
     if response_status_code != 200:
@@ -97,7 +98,7 @@ def block_document_access(payload: Access, db: Session = Depends(get_db)):
 @router.patch("/block-document-access-for-user")
 def block_document_access_for_user(payload: ScopedAccess, db: Session = Depends(get_db)):
     if not document_exists(document_id=payload.document_id, user_id=payload.user_id):
-        raise HTTPException(status_code=400, detail="Document does not exist. Please provide a valid document id.")
+        raise DocumentDoesNotExistError(message=f"The supplied document id {payload.document_id} does not exist", name="Invalid Document Id")
     response = CentralCRUD.change_document_access_user(db=db, share_id=payload.share_id, emails=payload.emails, access_change_reason=payload.access_change_reason, block_access=payload.block_access)
     response_status_code, response_message = break_db_response_payload(response)
     if response_status_code != 200:
@@ -112,7 +113,7 @@ def block_document_access_for_user(payload: ScopedAccess, db: Session = Depends(
 @router.delete("/remove-share-state")
 def remove_share_state(payload: DocumentSharingRemoval, db: Session = Depends(get_db)):
     if not document_exists(document_id=payload.document_id, user_id=payload.user_id):
-        raise HTTPException(status_code=400, detail="Document does not exist. Please provide a valid document id.")
+        raise DocumentDoesNotExistError(message=f"The supplied document id {payload.document_id} does not exist", name="Invalid Document Id")
     response = CentralCRUD.remove_share_state(db=db, document_id=payload.document_id, current_timestamp=payload.current_timestamp)
     response_status_code, response_message = break_db_response_payload(response)
     if response_status_code != 200:
@@ -137,7 +138,7 @@ def remove_shared_document_by_user(payload:DocumentStatus, db: Session = Depends
 @router.post("/add-new-accessor")
 def add_new_accessor(payload: AccessorUpdate, db: Session = Depends(get_db)):
     if not document_exists(document_id=payload.document_id, user_id=payload.user_id):
-        raise HTTPException(status_code=400, detail="Document does not exist. Please provide a valid document id.")
+        raise DocumentDoesNotExistError(message=f"The supplied document id {payload.document_id} does not exist", name="Invalid Document Id")
     response = CentralCRUD.add_new_accessor(db=db, document_id=payload.document_id, share_id=payload.share_id, email=payload.accessor_email)
     response_status_code, response_message = break_db_response_payload(response)
     if response_status_code != 200:
@@ -152,7 +153,7 @@ def add_new_accessor(payload: AccessorUpdate, db: Session = Depends(get_db)):
 @router.patch("/allow-public-access")
 def share_document_to_public(payload: SwitchShareType, db: Session = Depends(get_db)):
     if not document_exists(document_id=payload.document_id, user_id=payload.user_id):
-        raise HTTPException(status_code=400, detail="Document does not exist. Please provide a valid document id.")
+        raise DocumentDoesNotExistError(message=f"The supplied document id {payload.document_id} does not exist", name="Invalid Document Id")
     response = CentralCRUD.share_document_to_public(db=db, document_id=payload.document_id, current_timestamp=payload.current_timestamp, validity=payload.validity)
     response_status_code, response_message = break_db_response_payload(response)
     if response_status_code != 200:
