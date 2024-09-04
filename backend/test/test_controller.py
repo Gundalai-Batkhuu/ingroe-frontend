@@ -75,8 +75,14 @@ def test_get_final_search_query_all():
     assert actual_query == expected_query, f"Expected '{expected_query}' but got '{actual_query}'"        
 
 # --- doc_action -> create_document.py ---
-from app.controller.doc_action import document_exists
+from app.controller.doc_action import document_exists, Create
 from .db.test_database import override_get_session
+from unittest.mock import patch
+from app.dependencies.internal import GetDocument
+from .module.graph import document, file_map
+from app.model.pydantic_model.payload import DocumentSource
+from io import BytesIO
+from fastapi import UploadFile
 
 @pytest.fixture
 def id_map():
@@ -136,3 +142,63 @@ def test_document_exists_for_both_false_ids(id_map, test_db):
         assert actual_result == False         
     finally:
         db.close() 
+
+@pytest.fixture()
+def get_links():
+    """Fixture to provide links."""
+    links = ["https://python.langchain.com/v0.1/docs/modules/data_connection/document_loaders/markdown/",
+"https://python.langchain.com/v0.2/docs/integrations/document_loaders/async_chromium/",
+"https://python.langchain.com/v0.1/docs/modules/data_connection/document_loaders/"]
+    return links
+
+@pytest.mark.asyncio
+@patch.object(GetDocument, "handle_link")
+@patch.object(Create, "create_document_from_links")
+async def test_create_documents_from_selection(mock_create_document_from_links ,mock_handle_link, get_links):
+    """Test if the documents are created from links."""
+    mock_handle_link.return_value = 2
+    mock_create_document_from_links.return_value = document
+    expected_source = DocumentSource(vanilla_links=get_links, file_links=[], error_links=[], unscrapable_links=[], unsupported_file_links=[])
+    docs, source = await Create.create_documents_from_selection(get_links, "test_123")
+    assert docs == document
+    assert source == expected_source
+
+def create_upload_file(filename: str, content: bytes) -> UploadFile:
+    """Create a mock upload file.
+
+    Args:
+    filename (str): The name of the mock upload file.
+    content (bytes): The content of the file.
+
+    Returns:
+    UploadFile: The FastAPI UploadFile object.
+    """
+    file = BytesIO(content)
+    return UploadFile(filename=filename, file=file)
+
+@pytest.mark.asyncio
+@patch.object(GetDocument, "get_document_from_file")   
+async def test_create_document_from_file(mock_get_document_from_file):
+    """Test if the document is created from a file.
+    """
+    mock_get_document_from_file.return_value = document, file_map
+    file = create_upload_file("filename", b"dummy content")
+    actual_document, actual_file_map = await Create.create_document_from_file(file=file, user_id="test_123", document_id="test_doc_123")
+    assert actual_document == document
+    assert actual_file_map == file_map
+
+@pytest.mark.asyncio
+@patch.object(Create, "create_document_from_file")
+@patch.object(Create, "create_documents_from_selection")
+async def test_create_documents_from_both_links_and_files(mock_create_documents_from_selection, mock_create_document_from_file, get_links):
+    """Test the document creation from both files and links.
+    """
+    source = DocumentSource(vanilla_links=get_links, file_links=[], error_links=[], unscrapable_links=[], unsupported_file_links=[])
+    mock_create_document_from_file.return_value = document, file_map
+    mock_create_documents_from_selection.return_value = document, source
+    file = create_upload_file("filename", b"dummy content")
+    expected_source = DocumentSource(vanilla_links=get_links, file_links=[], error_links=[], unscrapable_links=[], unsupported_file_links=[], files=[file_map])
+    expected_documents = document + document
+    actual_documents, actual_source = await Create.create_documents_from_both_links_and_files(file, get_links,"test_123", "test_doc_123")
+    assert actual_documents == expected_documents
+    assert actual_source == expected_source

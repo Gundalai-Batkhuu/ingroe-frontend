@@ -72,21 +72,16 @@ class StoreAssets:
     def _update_document(self) -> None:
         """Updates the assets in the database.
         """
-        db_generator = get_db()
-        db = next(db_generator)
-        try:
-            DocumentCRUD.update_document(
-                db=db,
-                document_id=self.document_root_id,
-                vanilla_links=self.vanilla_links,
-                document_alias=self.document_alias,
-                file_links=self.file_links,
-                unsupported_file_links=self.unsuppported_file_links,
-                files=self.files,  
-                description=self.description
-                )   
-        finally:    
-            db_generator.close()
+        DocumentCRUD.update_document(
+            db=self.db,
+            document_id=self.document_root_id,
+            vanilla_links=self.vanilla_links,
+            document_alias=self.document_alias,
+            file_links=self.file_links,
+            unsupported_file_links=self.unsuppported_file_links,
+            files=self.files,  
+            description=self.description
+            )   
 
     def store_captured_document(self, captured_document_id: str, file_id: str, file_map: Dict[str, str]) -> None:
         """Store or create a record that contains the details about the captured document
