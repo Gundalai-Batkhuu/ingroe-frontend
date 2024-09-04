@@ -4,6 +4,7 @@ from app.dependencies.internal import CaptureDocument
 from app.dependencies.internal import (StoreAssets, DeleteAssets)
 from app.model.pydantic_model.payload import DocumentSource
 from typing import List
+from sqlalchemy.orm import Session
 
 class Capture(APIEndPoint):
     @classmethod
@@ -36,23 +37,19 @@ class Capture(APIEndPoint):
         print("deleting")  
         DeleteAssets.delete_captured_document(document_id, captured_document_id)      
                
-def file_exists(file_id: str, captured_document_id: str, file_name: str) -> bool:
+def file_exists(file_id: str, captured_document_id: str, file_name: str, db: Session) -> bool:
     """Checks if the file exists or not in the database for a particular file name.
 
     Args:
     file_id (str): The id of the captured file.
     captured_document_id (str): The id of the captured document in the captured document table.
+    file_name (str): The name of the file.
+    db (Session): The database session object.
 
     Returns:
     bool: True or False depending on the node existence in the graph for an id.
     """
     from app.scripts.db import CapturedFileCRUD
-    from app.database import get_db
 
-    db_generator = get_db()
-    db = next(db_generator)
-    try:
-        status = CapturedFileCRUD.file_exists_for_a_name(db, file_id, captured_document_id, file_name)  
-    finally:
-        db_generator.close()
+    status = CapturedFileCRUD.file_exists_for_a_name(db, file_id, captured_document_id, file_name)  
     return status            

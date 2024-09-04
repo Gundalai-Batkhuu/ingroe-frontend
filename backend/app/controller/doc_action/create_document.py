@@ -3,7 +3,7 @@ from app.model.pydantic_model import CreateDocument
 from app.dependencies.internal import (GetDocument, StoreDocument, StoreAssets)
 from fastapi import UploadFile
 from langchain_core.documents import Document
-from typing import Sequence, List, Tuple
+from typing import Sequence, List, Tuple, Dict
 from app.const import ReturnCode
 from app.model.pydantic_model.payload import DocumentSource
 from app.temp_test.graph import get_doc
@@ -23,7 +23,7 @@ class Create(APIEndPoint):
             raise DocumentCreationError(message="Error while creating documents from the links", name="Document Creation")
 
     @classmethod
-    async def create_document_from_file(cls, file: UploadFile, user_id: str, document_id: str) -> List[Document]:
+    async def create_document_from_file(cls, file: UploadFile, user_id: str, document_id: str) -> Tuple[List[Document], Dict[str, str]]:
         try:
             documents, file_map = await GetDocument.get_document_from_file(file, user_id, document_id)  
             return documents, file_map
@@ -56,11 +56,10 @@ class Create(APIEndPoint):
                 file_link.append(link)
         print(vanilla_link)
         documents_from_link = await cls.create_document_from_links(vanilla_link)
-        if len(documents_from_link) == 0: unscrapable_link.append(link)
         # documents_from_link = []
         # documents_from_link, source = get_doc()
         documents += documents_from_link
-        source = DocumentSource(vanilla_links=vanilla_link, file_links=file_link, error_links=error_link, unsupported_file_links=unallowed_downloadable_links, unscrapable_links=unscrapable_link)
+        source = DocumentSource(vanilla_links=vanilla_link, file_links=file_link, error_links=error_link, unsupported_file_links=unallowed_downloadable_links)
         return documents, source  
 
     @classmethod
@@ -86,6 +85,7 @@ def document_exists(document_id: str, user_id: str, db: Session) -> bool:
     Args:
     document_id (str): The id of the document node or parent of the documents.
     user_id (str): The id of the user.
+    db (Session): The database session object
 
     Returns:
     bool: True or False depending on the node existence in the graph for an id.

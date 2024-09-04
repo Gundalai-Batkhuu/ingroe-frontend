@@ -56,7 +56,6 @@ async def create_document_selection(payload: CreateDocument, db: Session = Depen
                 "message": "Documents from provided sources stored successfully!!", 
                 "unsupported_file_links": source.unsupported_file_links,
                 "error_links": source.error_links,
-                "unscrapable_links": source.unscrapable_links,
                 "document_id": payload.document_id
                 }
         )

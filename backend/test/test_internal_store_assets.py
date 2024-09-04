@@ -2,7 +2,7 @@ import pytest
 from .db.test_database import override_get_db
 from app.dependencies.internal import StoreAssets
 from app.model.pydantic_model.payload import DocumentSource
-from app.scripts.db import UserCRUD
+from app.scripts.db import (UserCRUD, DocumentCRUD)
 
 @pytest.fixture(scope="module")
 def source():
@@ -17,7 +17,7 @@ def create_user(db):
     Args:
     db: A database session object.
     """
-    UserCRUD.create_user(db=db, name="test user", email="test2@gmail.com", user_id="test_user_456")
+    UserCRUD.create_user(db=db, name="test user", email="test2@gmail.com", user_id="test_user_456")  
 
 def test_store_create_document(test_db, source):
     """Tests the creation of document. If the creation fails then an exception would be returned which results in the failure of the test.
@@ -35,4 +35,21 @@ def test_store_create_document(test_db, source):
     except Exception as e:
         pytest.fail(f"Test failed due to unexpected exception: {e}")  
     finally:
-        db_generator.close()      
+        db_generator.close()    
+
+def test_store_update_document(test_db, source):
+    """Tests the updation of document. If the updation fails then an exception would be returned which results in the failure of the test.
+    """
+    db_generator = override_get_db()
+    db = next(db_generator)
+    try:
+        user_id = "test_user_456"
+        document_id = "test_create_document_123"
+        document_alias = "test document updated"
+        description = "test description updated"
+        storer = StoreAssets(user_id=user_id, document_root_id=document_id, document_alias=document_alias, source_payload=source, description=description, db=db)
+        storer.store(True)
+    except Exception as e:
+        pytest.fail(f"Test failed due to unexpected exception: {e}")  
+    finally:
+        db_generator.close()           
