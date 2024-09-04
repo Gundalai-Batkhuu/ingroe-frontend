@@ -1,6 +1,7 @@
 from app.controller.doc_action.search import Search
 from app.model.pydantic_model import SearchQuery
 import pytest
+from unittest.mock import patch, AsyncMock
 
 # --- doc_action -> search.py ---
 @pytest.fixture
@@ -202,3 +203,67 @@ async def test_create_documents_from_both_links_and_files(mock_create_documents_
     actual_documents, actual_source = await Create.create_documents_from_both_links_and_files(file, get_links,"test_123", "test_doc_123")
     assert actual_documents == expected_documents
     assert actual_source == expected_source
+
+# --- doc_action -> capture_document.py ---
+from app.dependencies.internal import CaptureDocument
+from app.controller.doc_action import Capture
+from app.model.db import (CapturedDocument, CapturedFile)
+from .db.test_database import override_get_db
+from sqlalchemy.orm import Session
+from app.exceptions import DocumentCaptureError
+
+def captured_document_exists(db: Session, captured_document_id: str, document_id: str):
+    """Check if the captured document exists"""
+    document_exists = db.query(CapturedDocument).filter(
+            CapturedDocument.captured_document_id == captured_document_id,
+            CapturedDocument.document_id == document_id
+        ).first()
+    return document_exists is not None 
+
+def captured_file_exists(db: Session, captured_document_id: str, file_id: str):
+    """Check if the captured file exists"""
+    document_exists = db.query(CapturedFile).filter(
+            CapturedFile.captured_document_id == captured_document_id,
+            CapturedFile.file_id == file_id
+        ).first()
+    return document_exists is not None 
+
+@pytest.mark.asyncio
+@patch.object(CaptureDocument, "capture_document")
+async def test_capture_document(mock_capture_document, test_db):
+    """Test if the capture document function work as expected"""
+    file_map = {"file_url":"www.xyz.com", "file_name":"new.txt"}
+    mock_capture_document.return_value = file_map
+    document_id = "test_document_djsfhs"
+    user_id = "test_123"
+    captured_document_id = "test_captured_123"
+    file_id = "test_file_123"
+    try:
+        db_generator = override_get_db()
+        db = next(db_generator)
+        actual_file_map = await Capture.capture_document("file", user_id, document_id, False, captured_document_id, file_id, "test document", "test document_description", db)
+        status_captured = captured_document_exists(db, captured_document_id, document_id) 
+        status_file = captured_file_exists(db, captured_document_id, file_id) 
+        assert actual_file_map == file_map
+        assert status_captured == True
+        assert status_file == True 
+    finally:
+        db_generator.close()
+
+@pytest.mark.asyncio
+@patch.object(CaptureDocument, "capture_document")
+async def test_capture_document_none_file_map(mock_capture_document, test_db):
+    """Test if the capture document function work as expected when the file map returned is none by the Capture.capture_document function"""
+    mock_capture_document.return_value = None
+    document_id = "test_document_djsfhs"
+    user_id = "test_123"
+    captured_document_id = "test_captured_123"
+    file_id = "test_file_123"
+    try:
+        db_generator = override_get_db()
+        db = next(db_generator)
+        with pytest.raises(DocumentCaptureError) as exc_info:
+            actual_file_map = await Capture.capture_document("file", user_id, document_id, False, captured_document_id, file_id, "test document", "test document_description", db)     
+        assert exc_info.value.args[0] == "Invalid file type"    
+    finally:
+        db_generator.close()

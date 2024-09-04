@@ -1,4 +1,4 @@
-from app.dependencies.internal import GetDocument
+from app.dependencies.internal import (GetDocument, CaptureDocument)
 import pytest
 from unittest.mock import patch, AsyncMock
 from langchain_core.documents import Document
@@ -201,6 +201,82 @@ async def test_get_document_from_file_for_supported_files(mock_upload_to_s3_buck
     assert actual_result == expected_result
     assert file_map == get_file_map
     assert mock_create_documents_from_store.call_count == 1
+
+@pytest.fixture()
+def extracted_text():
+    return "This is an extracted text"    
+
+@pytest.mark.asyncio
+@patch.object(CaptureDocument, "_extract_text_from_scanned_pdf")
+@patch.object(CaptureDocument, "_encode_image_to_base64", new_callable=AsyncMock)
+@patch.object(CaptureDocument, "_get_extracted_text")
+@patch.object(S3, "upload_to_s3_bucket")
+@patch.object(GetDocument, "_get_file_extension_from_file")
+async def test_capture_document_pdf(mock_get_file_extension_from_file, mock_upload_to_s3_bucket, mock_get_extracted_text, mock_encode_image_to_base64 , mock_extract_text_from_scanned_pdf, extracted_text):
+    """Test if the capture document function work as expected for pdf files"""
+    file = create_upload_file("file_name.pdf", b"dummy content")  
+    mock_extract_text_from_scanned_pdf.return_value = extracted_text
+    mock_get_extracted_text.return_value = extracted_text
+    mock_encode_image_to_base64.return_value = "2423213kjir923423"
+    mock_upload_to_s3_bucket.return_value = "www.xyz.com", "file_name.txt"
+    mock_get_file_extension_from_file.return_value = "pdf"
+    expected_file_map = {"file_url":"www.xyz.com", "file_name":"file_name.txt"}
+    actual_file_map = await CaptureDocument.capture_document(file, "test_123", "test_doc_122e324") 
+    assert actual_file_map == expected_file_map
+    assert mock_extract_text_from_scanned_pdf.call_count == 1
+    assert mock_encode_image_to_base64.call_count == 0
+    assert mock_get_extracted_text.call_count == 0 
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("file_extension", [
+    "jpeg",
+    "png",
+    "webp",
+])
+@patch.object(CaptureDocument, "_extract_text_from_scanned_pdf")
+@patch.object(CaptureDocument, "_encode_image_to_base64", new_callable=AsyncMock)
+@patch.object(CaptureDocument, "_get_extracted_text")
+@patch.object(S3, "upload_to_s3_bucket")
+@patch.object(GetDocument, "_get_file_extension_from_file")
+async def test_capture_document_images(mock_get_file_extension_from_file, mock_upload_to_s3_bucket, mock_get_extracted_text, mock_encode_image_to_base64 , mock_extract_text_from_scanned_pdf, extracted_text, file_extension):
+    """Test if the capture document function work as expected for allowed image files"""
+    file = create_upload_file("file_name.jpeg", b"dummy content")  
+    mock_extract_text_from_scanned_pdf.return_value = extracted_text
+    mock_get_extracted_text.return_value = extracted_text
+    mock_encode_image_to_base64.return_value = "2423213kjir923423"
+    mock_upload_to_s3_bucket.return_value = "www.xyz.com", "file_name.txt"
+    mock_get_file_extension_from_file.return_value = file_extension
+    expected_file_map = {"file_url":"www.xyz.com", "file_name":"file_name.txt"}
+    actual_file_map = await CaptureDocument.capture_document(file, "test_123", "test_doc_122e324") 
+    assert actual_file_map == expected_file_map
+    assert mock_extract_text_from_scanned_pdf.call_count == 0
+    assert mock_encode_image_to_base64.call_count == 1
+    assert mock_get_extracted_text.call_count == 1    
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("file_extension", [
+    "gif",
+    "txt"
+])
+@patch.object(CaptureDocument, "_extract_text_from_scanned_pdf")
+@patch.object(CaptureDocument, "_encode_image_to_base64", new_callable=AsyncMock)
+@patch.object(CaptureDocument, "_get_extracted_text")
+@patch.object(S3, "upload_to_s3_bucket")
+@patch.object(GetDocument, "_get_file_extension_from_file")
+async def test_capture_document_unsupported(mock_get_file_extension_from_file, mock_upload_to_s3_bucket, mock_get_extracted_text, mock_encode_image_to_base64 , mock_extract_text_from_scanned_pdf, extracted_text, file_extension):
+    """Test if the capture document function work as expected for unsupported files"""
+    file = create_upload_file("file_name.jpeg", b"dummy content")  
+    mock_extract_text_from_scanned_pdf.return_value = extracted_text
+    mock_get_extracted_text.return_value = extracted_text
+    mock_encode_image_to_base64.return_value = "2423213kjir923423"
+    mock_upload_to_s3_bucket.return_value = "www.xyz.com", "file_name.txt"
+    mock_get_file_extension_from_file.return_value = file_extension
+    expected_file_map = None
+    actual_file_map = await CaptureDocument.capture_document(file, "test_123", "test_doc_122e324") 
+    assert actual_file_map == expected_file_map
+    assert mock_extract_text_from_scanned_pdf.call_count == 0
+    assert mock_encode_image_to_base64.call_count == 0
+    assert mock_get_extracted_text.call_count == 0     
 
 # -- delete_documents.py --
 from app.dependencies.internal import DeleteDocument

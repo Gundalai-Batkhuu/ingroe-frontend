@@ -1,7 +1,6 @@
 from ..core import APIEndPoint
 from fastapi import UploadFile
-from app.dependencies.internal import CaptureDocument
-from app.dependencies.internal import (StoreAssets, DeleteAssets)
+from app.dependencies.internal import (StoreAssets, DeleteAssets, CaptureDocument)
 from app.model.pydantic_model.payload import DocumentSource
 from typing import List
 from sqlalchemy.orm import Session
@@ -12,6 +11,8 @@ class Capture(APIEndPoint):
     async def capture_document(cls, file: UploadFile, user_id: str, document_id: str, document_update: bool, captured_document_id: str, file_id: str, document_alias: str, description: str, db: Session):
         try:
             file_map = await CaptureDocument.capture_document(file, user_id, document_id)
+            if file_map is None:
+                raise DocumentCaptureError(message="Invalid file type", name="Invalid file")
             # file_map = {"file_url":"www.xyz.com", "file_name":"new.txt"}
             source_payload = DocumentSource()
             storer = StoreAssets(user_id=user_id, document_root_id=document_id, source_payload=source_payload, document_alias=document_alias, description=description, db=db)
