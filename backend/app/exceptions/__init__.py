@@ -3,7 +3,8 @@ from .exceptions import (
     DocumentDoesNotExistError,
     SearchResultRetrievalError,
     DocumentCreationError,
-    DocumentStorageError
+    DocumentStorageError, 
+    DocumentDeletionError
 )
 
 __all__ = [
@@ -11,5 +12,6 @@ __all__ = [
     "DocumentDoesNotExistError",
     "SearchResultRetrievalError",
     "DocumentCreationError",
-    "DocumentStorageError"
+    "DocumentStorageError",
+    "DocumentDeletionError"
 ]
