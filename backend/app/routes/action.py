@@ -8,7 +8,7 @@ from uuid import uuid4
 from app.const import GraphLabel
 from app.model.pydantic_model.payload import DocumentSource
 from app.dependencies.internal import (StoreAssets, UpdateAssets)
-from app.exceptions import (DocumentDoesNotExistError, SearchResultRetrievalError, DocumentCreationError, DocumentStorageError)
+from app.exceptions import (DocumentDoesNotExistError, SearchResultRetrievalError, DocumentCreationError, DocumentStorageError, DocumentDeletionError)
 from fastapi.encoders import jsonable_encoder
 from loguru import logger
 from sqlalchemy.orm import Session
@@ -122,6 +122,8 @@ async def create_document_manually(link: Optional[str] = Form(None), file: Optio
         raise
     except DocumentDoesNotExistError:
         raise
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(e)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error while creating the documents.")
@@ -151,16 +153,18 @@ async def query_document_quick(payload: QueryDocument):
     )
 
 @router.delete("/delete-document")
-async def delete_document(payload: DeleteDocument):
-    isDeleted = await Delete.delete_document(payload.document_id, payload.user_id)
-    if isDeleted is None:
-        raise HTTPException(status_code=500, detail="Error occurred while deletion!")
-    if isDeleted is False:
-        raise HTTPException(status_code=400, detail="Invalid document id or the document is being shared.")
-    return JSONResponse(
-        status_code=200,
-        content={"message": "Documents from provided sources deleted successfully!!"}
-    )
+async def delete_document(payload: DeleteDocument, db: Session = Depends(get_db)):
+    try:
+        await Delete.delete_document(payload.document_id, payload.user_id, db)
+        return JSONResponse(
+            status_code=200,
+            content={"message": "Documents from provided sources deleted successfully!!"}
+        )
+    except DocumentDeletionError:
+        raise
+    except Exception as e:
+        logger.error(e)
+        raise DocumentDeletionError(message="Error occurred while deletion!", name="Document deletion")
 
 @router.post("/capture-document")
 async def capture_document(file: UploadFile, user_id: str = Form(...), document_id: Optional[str] = Form(None), document_alias: Optional[str] = Form(""), description: Optional[str] = Form("")):
