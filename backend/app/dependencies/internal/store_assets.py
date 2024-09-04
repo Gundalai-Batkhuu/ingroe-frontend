@@ -4,7 +4,7 @@ from app.scripts.db import DocumentCRUD
 from app.database import get_db
 from app.scripts.db import (CapturedDocumentCRUD, CapturedFileCRUD)
 from loguru import logger
-from app.exceptions import DocumentStorageError
+from app.exceptions import (DocumentStorageError, DocumentCaptureError)
 from sqlalchemy.orm import Session
 
 class StoreAssets:
@@ -27,6 +27,7 @@ class StoreAssets:
         document_alias (str): The name of the document.
         source_payload (DocumentSource): The DocumentSource object containing the asset information.
         description: A short description of the document.
+        db (Session): Database session object.
         """
         self.user_id = user_id
         self.document_root_id = document_root_id
@@ -52,7 +53,7 @@ class StoreAssets:
                 self._create_document() 
         except Exception as e:
             logger.error(e)
-            raise DocumentStorageError(message="Error while storing the document information in the postgres database", name="Document storage Postgres")        
+            raise DocumentStorageError(message="Error while storing the document information in the postgres database", name="Store document")        
             
     def _create_document(self) -> None:
         """Creates a document record containing the assets in the database.
@@ -83,7 +84,7 @@ class StoreAssets:
             description=self.description
             )   
 
-    def store_captured_document(self, captured_document_id: str, file_id: str, file_map: Dict[str, str]) -> None:
+    def store_captured_document(self, captured_document_id: str, file_id: str, file_map: Dict[str, str], db: Session) -> None:
         """Store or create a record that contains the details about the captured document
         such as source, file name, query ready status, etc.
 
@@ -91,9 +92,8 @@ class StoreAssets:
         captured_document_id (str): The id of the captured document.
         file_map (Dict[str, str]): A dictionary containing the information about the captured 
         document source and file name.
+        db (Session): Database session object.
         """
-        db_generator = get_db()
-        db = next(db_generator)
         try:
             CapturedDocumentCRUD.create_record(
                 db=db,
@@ -105,9 +105,10 @@ class StoreAssets:
                 captured_document_id=captured_document_id,
                 file_url=file_map.get("file_url"),
                 file_name=file_map.get("file_name")
-            )
-        finally:
-            db_generator.close()    
+            )   
+        except Exception as e:
+            logger.error(e)
+            raise DocumentCaptureError(message="Error occured while storing the captured document in relational database", name="Store capture document")
 
 class DeleteAssets:
     """Deals with the deletion of assets from various tables.

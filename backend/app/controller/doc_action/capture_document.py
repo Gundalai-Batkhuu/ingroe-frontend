@@ -5,21 +5,25 @@ from app.dependencies.internal import (StoreAssets, DeleteAssets)
 from app.model.pydantic_model.payload import DocumentSource
 from typing import List
 from sqlalchemy.orm import Session
+from app.exceptions import (DocumentCaptureError, DocumentStorageError)
 
 class Capture(APIEndPoint):
     @classmethod
-    async def capture_document(cls, file: UploadFile, user_id: str, document_id: str, document_update: bool, captured_document_id: str, file_id: str, document_alias: str, description: str):
-        # file_map = await CaptureDocument.capture_document(file, user_id, document_id)
-        file_map = {"file_url":"www.xyz.com", "file_name":"new.txt"}
-        source_payload = DocumentSource()
-        storer = StoreAssets(user_id=user_id, document_root_id=document_id, source_payload=source_payload, document_alias=document_alias, description=description)
-        if document_update:
-            # further check if there is a capture
-            storer.store_captured_document(captured_document_id=captured_document_id, file_id=file_id, file_map=file_map)
-        else:
-            storer.store(isUpdate=False)
-            storer.store_captured_document(captured_document_id=captured_document_id, file_id=file_id, file_map=file_map)
-        return file_map 
+    async def capture_document(cls, file: UploadFile, user_id: str, document_id: str, document_update: bool, captured_document_id: str, file_id: str, document_alias: str, description: str, db: Session):
+        try:
+            file_map = await CaptureDocument.capture_document(file, user_id, document_id)
+            # file_map = {"file_url":"www.xyz.com", "file_name":"new.txt"}
+            source_payload = DocumentSource()
+            storer = StoreAssets(user_id=user_id, document_root_id=document_id, source_payload=source_payload, document_alias=document_alias, description=description, db=db)
+            if document_update:
+                # further check if there is a capture
+                storer.store_captured_document(captured_document_id=captured_document_id, file_id=file_id, file_map=file_map, db=db)
+            else:
+                storer.store(isUpdate=False)
+                storer.store_captured_document(captured_document_id=captured_document_id, file_id=file_id, file_map=file_map, db=db)
+            return file_map 
+        except Exception:
+            raise
 
     @classmethod
     async def update_document(cls, file: UploadFile, user_id: str, document_id: str, file_id: str):

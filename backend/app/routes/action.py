@@ -8,7 +8,7 @@ from uuid import uuid4
 from app.const import GraphLabel
 from app.model.pydantic_model.payload import DocumentSource
 from app.dependencies.internal import (StoreAssets, UpdateAssets)
-from app.exceptions import (DocumentDoesNotExistError, SearchResultRetrievalError, DocumentCreationError, DocumentStorageError, DocumentDeletionError)
+from app.exceptions import (DocumentDoesNotExistError, SearchResultRetrievalError, DocumentCreationError, DocumentStorageError, DocumentDeletionError, DocumentCaptureError)
 from fastapi.encoders import jsonable_encoder
 from loguru import logger
 from sqlalchemy.orm import Session
@@ -167,28 +167,38 @@ async def delete_document(payload: DeleteDocument, db: Session = Depends(get_db)
         raise DocumentDeletionError(message="Error occurred while deletion!", name="Document deletion")
 
 @router.post("/capture-document")
-async def capture_document(file: UploadFile, user_id: str = Form(...), document_id: Optional[str] = Form(None), document_alias: Optional[str] = Form(""), description: Optional[str] = Form("")):
-    document_update = False
-    if document_id is not None:
-        if not document_exists(document_id, user_id):
-            raise DocumentDoesNotExistError(message=f"The supplied document id {document_id} does not exist", name="Invalid Document Id")
-        document_update = True
-    else:
-        document_id = uuid4().hex 
-    captured_document_id = uuid4().hex   
-    file_id = uuid4().hex 
-    file_map = await Capture.capture_document(file, user_id, document_id, document_update, captured_document_id, file_id, document_alias, description)
-    return JSONResponse(
-        status_code=200,
-        content={
-            "message": "Documents from provided sources captured successfully!!", 
-            "user_id": user_id,
-            "document_id": document_id,
-            "captured_document_id": captured_document_id,
-            "file_id": file_id,
-            "file_map": file_map
-            }
-    )
+async def capture_document(file: UploadFile, user_id: str = Form(...), document_id: Optional[str] = Form(None), document_alias: Optional[str] = Form(""), description: Optional[str] = Form(""), db: Session = Depends(get_db)):
+    try:
+        document_update = False
+        if document_id is not None:
+            if not document_exists(document_id, user_id, db):
+                raise DocumentDoesNotExistError(message=f"The supplied document id {document_id} does not exist", name="Invalid Id")
+            document_update = True
+        else:
+            document_id = uuid4().hex 
+        captured_document_id = uuid4().hex   
+        file_id = uuid4().hex 
+        file_map = await Capture.capture_document(file, user_id, document_id, document_update, captured_document_id, file_id, document_alias, description, db)
+        return JSONResponse(
+            status_code=200,
+            content={
+                "message": "Documents from provided sources captured successfully!!", 
+                "user_id": user_id,
+                "document_id": document_id,
+                "captured_document_id": captured_document_id,
+                "file_id": file_id,
+                "file_map": file_map
+                }
+        )
+    except DocumentDoesNotExistError:
+        raise
+    except DocumentCaptureError:
+        raise
+    except DocumentStorageError:
+        raise
+    except Exception as e:
+        logger.error(e)
+        raise DocumentCaptureError(message="Error while capturing the document", name="Document Capture")
 
 @router.patch("/update-captured-document")
 async def update_capture_document(file: UploadFile, user_id: str = Form(...), document_id: str = Form(...), file_id: str = Form(...), captured_document_id: str = Form(...)):

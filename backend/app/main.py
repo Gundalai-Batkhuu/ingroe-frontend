@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.database import init_db
 from app.exceptions.handler.exception_handler import create_exception_handler
 from app.exceptions import (
-    DocumentDoesNotExistError, SearchResultRetrievalError, DocumentCreationError, DocumentStorageError, DocumentDeletionError
+    DocumentDoesNotExistError, SearchResultRetrievalError, DocumentCreationError, DocumentStorageError, DocumentDeletionError, DocumentCaptureError
 )
 from contextlib import asynccontextmanager
 
@@ -39,6 +39,7 @@ app.add_exception_handler(exc_class_or_status_code=SearchResultRetrievalError, h
 app.add_exception_handler(exc_class_or_status_code=DocumentCreationError, handler=create_exception_handler(status.HTTP_500_INTERNAL_SERVER_ERROR, "Document creation error"))
 app.add_exception_handler(exc_class_or_status_code=DocumentStorageError, handler=create_exception_handler(status.HTTP_500_INTERNAL_SERVER_ERROR, "Document storage error"))
 app.add_exception_handler(exc_class_or_status_code=DocumentDeletionError, handler=create_exception_handler(status.HTTP_500_INTERNAL_SERVER_ERROR, "Document deletion error"))
+app.add_exception_handler(exc_class_or_status_code=DocumentCaptureError, handler=create_exception_handler(status.HTTP_500_INTERNAL_SERVER_ERROR, "Document capture error"))
 
 @app.get("/")
 def run_server():
