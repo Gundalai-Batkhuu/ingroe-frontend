@@ -28,9 +28,14 @@ class Capture(APIEndPoint):
 
     @classmethod
     async def update_document(cls, file: UploadFile, user_id: str, document_id: str, file_id: str):
-        # file_map = await CaptureDocument.update_document(file, user_id, document_id)
-        file_map = {"file_url":"www.xyz.com", "file_name":"new.txt"}
-        return file_map
+        try:
+            file_map = await CaptureDocument.update_document(file, user_id, document_id)
+            # file_map = {"file_url":"www.xyz.com", "file_name":"new.txt"}
+            if file_map is None:
+                raise DocumentCaptureError(message="Invalid file type", name="Invalid file")
+            return file_map
+        except Exception:
+            raise
     
     @classmethod
     async def delete_captured_file(cls, captured_document_id: str, file_ids: List[str]):

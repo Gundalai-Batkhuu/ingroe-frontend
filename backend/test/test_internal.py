@@ -276,7 +276,37 @@ async def test_capture_document_unsupported(mock_get_file_extension_from_file, m
     assert actual_file_map == expected_file_map
     assert mock_extract_text_from_scanned_pdf.call_count == 0
     assert mock_encode_image_to_base64.call_count == 0
-    assert mock_get_extracted_text.call_count == 0     
+    assert mock_get_extracted_text.call_count == 0   
+
+@pytest.mark.asyncio
+@patch.object(GetDocument, "_get_file_extension_from_file")
+@patch.object(S3, "upload_to_s3_bucket")
+async def test_update_document_for_txt(mock_upload_to_s3_bucket, mock_get_file_extension_from_file):
+    """Test if the updation of text document works as expected."""
+    file_map = {"file_url":"www.xyz.com", "file_name":"file_name.txt"}
+    mock_upload_to_s3_bucket.return_value = "www.xyz.com", "file_name.txt"
+    mock_get_file_extension_from_file.return_value = "txt"
+    file = create_upload_file("file_name.jpeg", b"dummy content") 
+    actual_file_map = await CaptureDocument.update_document(file, "test_123", "test_capture_123")
+    assert actual_file_map == file_map
+    assert mock_upload_to_s3_bucket.call_count == 1
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("file_extension", [
+    "gif",
+    "pdf"
+])
+@patch.object(GetDocument, "_get_file_extension_from_file")
+@patch.object(S3, "upload_to_s3_bucket")
+async def test_update_document_for_non_txt(mock_upload_to_s3_bucket, mock_get_file_extension_from_file, file_extension):
+    """Tests if the files with extensions other than .txt works as expected."""
+    mock_upload_to_s3_bucket.return_value = "www.xyz.com", "file_name.txt"
+    mock_get_file_extension_from_file.return_value = file_extension
+    file = create_upload_file("file_name.jpeg", b"dummy content") 
+    actual_file_map = await CaptureDocument.update_document(file, "test_123", "test_capture_123")
+    assert actual_file_map == None
+    assert mock_upload_to_s3_bucket.call_count == 0    
+
 
 # -- delete_documents.py --
 from app.dependencies.internal import DeleteDocument
