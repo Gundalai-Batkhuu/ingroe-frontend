@@ -206,7 +206,7 @@ async def test_create_documents_from_both_links_and_files(mock_create_documents_
 
 # --- doc_action -> capture_document.py ---
 from app.dependencies.internal import CaptureDocument
-from app.controller.doc_action import Capture
+from app.controller.doc_action import Capture, file_exists
 from app.model.db import (CapturedDocument, CapturedFile)
 from .db.test_database import override_get_db
 from sqlalchemy.orm import Session
@@ -236,8 +236,8 @@ async def test_capture_document(mock_capture_document, test_db):
     mock_capture_document.return_value = file_map
     document_id = "test_document_djsfhs"
     user_id = "test_123"
-    captured_document_id = "test_captured_123"
-    file_id = "test_file_123"
+    captured_document_id = "test_captured_123_dfdf"
+    file_id = "test_file_capture_123"
     try:
         db_generator = override_get_db()
         db = next(db_generator)
@@ -267,3 +267,47 @@ async def test_capture_document_none_file_map(mock_capture_document, test_db):
         assert exc_info.value.args[0] == "Invalid file type"    
     finally:
         db_generator.close()
+
+@pytest.mark.asyncio
+@patch.object(CaptureDocument, "update_document", new_callable=AsyncMock)
+async def test_update_document_for_valid_file(mock_update_document):
+    """Test if the update document returns a file map for valid file. The valid file returns a file map from the mocked function as the mocked function is already tested."""
+    file_map = {"file_url":"www.xyz.com", "file_name":"file_name.txt"}
+    mock_update_document.return_value = file_map
+    actual_file_map = await Capture.update_document("file", "test_123", "test_capture_123", "test_file_123")
+    assert actual_file_map == file_map
+
+@pytest.mark.asyncio
+@patch.object(CaptureDocument, "update_document", new_callable=AsyncMock)
+async def test_update_document_for_invalid_files(mock_update_document):
+    """Test if the update document throws an error if invalid files are passed. The invalid files are represented by the None return value of the mocked function."""
+    mock_update_document.return_value = None  
+    with pytest.raises(DocumentCaptureError) as exc_info:
+        actual_file_map = await Capture.update_document("file", "test_123", "test_capture_123", "test_file_123")     
+    assert exc_info.value.args[0] == "Invalid file type"  
+
+def test_file_exists_for_non_existing_file(test_db):
+    """Test if the file does not exist for a non existing file"""
+    file_id = "test_file_123456"
+    captured_document_id = "test_capture_123"    
+    file_name = "test_file.txt"
+    try:
+        db_generator = override_get_db()
+        db = next(db_generator)
+        status = file_exists(file_id, captured_document_id, file_name, db)
+        assert status == False
+    finally:
+        db_generator.close()  
+
+def test_file_exists_for_existing_file(test_db):
+    """Test if the file exist for an existing file"""
+    file_id = "test_file_123"
+    captured_document_id = "test_capture_123"    
+    file_name = "test_file.txt"
+    try:
+        db_generator = override_get_db()
+        db = next(db_generator)
+        status = file_exists(file_id, captured_document_id, file_name, db)
+        assert status == True
+    finally:
+        db_generator.close()          

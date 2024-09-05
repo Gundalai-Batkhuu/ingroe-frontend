@@ -201,19 +201,27 @@ async def capture_document(file: UploadFile, user_id: str = Form(...), document_
         raise DocumentCaptureError(message="Error while capturing the document", name="Document Capture")
 
 @router.patch("/update-captured-document")
-async def update_capture_document(file: UploadFile, user_id: str = Form(...), document_id: str = Form(...), file_id: str = Form(...), captured_document_id: str = Form(...)):
-    if not file_exists(file_id, captured_document_id, file.filename):
-        raise DocumentDoesNotExistError(message=f"The supplied file id {file_id} does not exist", name="Invalid File Id")
-    file_map = await Capture.update_document(file, user_id, document_id, file_id)
-    return JSONResponse(
-        status_code=200,
-        content={
-            "document_id": document_id,
-            "captured_document_id": captured_document_id,
-            "file_id": file_id,
-            "response": file_map
-            }
-    )
+async def update_capture_document(file: UploadFile, user_id: str = Form(...), document_id: str = Form(...), file_id: str = Form(...), captured_document_id: str = Form(...), db: Session = Depends(get_db)):
+    try:
+        if not file_exists(file_id, captured_document_id, file.filename, db):
+            raise DocumentDoesNotExistError(message=f"The supplied file id {file_id} does not exist", name="Invalid File Id")
+        file_map = await Capture.update_document(file, user_id, document_id, file_id)
+        return JSONResponse(
+            status_code=200,
+            content={
+                "document_id": document_id,
+                "captured_document_id": captured_document_id,
+                "file_id": file_id,
+                "response": file_map
+                }
+        )
+    except DocumentDoesNotExistError:
+        raise
+    except DocumentCaptureError:
+        raise
+    except Exception as e:
+        logger.error(e)
+        raise DocumentCaptureError(message="Error while updating the captured the document", name="Document Capture")
 
 @router.delete("/delete-captured-file")
 async def delete_captured_file(payload: DeleteCapturedFile):

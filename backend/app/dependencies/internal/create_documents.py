@@ -22,7 +22,7 @@ import pytesseract
 from pdf2image import convert_from_path
 import os
 from loguru import logger
-from app.exceptions import DocumentCaptureError
+from app.exceptions import (DocumentCaptureError, DocumentStorageError)
 
 class GetDocument:
     """Get the sequence of documents from the provided link or file.
@@ -568,6 +568,8 @@ class CaptureDocument:
                 text_file_name = cls._get_text_file_name_from_other_file_type(file.filename)
                 file_map = cls._store_text_file_to_S3(user_id, document_id, output_file_path, text_file_name)
                 return file_map
+        except DocumentStorageError:
+            raise    
         except Exception as e:
             logger.error(e)
             raise DocumentCaptureError(message="Error while text extraction and storage", name="Capture")
