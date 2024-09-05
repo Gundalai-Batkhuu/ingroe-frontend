@@ -98,6 +98,15 @@ export interface CreateDocument {
   description: string;
 }
 
+export type ManualDocumentFormData = {
+  file: File | null
+  link: string
+  document_id: string
+  user_id: string
+  document_alias: string
+  description: string
+}
+
 export interface QueryDocument {
   query: string;
   document_id: string;

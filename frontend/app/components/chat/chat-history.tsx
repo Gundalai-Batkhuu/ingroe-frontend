@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { cn } from '../../lib/utils'
 import { SidebarList } from '../sidebar/sidebar-list'
 import { buttonVariants } from '@/app/components/ui/button'
-import { IconPlus } from '../icons'
+import { IconPlus } from '@/app/components/ui/icons'
 
 interface ChatHistoryProps {
   userId?: string
