@@ -6,6 +6,7 @@ from app.const import ReturnCode
 from io import BytesIO
 from fastapi import UploadFile
 from app.dependencies.external import S3
+from .module.graph import document
 
 # --- create_documents.py ---
 
@@ -307,6 +308,13 @@ async def test_update_document_for_non_txt(mock_upload_to_s3_bucket, mock_get_fi
     assert actual_file_map == None
     assert mock_upload_to_s3_bucket.call_count == 0    
 
+@patch.object(GetDocument, "create_documents_from_store")
+def test_create_document_from_txt_links(mock_create_documents_from_store):
+    """Test if the create document from txt links function works as expected while downloading the real content."""
+    mock_create_documents_from_store.return_value = document
+    url = "https://filesamples.com/samples/document/txt/sample3.txt"
+    documents = GetDocument.create_documents_from_txt_links(url)
+    assert documents == document
 
 # -- delete_documents.py --
 from app.dependencies.internal import DeleteDocument
