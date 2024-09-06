@@ -204,6 +204,15 @@ async def test_create_documents_from_both_links_and_files(mock_create_documents_
     assert actual_documents == expected_documents
     assert actual_source == expected_source
 
+@pytest.mark.asyncio
+@patch.object(GetDocument, "create_documents_from_txt_links")
+async def test_create_documents_from_captured_document(mock_create_documents_from_txt_links):
+    mock_create_documents_from_txt_links.return_value = document
+    links = ["www.xyz.com", "www.abc.com", "www.pqr.com", "www.mno.com"]
+    documents = await Create.create_documents_from_captured_document(links)
+    assert len(documents) == 4
+    assert mock_create_documents_from_txt_links.call_count == 4
+
 # --- doc_action -> capture_document.py ---
 from app.dependencies.internal import CaptureDocument
 from app.controller.doc_action import Capture, file_exists
@@ -211,6 +220,8 @@ from app.model.db import (CapturedDocument, CapturedFile)
 from .db.test_database import override_get_db
 from sqlalchemy.orm import Session
 from app.exceptions import DocumentCaptureError
+from app.dependencies.internal.store_assets import DeleteAssets
+from app.scripts.db import (DocumentCRUD, CapturedDocumentCRUD)
 
 def captured_document_exists(db: Session, captured_document_id: str, document_id: str):
     """Check if the captured document exists"""
@@ -227,6 +238,23 @@ def captured_file_exists(db: Session, captured_document_id: str, file_id: str):
             CapturedFile.file_id == file_id
         ).first()
     return document_exists is not None 
+
+def create_records(db, document_id, captured_document_id):
+    """Creates document and captured document records in the respective table.
+    """
+    user_id = "test_123"
+    DocumentCRUD.create_document(
+                db=db, 
+                document_id=document_id,
+                user_id=user_id,
+                document_alias="test doc",
+                vanilla_links=[],
+                file_links=[],
+                unsupported_file_links=[],
+                files=[],  
+                description="test doc description"     
+        )
+    CapturedDocumentCRUD.create_record(db, captured_document_id, document_id)
 
 @pytest.mark.asyncio
 @patch.object(CaptureDocument, "capture_document")
@@ -310,4 +338,31 @@ def test_file_exists_for_existing_file(test_db):
         status = file_exists(file_id, captured_document_id, file_name, db)
         assert status == True
     finally:
-        db_generator.close()          
+        db_generator.close()   
+
+@pytest.mark.asyncio
+@patch.object(DeleteAssets, "delete_captured_file")
+async def test_delete_captured_file(mock_delete_captured_file, test_db):
+    """Test if the delete captured file calls the delete captured file function the right number of times"""
+    mock_delete_captured_file.return_value = None
+    try:
+        db_generator = override_get_db()
+        db = next(db_generator)
+        captured_document_id = "test_capture_123"
+        file_ids = ["test_file_123", "test_file_456", "test_file_789"]
+        await Capture.delete_captured_file(captured_document_id, file_ids, db)
+        mock_delete_captured_file.call_count == 3
+    finally:
+        db_generator.close()  
+
+@pytest.mark.asyncio
+async def test_delete_captured_document(test_db):
+    document_id = "test_create_document_ccnn2"
+    captured_document_id = "test_captured_document_ccnn2"
+    try:
+        db_generator = override_get_db()
+        db = next(db_generator)
+        create_records(db, document_id, captured_document_id)
+        await Capture.delete_captured_document(document_id, captured_document_id, db)
+    finally:
+        db_generator.close()    
