@@ -22,6 +22,7 @@ import pytesseract
 from pdf2image import convert_from_path
 import os
 from loguru import logger
+from app.exceptions import (DocumentCaptureError, DocumentStorageError)
 
 class GetDocument:
     """Get the sequence of documents from the provided link or file.
@@ -550,22 +551,28 @@ class CaptureDocument:
         Returns:
         Dict[str,str]: A file map containing the source and name of the captured document.
         """
-        file_extension = GetDocument._get_file_extension_from_file(file, cls.content_type_map)
-        if file_extension in cls.allowed_file_types:
-            file_path = GetDocument._get_file_path("files", file_extension)
-            await GetDocument._upload_file(file_path, file)
-            if file_extension == FileType.PDF:
-                extracted_text = cls._extract_text_from_scanned_pdf(file_path)
-            else: 
-                base64_image = await cls._encode_image_to_base64(file_path)
-                body = cls._get_body(base64_image, cls.max_token, cls._get_prompt())
-                extracted_text = cls._get_extracted_text(body)
-            GetDocument._clear_file(file_path)
-            output_file_path = GetDocument._get_file_path("files", FileType.TXT)
-            await cls._save_text_to_file(extracted_text, output_file_path)
-            text_file_name = cls._get_text_file_name_from_other_file_type(file.filename)
-            file_map = cls._store_text_file_to_S3(user_id, document_id, output_file_path, text_file_name)
-            return file_map
+        try:
+            file_extension = GetDocument._get_file_extension_from_file(file, cls.content_type_map)
+            if file_extension in cls.allowed_file_types:
+                file_path = GetDocument._get_file_path("files", file_extension)
+                await GetDocument._upload_file(file_path, file)
+                if file_extension == FileType.PDF:
+                    extracted_text = cls._extract_text_from_scanned_pdf(file_path)
+                else: 
+                    base64_image = await cls._encode_image_to_base64(file_path)
+                    body = cls._get_body(base64_image, cls.max_token, cls._get_prompt())
+                    extracted_text = cls._get_extracted_text(body)
+                GetDocument._clear_file(file_path)
+                output_file_path = GetDocument._get_file_path("files", FileType.TXT)
+                await cls._save_text_to_file(extracted_text, output_file_path)
+                text_file_name = cls._get_text_file_name_from_other_file_type(file.filename)
+                file_map = cls._store_text_file_to_S3(user_id, document_id, output_file_path, text_file_name)
+                return file_map
+        except DocumentStorageError:
+            raise    
+        except Exception as e:
+            logger.error(e)
+            raise DocumentCaptureError(message="Error while text extraction and storage", name="Capture")
         
     @classmethod
     async def update_document(cls, file:UploadFile, user_id: str, document_id: str):

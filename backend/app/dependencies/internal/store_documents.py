@@ -47,7 +47,7 @@ class StoreDocument:
         try:
             documents = cls._get_document_chunks(documents)
             llm_selector = LLM(temperature=0)
-            llm = llm_selector.get_model(ModelProvider.OPENAI)
+            llm = llm_selector.get_model(ModelProvider.BEDROCK_HAIKU)
             llm_transformer = LLMGraphTransformer(llm=llm)
             graph_documents = llm_transformer.convert_to_graph_documents(documents)
             return graph_documents
