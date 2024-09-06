@@ -38,14 +38,14 @@ class Capture(APIEndPoint):
             raise
     
     @classmethod
-    async def delete_captured_file(cls, captured_document_id: str, file_ids: List[str]):
+    async def delete_captured_file(cls, captured_document_id: str, file_ids: List[str], db: Session):
         for file_id in file_ids:
-            DeleteAssets.delete_captured_file(file_id, captured_document_id)
+            DeleteAssets.delete_captured_file(file_id, captured_document_id, db)
 
     @classmethod
-    async def delete_captured_document(cls, document_id: str, captured_document_id: str):
+    async def delete_captured_document(cls, document_id: str, captured_document_id: str, db: Session):
         print("deleting")  
-        DeleteAssets.delete_captured_document(document_id, captured_document_id)      
+        DeleteAssets.delete_captured_document(document_id, captured_document_id, db)      
                
 def file_exists(file_id: str, captured_document_id: str, file_name: str, db: Session) -> bool:
     """Checks if the file exists or not in the database for a particular file name.

@@ -64,12 +64,16 @@ class Create(APIEndPoint):
 
     @classmethod
     async def create_documents_from_captured_document(cls, links: List[str]):
-        print(links)
-        documents = []
-        for link in links:
-            document = GetDocument.create_documents_from_txt_links(link)
-            documents += document  
-        return documents 
+        try:
+            print(links)
+            documents = []
+            for link in links:
+                document = GetDocument.create_documents_from_txt_links(link)
+                documents += document  
+            return documents 
+        except Exception as e:
+            logger.error(e)
+            raise DocumentCreationError(message="Error while creating documents from captured documents", name="Document Creation")
     
     @classmethod
     async def create_documents_from_both_links_and_files(cls, file: UploadFile, links: List[str], user_id: str, document_id: str):

@@ -224,55 +224,79 @@ async def update_capture_document(file: UploadFile, user_id: str = Form(...), do
         raise DocumentCaptureError(message="Error while updating the captured the document", name="Document Capture")
 
 @router.delete("/delete-captured-file")
-async def delete_captured_file(payload: DeleteCapturedFile):
-    await Capture.delete_captured_file(payload.captured_document_id, payload.file_ids)
-    return JSONResponse(
-        status_code=200,
-        content={
-            "message": "Provided captured file has been deleted successfully!!", 
-            }
-    )
+async def delete_captured_file(payload: DeleteCapturedFile, db: Session = Depends(get_db)):
+    try:
+        await Capture.delete_captured_file(payload.captured_document_id, payload.file_ids, db)
+        return JSONResponse(
+            status_code=200,
+            content={
+                "message": "Provided captured file has been deleted successfully!!", 
+                }
+        )
+    except Exception as e:
+        logger.error(e)
+        raise DocumentCaptureError(message="Error while deleting the captured file", name="Document Capture")
 
 @router.delete("/delete-captured-document")
-async def delete_captured_document(payload: DeleteCapturedDocument):
-    await Capture.delete_captured_document(payload.document_id, payload.captured_document_id)
-    return JSONResponse(
-        status_code=200,
-        content={
-            "message": "Provided captured document has been deleted successfully!!", 
-            }
-    )
+async def delete_captured_document(payload: DeleteCapturedDocument, db: Session = Depends(get_db)):
+    try:
+        await Capture.delete_captured_document(payload.document_id, payload.captured_document_id, db)
+        return JSONResponse(
+            status_code=200,
+            content={
+                "message": "Provided captured document has been deleted successfully!!", 
+                }
+        )
+    except Exception as e:
+        logger.error(e)
+        raise DocumentCaptureError(message="Error while deleting the captured document", name="Document Capture")
 
 @router.post("/create-document-from-captured-document")
 async def create_document_from_captured_document(payload: CreateDocumentCapture):
-    if not document_exists(payload.document_id, payload.user_id):
-        raise DocumentDoesNotExistError(message=f"The supplied document id {document_id} does not exist", name="Invalid Document Id")
-    document_id = payload.document_id
-    documents = await Create.create_documents_from_captured_document(links=payload.links) 
-    parent_node = {"label": GraphLabel.DOCUMENT_ROOT, "id": document_id}
-    Store.store_document(documents, parent_node, payload.user_id)  
-    return JSONResponse(
-        status_code=200,
-        content={
-            "message": "Documents from provided sources created successfully!!", 
-            "user_id": payload.user_id,
-            "document_id": document_id
-            }
-    )
+    try:
+        if not document_exists(payload.document_id, payload.user_id):
+            raise DocumentDoesNotExistError(message=f"The supplied document id {document_id} does not exist", name="Invalid Document Id")
+        document_id = payload.document_id
+        documents = await Create.create_documents_from_captured_document(links=payload.links) 
+        parent_node = {"label": GraphLabel.DOCUMENT_ROOT, "id": document_id}
+        Store.store_document(documents, parent_node, payload.user_id)  
+        return JSONResponse(
+            status_code=200,
+            content={
+                "message": "Documents from provided sources created successfully!!", 
+                "user_id": payload.user_id,
+                "document_id": document_id
+                }
+        )
+    except DocumentStorageError:
+            raise
+    except DocumentDoesNotExistError:
+        raise
+    except DocumentCreationError:
+        raise
+    except Exception as e:
+        logger.error(e)
+        raise DocumentCaptureError(message="Error while creating the document", name="Document Capture")
 
 @router.patch("/update-document-info")
-async def update_document_info(payload: DocumentInfo):
-    if not document_exists(payload.document_id, payload.user_id):
-        raise DocumentDoesNotExistError(message=f"The supplied document id {payload.document_id} does not exist", name="Invalid Document Id")
-    UpdateAssets.update_document_info(payload.document_id, payload.document_alias, payload.description)
-    return JSONResponse(
-        status_code=200,
-        content={
-            "message": "Documents info updated successfully!!", 
-            "user_id": payload.user_id,
-            "document_id": payload.document_id
-            }
-    )
+async def update_document_info(payload: DocumentInfo, db: Session = Depends(get_db)):
+    try:
+        if not document_exists(payload.document_id, payload.user_id):
+            raise DocumentDoesNotExistError(message=f"The supplied document id {payload.document_id} does not exist", name="Invalid Document Id")
+        UpdateAssets.update_document_info(payload.document_id, payload.document_alias, payload.description, db)
+        return JSONResponse(
+            status_code=200,
+            content={
+                "message": "Documents info updated successfully!!", 
+                "user_id": payload.user_id,
+                "document_id": payload.document_id
+                }
+        )
+    except DocumentDoesNotExistError:
+        raise
+    except Exception as e:
+        logger.error(e)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error occurred while updating document information.")
 
 
 def _get_source_payload_from_file_map(file_map: Dict[str,str]) -> DocumentSource:
