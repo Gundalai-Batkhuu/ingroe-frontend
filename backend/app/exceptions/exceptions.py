@@ -20,3 +20,11 @@ class DocumentCreationError(APIError):
 class DocumentStorageError(APIError):
     """Exception raised when storing documents in databases whether it's graph or relational"""
     pass
+
+class DocumentDeletionError(APIError):
+    """Exception raised when deleting documents in databases whether it's graph, relational or S3 storage."""
+    pass
+
+class DocumentCaptureError(APIError):
+    """Exception raised when capturing the documents"""
+    pass

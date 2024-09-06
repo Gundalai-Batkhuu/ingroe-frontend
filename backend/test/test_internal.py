@@ -1,4 +1,4 @@
-from app.dependencies.internal import GetDocument
+from app.dependencies.internal import (GetDocument, CaptureDocument)
 import pytest
 from unittest.mock import patch, AsyncMock
 from langchain_core.documents import Document
@@ -6,6 +6,7 @@ from app.const import ReturnCode
 from io import BytesIO
 from fastapi import UploadFile
 from app.dependencies.external import S3
+from .module.graph import document
 
 # --- create_documents.py ---
 
@@ -202,3 +203,163 @@ async def test_get_document_from_file_for_supported_files(mock_upload_to_s3_buck
     assert file_map == get_file_map
     assert mock_create_documents_from_store.call_count == 1
 
+@pytest.fixture()
+def extracted_text():
+    return "This is an extracted text"    
+
+@pytest.mark.asyncio
+@patch.object(CaptureDocument, "_extract_text_from_scanned_pdf")
+@patch.object(CaptureDocument, "_encode_image_to_base64", new_callable=AsyncMock)
+@patch.object(CaptureDocument, "_get_extracted_text")
+@patch.object(S3, "upload_to_s3_bucket")
+@patch.object(GetDocument, "_get_file_extension_from_file")
+async def test_capture_document_pdf(mock_get_file_extension_from_file, mock_upload_to_s3_bucket, mock_get_extracted_text, mock_encode_image_to_base64 , mock_extract_text_from_scanned_pdf, extracted_text):
+    """Test if the capture document function work as expected for pdf files"""
+    file = create_upload_file("file_name.pdf", b"dummy content")  
+    mock_extract_text_from_scanned_pdf.return_value = extracted_text
+    mock_get_extracted_text.return_value = extracted_text
+    mock_encode_image_to_base64.return_value = "2423213kjir923423"
+    mock_upload_to_s3_bucket.return_value = "www.xyz.com", "file_name.txt"
+    mock_get_file_extension_from_file.return_value = "pdf"
+    expected_file_map = {"file_url":"www.xyz.com", "file_name":"file_name.txt"}
+    actual_file_map = await CaptureDocument.capture_document(file, "test_123", "test_doc_122e324") 
+    assert actual_file_map == expected_file_map
+    assert mock_extract_text_from_scanned_pdf.call_count == 1
+    assert mock_encode_image_to_base64.call_count == 0
+    assert mock_get_extracted_text.call_count == 0 
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("file_extension", [
+    "jpeg",
+    "png",
+    "webp",
+])
+@patch.object(CaptureDocument, "_extract_text_from_scanned_pdf")
+@patch.object(CaptureDocument, "_encode_image_to_base64", new_callable=AsyncMock)
+@patch.object(CaptureDocument, "_get_extracted_text")
+@patch.object(S3, "upload_to_s3_bucket")
+@patch.object(GetDocument, "_get_file_extension_from_file")
+async def test_capture_document_images(mock_get_file_extension_from_file, mock_upload_to_s3_bucket, mock_get_extracted_text, mock_encode_image_to_base64 , mock_extract_text_from_scanned_pdf, extracted_text, file_extension):
+    """Test if the capture document function work as expected for allowed image files"""
+    file = create_upload_file("file_name.jpeg", b"dummy content")  
+    mock_extract_text_from_scanned_pdf.return_value = extracted_text
+    mock_get_extracted_text.return_value = extracted_text
+    mock_encode_image_to_base64.return_value = "2423213kjir923423"
+    mock_upload_to_s3_bucket.return_value = "www.xyz.com", "file_name.txt"
+    mock_get_file_extension_from_file.return_value = file_extension
+    expected_file_map = {"file_url":"www.xyz.com", "file_name":"file_name.txt"}
+    actual_file_map = await CaptureDocument.capture_document(file, "test_123", "test_doc_122e324") 
+    assert actual_file_map == expected_file_map
+    assert mock_extract_text_from_scanned_pdf.call_count == 0
+    assert mock_encode_image_to_base64.call_count == 1
+    assert mock_get_extracted_text.call_count == 1    
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("file_extension", [
+    "gif",
+    "txt"
+])
+@patch.object(CaptureDocument, "_extract_text_from_scanned_pdf")
+@patch.object(CaptureDocument, "_encode_image_to_base64", new_callable=AsyncMock)
+@patch.object(CaptureDocument, "_get_extracted_text")
+@patch.object(S3, "upload_to_s3_bucket")
+@patch.object(GetDocument, "_get_file_extension_from_file")
+async def test_capture_document_unsupported(mock_get_file_extension_from_file, mock_upload_to_s3_bucket, mock_get_extracted_text, mock_encode_image_to_base64 , mock_extract_text_from_scanned_pdf, extracted_text, file_extension):
+    """Test if the capture document function work as expected for unsupported files"""
+    file = create_upload_file("file_name.jpeg", b"dummy content")  
+    mock_extract_text_from_scanned_pdf.return_value = extracted_text
+    mock_get_extracted_text.return_value = extracted_text
+    mock_encode_image_to_base64.return_value = "2423213kjir923423"
+    mock_upload_to_s3_bucket.return_value = "www.xyz.com", "file_name.txt"
+    mock_get_file_extension_from_file.return_value = file_extension
+    expected_file_map = None
+    actual_file_map = await CaptureDocument.capture_document(file, "test_123", "test_doc_122e324") 
+    assert actual_file_map == expected_file_map
+    assert mock_extract_text_from_scanned_pdf.call_count == 0
+    assert mock_encode_image_to_base64.call_count == 0
+    assert mock_get_extracted_text.call_count == 0   
+
+@pytest.mark.asyncio
+@patch.object(GetDocument, "_get_file_extension_from_file")
+@patch.object(S3, "upload_to_s3_bucket")
+async def test_update_document_for_txt(mock_upload_to_s3_bucket, mock_get_file_extension_from_file):
+    """Test if the updation of text document works as expected."""
+    file_map = {"file_url":"www.xyz.com", "file_name":"file_name.txt"}
+    mock_upload_to_s3_bucket.return_value = "www.xyz.com", "file_name.txt"
+    mock_get_file_extension_from_file.return_value = "txt"
+    file = create_upload_file("file_name.jpeg", b"dummy content") 
+    actual_file_map = await CaptureDocument.update_document(file, "test_123", "test_capture_123")
+    assert actual_file_map == file_map
+    assert mock_upload_to_s3_bucket.call_count == 1
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("file_extension", [
+    "gif",
+    "pdf"
+])
+@patch.object(GetDocument, "_get_file_extension_from_file")
+@patch.object(S3, "upload_to_s3_bucket")
+async def test_update_document_for_non_txt(mock_upload_to_s3_bucket, mock_get_file_extension_from_file, file_extension):
+    """Tests if the files with extensions other than .txt works as expected."""
+    mock_upload_to_s3_bucket.return_value = "www.xyz.com", "file_name.txt"
+    mock_get_file_extension_from_file.return_value = file_extension
+    file = create_upload_file("file_name.jpeg", b"dummy content") 
+    actual_file_map = await CaptureDocument.update_document(file, "test_123", "test_capture_123")
+    assert actual_file_map == None
+    assert mock_upload_to_s3_bucket.call_count == 0    
+
+@patch.object(GetDocument, "create_documents_from_store")
+def test_create_document_from_txt_links(mock_create_documents_from_store):
+    """Test if the create document from txt links function works as expected while downloading the real content."""
+    mock_create_documents_from_store.return_value = document
+    url = "https://filesamples.com/samples/document/txt/sample3.txt"
+    documents = GetDocument.create_documents_from_txt_links(url)
+    assert documents == document
+
+# -- delete_documents.py --
+from app.dependencies.internal import DeleteDocument
+from app.dependencies.internal.customised import Neo4JCustomGraph
+
+def create_document_node(id: str):
+    """Creates a document node with a relationship with another node."""
+    graph = Neo4JCustomGraph()
+    create_query = (f"CREATE (a:document_root {{id:$id}}) "
+                    "CREATE (b:target {name: 'tar'}) "
+                    "CREATE (a) -[:rela]-> (b)")
+    graph.query(create_query, {"id": id})
+
+def create_document_node_single(id: str):
+    """Creates a single document node without a relationship."""
+    graph = Neo4JCustomGraph()
+    create_query = (f"CREATE (a:document_root {{id:$id}})")
+    graph.query(create_query, {"id": id})    
+
+def check_node_exists(id: str) -> bool:
+    """Checks if the node with an id exists."""
+    graph = Neo4JCustomGraph()
+    check_query = (f"MATCH (n:document_root {{id:$id}}) "
+                   "RETURN COUNT(n) = 0 AS node_not_exists")    
+    result = graph.query(check_query, {"id": id})
+    return result[0]["node_not_exists"]
+
+def test_delete_document_from_graph():
+    """Tests if the document with relationship is deleted from graph."""
+    try:
+        id = "test_delete_document_123"
+        create_document_node(id)
+        DeleteDocument.delete_document_from_graph(id)
+        actual_value = check_node_exists(id)
+        assert actual_value == True
+    except Exception as e:
+        pytest.fail(f"Test failed due to unexpected exception: {e}") 
+
+def test_delete_document_from_graph_for_single_node():
+    """Tests if the document without a relationship is deleted."""
+    try:
+        id = "test_delete_document_123"
+        create_document_node_single(id)
+        DeleteDocument.delete_document_from_graph(id)
+        actual_value = check_node_exists(id)
+        assert actual_value == True
+    except Exception as e:
+        pytest.fail(f"Test failed due to unexpected exception: {e}")              

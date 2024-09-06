@@ -1,16 +1,18 @@
-from app.dependencies.internal.customised import Neo4jGraph
+from app.dependencies.internal.customised import Neo4JCustomGraph
+from app.exceptions import DocumentDeletionError
+from loguru import logger
 
 class DeleteDocument:
     """Class that deletes the document from the neo4j database.
     """
     @classmethod
-    def _get_graph(cls) -> Neo4jGraph:
+    def _get_graph(cls) -> Neo4JCustomGraph:
         """Provides a Neo4jGraph instance.
 
         Returns:
         Neo4jGraph: A Neo4jGraph instance.
         """
-        graph = Neo4jGraph()
+        graph = Neo4JCustomGraph()
         return graph 
     
     @classmethod
@@ -20,9 +22,13 @@ class DeleteDocument:
         Args:
         document_id (str): Id of the document root or the node that contains all the other nodes or entities.
         """
-        graph = cls._get_graph()
-        delete_query = (
-            f"MATCH (document_root {{id:$document_id}})-[*0..]->(n) "
-            "DETACH DELETE (n)"
-        )
-        graph.query(delete_query, {"document_id": document_id})
+        try:
+            graph = cls._get_graph()
+            delete_query = (
+                f"MATCH (document_root {{id:$document_id}})-[*0..]->(n) "
+                "DETACH DELETE (n)"
+            )
+            graph.query(delete_query, {"document_id": document_id})
+        except Exception as e:
+            logger.error(e)
+            raise DocumentDeletionError(message="Error while deleting the documents from the graph database", name="Graph")
