@@ -26,6 +26,8 @@ def index() -> Dict[str,str]:
 
 @router.post("/search-query")
 async def search(payload: SearchQuery):
+    """API endpoint to perform the search operation based on the search term or query.
+    """
     try:
         results = await Search.search_documents(payload)
         return JSONResponse(
@@ -42,6 +44,8 @@ async def search(payload: SearchQuery):
 
 @router.post("/create-document-selection")
 async def create_document_selection(payload: CreateDocument, db: Session = Depends(get_db)):
+    """API endpoint to create documents from the links. This is used while creating the document from the links obtained through the search results. Or we can provide links manually to create the document.
+    """
     try:
         print(payload.document_id)
         documents, source = await Create.create_documents_from_selection(payload.links, payload.user_id)
@@ -69,6 +73,7 @@ async def create_document_selection(payload: CreateDocument, db: Session = Depen
 
 @router.post("/create-document-manually")
 async def create_document_manually(link: Optional[str] = Form(None), file: Optional[UploadFile] = File(None), user_id: str = Form(...), document_id: Optional[str] = Form(None), document_alias: Optional[str] = Form(""), description: Optional[str] = Form(""), db: Session = Depends(get_db)):
+    """API endpoint to create documents from links, files or both. This is used to create documents using manually provided links and uploaded files."""
     try:
         update_required = False
         if link is None and file is None:
@@ -130,6 +135,8 @@ async def create_document_manually(link: Optional[str] = Form(None), file: Optio
 
 @router.post("/query-document")
 async def query_document(payload: QueryDocument):
+    """This endpoint is used to query the document to get the enhanced response. The response is generated through a combination of similarity search and relational search. 
+    """
     response = await Query.query_document(payload.query, payload.document_id)
     return JSONResponse(
         status_code=200,
@@ -142,6 +149,8 @@ async def query_document(payload: QueryDocument):
 
 @router.post("/query-document-quick")
 async def query_document_quick(payload: QueryDocument):
+    """This endpoint is used to query the document using just a similarity search, which results in a faster response time.
+    """
     response = await Query.query_document_quick(payload.query, payload.document_id)
     return JSONResponse(
         status_code=200,
@@ -154,6 +163,8 @@ async def query_document_quick(payload: QueryDocument):
 
 @router.delete("/delete-document")
 async def delete_document(payload: DeleteDocument, db: Session = Depends(get_db)):
+    """This endpoint is used to delete the documents from the knowledge base.
+    """
     try:
         await Delete.delete_document(payload.document_id, payload.user_id, db)
         return JSONResponse(
@@ -168,6 +179,8 @@ async def delete_document(payload: DeleteDocument, db: Session = Depends(get_db)
 
 @router.post("/capture-document")
 async def capture_document(file: UploadFile, user_id: str = Form(...), document_id: Optional[str] = Form(None), document_alias: Optional[str] = Form(""), description: Optional[str] = Form(""), db: Session = Depends(get_db)):
+    """This endpoint is used to create a text document from the scanned artifacts. It gives the location of the text file url, created from the extracted text, and the file name.
+    """
     try:
         document_update = False
         if document_id is not None:
@@ -202,6 +215,8 @@ async def capture_document(file: UploadFile, user_id: str = Form(...), document_
 
 @router.patch("/update-captured-document")
 async def update_capture_document(file: UploadFile, user_id: str = Form(...), document_id: str = Form(...), file_id: str = Form(...), captured_document_id: str = Form(...), db: Session = Depends(get_db)):
+    """This endpoint is used to update the text file captured from the extracted text. It is used in a scenario when there is a need to make some modifications or corrections to the captured text after extraction from the scanned artifacts.
+    """
     try:
         if not file_exists(file_id, captured_document_id, file.filename, db):
             raise DocumentDoesNotExistError(message=f"The supplied file id {file_id} does not exist", name="Invalid File Id")
@@ -225,6 +240,7 @@ async def update_capture_document(file: UploadFile, user_id: str = Form(...), do
 
 @router.delete("/delete-captured-file")
 async def delete_captured_file(payload: DeleteCapturedFile, db: Session = Depends(get_db)):
+    """This endpoint is used to delete the captured files from the database. It is used when there is a need to delete the captured text after extraction from the scanned artifacts, but before creating the document/knowledge base from the captured text."""
     try:
         await Capture.delete_captured_file(payload.captured_document_id, payload.file_ids, db)
         return JSONResponse(
@@ -239,6 +255,8 @@ async def delete_captured_file(payload: DeleteCapturedFile, db: Session = Depend
 
 @router.delete("/delete-captured-document")
 async def delete_captured_document(payload: DeleteCapturedDocument, db: Session = Depends(get_db)):
+    """This endpoint is used for deleting the captured document from the database. 
+    """
     try:
         await Capture.delete_captured_document(payload.document_id, payload.captured_document_id, db)
         return JSONResponse(
@@ -253,6 +271,8 @@ async def delete_captured_document(payload: DeleteCapturedDocument, db: Session 
 
 @router.post("/create-document-from-captured-document")
 async def create_document_from_captured_document(payload: CreateDocumentCapture):
+    """This endpoint is used to create a document from the captured text. It is used in a scenario when there is a need to create a document from the captured text. A confirmation to proceed to creating the document from captured text from user is required in the real use case.
+    """
     try:
         if not document_exists(payload.document_id, payload.user_id):
             raise DocumentDoesNotExistError(message=f"The supplied document id {document_id} does not exist", name="Invalid Document Id")
@@ -280,6 +300,8 @@ async def create_document_from_captured_document(payload: CreateDocumentCapture)
 
 @router.patch("/update-document-info")
 async def update_document_info(payload: DocumentInfo, db: Session = Depends(get_db)):
+    """This endpoint is used to update the document information. The information includes document alias and document description.
+    """
     try:
         if not document_exists(payload.document_id, payload.user_id):
             raise DocumentDoesNotExistError(message=f"The supplied document id {payload.document_id} does not exist", name="Invalid Document Id")
