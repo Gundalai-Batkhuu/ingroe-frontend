@@ -19,6 +19,7 @@ def index() -> Dict[str,str]:
 
 @router.post("/create")
 def create_user(user: User, db: Session = Depends(get_db)):
+    """This endpoint creates a user from the name and email provided."""
     UserCRUD.create_user(db=db, name=user.name, email= user.email, user_id=user.user_id)
     return JSONResponse(
         status_code=200,
@@ -32,6 +33,7 @@ def create_user(user: User, db: Session = Depends(get_db)):
     
 @router.get("/get-user-artifacts")
 def get_user_artifacts(user_id: str, db: Session = Depends(get_db)):
+    """This endpoint returns the user artifacts. All the documents created and shared by the user along with the documents that are being shared to a user are provided."""
     documents, shared_documents_loaned, shared_documents_owned = CentralCRUD.get_all_artifacts_for_user(db=db, user_id=user_id)
     return JSONResponse(
         status_code=200,
@@ -45,6 +47,7 @@ def get_user_artifacts(user_id: str, db: Session = Depends(get_db)):
 
 @router.get("/get-shared-document-state")
 def get_shared_document_state(payload:DocumentStatus, db: Session = Depends(get_db)):
+    """This endpoint provides the status of documents that are being shared by a user. Information such as validity, accessors and other details are provided."""
     documents = CentralCRUD.get_shared_document_state(db=db, user_id=payload.user_id, document_id=payload.document_id)
     return JSONResponse(
         status_code=200,

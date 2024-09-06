@@ -422,7 +422,7 @@ class CentralCRUD:
     @classmethod    
     def share_document_to_public(cls, db: Session, document_id: str, current_timestamp: datetime, validity: Optional[datetime]) -> Dict[int, str]:
         """Makes the privately shared document to public document. It only makes it public when the
-        validity has expired or in case when the validity has not expired, the user accessing this
+        validity has expired or in the case when the validity has not expired, the user accessing this
         document must be zero. Otherwise, we cannot make the document public or wait till the desired
         condition is achieved.
 
