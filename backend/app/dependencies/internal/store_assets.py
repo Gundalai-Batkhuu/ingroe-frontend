@@ -114,43 +114,38 @@ class DeleteAssets:
     """Deals with the deletion of assets from various tables.
     """
     @classmethod
-    def delete_captured_file(cls, file_id: str, captured_document_id: str) -> None:
+    def delete_captured_file(cls, file_id: str, captured_document_id: str, db: Session) -> None:
         """Deletes a record from the captured file table based on the file_id.
 
         Args:
         file_id (str): The id of the captured file.
         captured_document_id (str): The id of the captured document.
+        db (Session): The database session object.
         """ 
-        db_generator = get_db()
-        db = next(db_generator)
-        try:
-            CapturedFileCRUD.delete_record(db=db, file_id=file_id, captured_document_id=captured_document_id)
-        finally:
-            db_generator.close()
+        CapturedFileCRUD.delete_record(db=db, file_id=file_id, captured_document_id=captured_document_id)
 
     @classmethod
-    def delete_captured_document(cls, document_id: str, captured_document_id: str) -> None:
+    def delete_captured_document(cls, document_id: str, captured_document_id: str, db: Session) -> None:
         """Deletes a record from the captured document table based on the captured_document_id.
 
         Args:
         document_id (str): The id of the document root in the neo4j database.
         captured_document_id (str): The id of the captured document.
+        db (Session): The database session object.
         """    
-        db_generator = get_db()
-        db = next(db_generator)
-        try:
-            CapturedDocumentCRUD.delete_record(db=db, document_id=document_id, captured_document_id=captured_document_id)
-        finally:
-            db_generator.close()
+        CapturedDocumentCRUD.delete_record(db=db, document_id=document_id, captured_document_id=captured_document_id)
 
 class UpdateAssets:
     """Deals with the updation of assets from various table.
     """
     @classmethod
-    def update_document_info(cls, document_id: str, document_alias: str, description: str) -> None:
-        db_generator = get_db()
-        db = next(db_generator)
-        try:
-            DocumentCRUD.update_document_info(db=db, document_id=document_id, document_alias=document_alias, description=description)
-        finally:
-            db_generator.close()
+    def update_document_info(cls, document_id: str, document_alias: str, description: str, db: Session) -> None:
+        """Updates the document information in the database.
+
+        Args:
+        document_id (str): The id of the document root in the postgres database.
+        document_alias (str): The alias of the document.
+        description (str): A short description of the document.
+        db (Session): The database session object.
+        """
+        DocumentCRUD.update_document_info(db=db, document_id=document_id, document_alias=document_alias, description=description)
