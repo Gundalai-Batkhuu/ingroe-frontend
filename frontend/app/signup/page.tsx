@@ -1,5 +1,5 @@
-import SignupForm from '../components/signup-form';
-import {Session} from '@/app/lib/types'
+import SignupForm from '@/features/authentication/forms/signup-form';
+import {Session} from '@/lib/types'
 import {auth} from '@/auth'
 import { redirect } from 'next/navigation'
 

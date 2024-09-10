@@ -1,6 +1,6 @@
 import React from 'react'
-import { SidebarChatHistory } from '../components/sidebar/sidebar-chat-history'
-import { DocumentViewerSidebarContainer } from '@/app/components/sidebar/document-viewer-sidebar-container'
+import { SidebarChatHistory } from '@/features/chat/components/sidebar-chat-history'
+import { DocumentViewerSidebarContainer } from '@/features/google-search/components/document-viewer-sidebar-container'
 
 interface ChatLayoutProps {
   children: React.ReactNode
