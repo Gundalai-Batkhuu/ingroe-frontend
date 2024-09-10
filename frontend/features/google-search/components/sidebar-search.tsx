@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import {ThemeToggle} from "@/components/theme-toggle";
 import {useSidebar} from "@/hooks/use-sidebar";
-import {cn} from "@/lib/utils";
+import {cn} from "@/utils/utils";
 import { SearchOptionSwitch } from '@/features/google-search/components/sidebar-search-option-switch'
 import { SearchOptions, SearchOptionsProps } from '@/features/google-search/components/search-options'
 import { ManualDocumentUploader } from '@/features/google-search/components/manual-document-uploader'

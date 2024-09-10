@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 
-import { cn } from '@/lib/utils'
+import { cn } from '@/utils/utils'
 import { Button, type ButtonProps } from './ui/button'
 import { IconArrowDown } from './ui/icons'
 

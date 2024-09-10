@@ -1,9 +1,9 @@
 import 'server-only'
 
-import { ApiEndpoint } from '@/app/enums'
+import { ApiEndpoint } from '@/services/enums'
 import { createAI, getMutableAIState, getAIState } from 'ai/rsc'
 import { BotMessage, UserMessage } from '@/features/chat/components/message'
-import { nanoid } from '@/lib/utils'
+import { nanoid } from '@/utils/utils'
 import { saveChat } from '@/features/chat/actions/server-actions'
 import { Chat, Message, QueryDocument } from '@/lib/types'
 import { auth } from '@/auth'

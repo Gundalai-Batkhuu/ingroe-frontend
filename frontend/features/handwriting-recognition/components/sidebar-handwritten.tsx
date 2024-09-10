@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils'
+import { cn } from '@/utils/utils'
 import React from 'react'
 import { useSidebar } from '@/hooks/use-sidebar'
 

@@ -1,9 +1,9 @@
 import Link from 'next/link';
 import {Session} from '@/lib/types'
 import {auth} from '@/auth'
-import {SidebarToggle} from '../components/sidebar-toggle'
+import {SidebarToggle} from '@/components/sidebar-toggle'
 import {UserMenu} from '@/layouts/user-menu'
-import {Button} from '../components/ui/button'
+import {Button} from '@/components/ui/button'
 
 async function UserOrLogin() {
     const session = (await auth()) as Session

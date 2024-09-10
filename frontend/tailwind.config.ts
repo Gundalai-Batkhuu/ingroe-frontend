@@ -7,7 +7,9 @@ module.exports = {
     './pages/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}'
+    './layouts/**/*.{ts,tsx}',
+    './features/**/*.{ts,tsx}',
+
   ],
   prefix: '',
   theme: {
@@ -20,8 +22,7 @@ module.exports = {
     },
     extend: {
       fontFamily: {
-        sans: ['var(--font-geist-sans)'],
-        mono: ['var(--font-geist-mono)']
+        nunito: ['Nunito', 'sans-serif']
       },
       colors: {
         border: 'hsl(var(--border))',

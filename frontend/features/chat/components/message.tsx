@@ -1,8 +1,8 @@
 'use client'
 
 import { IconAI, IconUser } from '../../../components/ui/icons'
-import { cn } from '@/lib/utils'
-import { spinner } from './spinner'
+import { cn } from '@/utils/utils'
+import { spinner } from '@/components/ui/icons'
 import { CodeBlock } from '../../../components/ui/codeblock'
 import { MemoizedReactMarkdown } from '../../../components/markdown'
 import remarkGfm from 'remark-gfm'

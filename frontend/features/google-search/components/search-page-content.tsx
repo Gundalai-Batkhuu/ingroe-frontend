@@ -5,7 +5,7 @@ import SearchBar from '@/features/google-search/components/search-bar'
 import { SearchResultsList } from '@/features/google-search/components/search-results'
 import { SidebarSearch } from '@/features/google-search/components/sidebar-search'
 import { SidebarSelectedDocuments } from '@/features/google-search/components/sidebar-selected-documents'
-import { useSelectedItemsStore } from '@/lib/store/selectedItemsStore'
+import { useSelectedItemsStore } from '@/store/selectedItemsStore'
 import { ManualDocumentUploader } from '@/features/google-search/components/manual-document-uploader'
 
 interface SearchPageContentProps {
