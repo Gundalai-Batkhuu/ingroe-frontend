@@ -1,9 +1,9 @@
-import { nanoid } from '../lib/utils'
-import { Chat } from '../components/chat/chat'
-import { AI } from '../lib/chat/actions'
+import { nanoid } from '@/lib/utils'
+import { Chat } from '@/features/chat/components/chat'
+import { AI } from '@/features/chat/actions/ai-actions'
 import { auth } from '@/auth'
-import { Session } from '../lib/types'
-import { getMissingKeys } from '@/app/components/chat/actions'
+import { Session } from '@/lib/types'
+import { getMissingKeys } from '@/features/chat/actions/server-actions'
 
 export const metadata = {
   title: 'Legal AI Chatbot'

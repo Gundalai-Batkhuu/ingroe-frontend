@@ -1,12 +1,12 @@
 'use server'
 
 import { signIn, signOut } from '@/auth'
-import { ResultCode, getStringFromBuffer } from '../lib/utils'
+import { ResultCode, getStringFromBuffer } from '@/lib/utils'
 import { z } from 'zod'
 import { kv } from '@vercel/kv'
 import { getUser } from '../login/actions'
 import { AuthError } from 'next-auth'
-import { userService } from '@/app/lib/services/user-service';
+import { userService } from '@/services/user-service';
 
 export async function createUser(
   email: string,

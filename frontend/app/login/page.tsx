@@ -1,5 +1,5 @@
-import LoginForm from '../components/login-form';
-import { Session } from '@/app/lib/types'
+import LoginForm from '@/features/authentication/components/login-form';
+import { Session } from '@/lib/types'
 import { auth } from '@/auth'
 import { redirect } from 'next/navigation'
 
