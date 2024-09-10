@@ -1,4 +1,4 @@
-import { ApiEndpoint } from '@/app/enums'
+import { ApiEndpoint } from '@/services/enums'
 import {
   SearchQuery,
   CreateDocument,

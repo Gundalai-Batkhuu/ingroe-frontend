@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useUserArtifactsStore } from '@/lib/store/userArtifactsStore'
+import { useUserArtifactsStore } from '@/store/userArtifactsStore'
 import { shareChat } from '../actions/server-actions'
 import { Button } from '../../../components/ui/button'
 import { PromptForm } from './prompt-form'

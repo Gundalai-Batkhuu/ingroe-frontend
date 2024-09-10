@@ -1,6 +1,6 @@
 import React, { useState, FormEvent } from 'react';
 import { COUNTRIES, Country } from "@/data/countries";
-import { ApiEndpoint } from '@/app/enums';
+import { ApiEndpoint } from '@/services/enums';
 import { TextInputWithClearButton } from '@/components/ui/text-input-with-clear-button';
 
 type SearchBarProps = {
