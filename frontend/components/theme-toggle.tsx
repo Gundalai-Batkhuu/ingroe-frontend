@@ -12,8 +12,9 @@ export function ThemeToggle() {
 
   return (
     <Button
-      variant="ghost"
+      variant="nav"
       size="icon"
+      className="mb-4"
       onClick={() => {
         startTransition(() => {
           setTheme(theme === 'light' ? 'dark' : 'light')

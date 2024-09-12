@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-
+import Image from 'next/image'
 import { cn } from '@/utils/utils'
 
 function IconNextChat({
@@ -103,6 +103,18 @@ function IconAI({ className, ...props }: React.ComponentProps<'svg'>) {
       <path d="M13.9,9.9a1.8,1.8,0,0,0,0,2.2l2.6,2.5v2.8l-4,4v5.2l4,4v2.8l-2.6,2.5a1.8,1.8,0,0,0,0,2.2,1.5,1.5,0,0,0,1.1.4,1.5,1.5,0,0,0,1.1-.4l3.4-3.5V29.4l-4-4V22.6l4-4V13.4L16.1,9.9A1.8,1.8,0,0,0,13.9,9.9Z" />
       <path d="M31.5,14.6l2.6-2.5a1.8,1.8,0,0,0,0-2.2,1.8,1.8,0,0,0-2.2,0l-3.4,3.5v5.2l4,4v2.8l-4,4v5.2l3.4,3.5a1.7,1.7,0,0,0,2.2,0,1.8,1.8,0,0,0,0-2.2l-2.6-2.5V30.6l4-4V21.4l-4-4Z" />
     </svg>
+  )
+}
+
+
+export default function AppLogo() {
+  return (
+    <Image
+      src="/logo.svg"
+      width={65}
+      height={65}
+      alt="App logo"
+    />
   )
 }
 
