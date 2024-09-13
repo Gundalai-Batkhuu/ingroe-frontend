@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import {Session} from '@/lib/types'
-import {auth} from '@/auth'
+import {auth} from '@/features/authentication/auth'
 import {SidebarToggle} from '@/components/sidebar-toggle'
 import {UserMenu} from '@/features/authentication/components/user-menu'
 import {Button} from '@/components/ui/button'

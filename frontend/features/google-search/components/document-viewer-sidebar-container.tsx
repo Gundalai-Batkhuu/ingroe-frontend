@@ -1,4 +1,4 @@
-import { auth } from '@/auth'
+import { auth } from '@/features/authentication/auth'
 import { DocumentViewerSidebar } from '@/features/google-search/components/document-viewer-sidebar'
 import { UserArtifactsList } from '@/features/chat/components/user-artifacts-list'
 

@@ -1,7 +1,7 @@
 import { type Metadata } from 'next'
 import { notFound, redirect } from 'next/navigation'
 
-import { auth } from '@/auth'
+import { auth } from '@/features/authentication/auth'
 import { getChat, getMissingKeys } from '@/features/chat/actions/server-actions'
 import { Chat } from '@/features/chat/components/chat'
 import { AI } from '@/features/chat/actions/ai-actions'

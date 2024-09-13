@@ -6,7 +6,6 @@ export enum ApiEndpoint {
   CREATE_DOCUMENT_SELECTION = API_BASE_URL + '/store/create-document-selection',
   SEARCH_GOOGLE = API_BASE_URL + '/store/search-query',
   MANUAL_DOCUMENT_UPLOAD = API_BASE_URL + '/store/manual-document-upload',
-  SEARCH_QUERY = API_BASE_URL + '/store/search-query',
   CREATE_DOCUMENT_MANUALLY = API_BASE_URL + '/store/create-document-manually',
   QUERY_DOCUMENT_QUICK = API_BASE_URL + '/store/query-document-quick',
   DELETE_DOCUMENT = API_BASE_URL + '/store/delete-document',
@@ -17,7 +16,7 @@ export enum ApiEndpoint {
   CREATE_DOCUMENT_FROM_CAPTURED_DOCUMENT = API_BASE_URL + '/store/create-document-from-captured-document',
   UPDATE_DOCUMENT_INFO = API_BASE_URL + '/store/update-document-info',
 
-  // New endpoints from the additional FastAPI router
+  // Document handling endpoints
   SHARE_DOCUMENT = API_BASE_URL + '/handle/share-document',
   ACCEPT_SHARED_DOCUMENT = API_BASE_URL + '/handle/accept-shared-document',
   CHANGE_DOCUMENT_VALIDITY = API_BASE_URL + '/handle/change-document-validity',

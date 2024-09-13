@@ -1,6 +1,6 @@
 import React from 'react'
 import SearchPageContent from '@/features/google-search/components/search-page-content'
-import { auth } from '@/auth'
+import { auth } from '@/features/authentication/auth'
 import { Session } from '@/lib/types'
 
 export default async function SearchPage() {

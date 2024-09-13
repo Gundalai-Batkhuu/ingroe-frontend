@@ -1,6 +1,6 @@
 'use server'
 
-import { auth } from '@/auth'
+import { auth } from '@/features/authentication/auth'
 import { Session } from '@/lib/types'
 import { UserMenu } from '@/features/authentication/components/user-menu'
 import Link from 'next/link'

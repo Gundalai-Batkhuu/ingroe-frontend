@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { SearchResult } from '@/features/google-search/components/search-results'
+import { SearchResult } from '@/lib/types'
 
 interface SelectedItemsState {
   selectedItems: SearchResult[]

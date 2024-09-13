@@ -1,17 +1,7 @@
 import React from 'react'
+import { SearchResult } from '@/lib/types'
+import { truncateText } from '@/utils/utils'
 
-export interface SearchResult {
-  title: string
-  link: string
-  html_snippet: string
-  snippet: string
-  thumbnail: string
-}
-
-const truncateText = (text: string, maxLength: number) => {
-  if (text.length <= maxLength) return text
-  return text.substr(0, maxLength - 1) + '…'
-}
 
 export const SearchResultsList = ({
   results,

@@ -1,12 +1,12 @@
 import {type Session} from '@/lib/types'
-import {Button} from '../../../components/ui/button'
+import {Button} from '@/components/ui/button'
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuSeparator,
     DropdownMenuTrigger
-} from '../../../components/ui/dropdown-menu'
+} from '@/components/ui/dropdown-menu'
 import {ProfileIcon} from "@/features/authentication/components/profile-icon";
 import {SignoutForm} from "@/features/authentication/forms/signout-form";
 import { RemoveUserForm } from '@/features/authentication/forms/remove-user-form'

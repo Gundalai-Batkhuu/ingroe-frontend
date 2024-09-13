@@ -3,7 +3,7 @@ import Credentials from 'next-auth/providers/credentials'
 import { authConfig } from './auth.config'
 import { z } from 'zod'
 import { getStringFromBuffer } from '@/utils/utils'
-import { getUser } from './app/login/actions'
+import { getUser } from '@/features/authentication/actions/user-actions'
 
 export const { auth, signIn, signOut } = NextAuth({
   ...authConfig,

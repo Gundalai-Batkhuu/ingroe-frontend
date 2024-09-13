@@ -83,11 +83,11 @@ export interface SearchQuery {
 }
 
 export interface SearchResult {
-  title?: string;
-  thumbnail?: string;
-  snippet?: string;
-  html_snippet?: string;
-  link?: string;
+  title: string;
+  thumbnail: string;
+  snippet: string;
+  html_snippet: string;
+  link: string;
 }
 
 export interface CreateDocument {

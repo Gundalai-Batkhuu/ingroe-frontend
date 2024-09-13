@@ -16,7 +16,7 @@ export const userService = {
   async createUser(userId: string, email: string): Promise<any> {
     try {
       const user: User = {
-        name: 'user', // Using 'user' as the default username
+        name: 'user',
         email: email,
         user_id: userId
       };
