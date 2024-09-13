@@ -4,7 +4,7 @@ import boto3
 from botocore.exceptions import NoCredentialsError
 from typing import Tuple
 from loguru import logger
-from app.exceptions import DocumentStorageError
+from app.exceptions import (DocumentStorageError, DocumentDeletionError)
 
 load_dotenv()
 
@@ -120,19 +120,21 @@ class S3:
         s3_sub_folder (str): The folder storing the documents, usually the document id, and 
         everything inside this folder will be deleted.
         """
-        s3 = boto3.resource("s3")
-        bucket = s3.Bucket(bucket_name)
-        s3_key_root = f"users/{s3_main_folder}/{s3_sub_folder}"
-        print(s3_key_root)
-        objects_to_delete = bucket.objects.filter(Prefix=s3_key_root)
-        for object in objects_to_delete:
-            print(f"Deleting {object.key}")
-            object.delete()
-        print(f"All files in {s3_sub_folder} have been deleted.")    
-
-        folder_object = s3.Object(bucket_name, s3_key_root)
         try:
+            s3 = boto3.resource("s3")
+            bucket = s3.Bucket(bucket_name)
+            s3_key_root = f"users/{s3_main_folder}/{s3_sub_folder}"
+            print(s3_key_root)
+            objects_to_delete = bucket.objects.filter(Prefix=s3_key_root)
+            for object in objects_to_delete:
+                print(f"Deleting {object.key}")
+                object.delete()
+            print(f"All files in {s3_sub_folder} have been deleted.")    
+
+            folder_object = s3.Object(bucket_name, s3_key_root)
             folder_object.delete()
         except s3.meta.client.exceptions.NoSuchKey:
-            print(f"No folder object found for {s3_key_root}.")   
-         
+            print(f"No folder object found for {s3_key_root}.")  
+        except Exception as e:
+            logger.error(e)
+            raise DocumentDeletionError(message="Error occured while deleting the document", name="S3")
