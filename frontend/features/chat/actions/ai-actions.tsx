@@ -10,7 +10,7 @@ import { auth } from '@/features/authentication/auth'
 import { documentService } from '@/services/document-service'
 
 
-async function submitUserMessage(content: string, documentId: string) {
+async function submitUserMessage(content: string, documentId: string, quickSearchMode: boolean) {
   'use server'
 
   const aiState = getMutableAIState<typeof AI>()
@@ -45,7 +45,14 @@ async function submitUserMessage(content: string, documentId: string) {
 
     console.log('Request payload:', payload)
 
-    const data = await documentService.queryDocument(payload)
+    let data;
+
+    if (quickSearchMode) {
+      data = await documentService.queryDocumentQuick(payload)
+    } else {
+      data = await documentService.queryDocument(payload)
+    }
+
     console.log('API response data:', data)
 
     const assistantMessage = data.response

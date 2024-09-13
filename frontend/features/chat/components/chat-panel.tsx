@@ -1,15 +1,16 @@
 import * as React from 'react'
 import { useUserArtifactsStore } from '@/store/userArtifactsStore'
 import { shareChat } from '../actions/server-actions'
-import { Button } from '../../../components/ui/button'
+import { Button } from '@/components/ui/button'
 import { PromptForm } from './prompt-form'
-import { ButtonScrollToBottom } from '../../../components/button-scroll-to-bottom'
-import { IconShare } from '../../../components/ui/icons'
+import { ButtonScrollToBottom } from '@/components/button-scroll-to-bottom'
+import { IconShare } from '@/components/ui/icons'
 import { ChatShareDialog } from './chat-share-dialog'
 import { useAIState, useActions, useUIState } from 'ai/rsc'
 import type { AI } from '@/features/chat/actions/ai-actions'
 import { nanoid } from 'nanoid'
 import { UserMessage } from './message'
+import { QuickSearchCheckbox } from '@/features/chat/components/quick-search-checkbox'
 
 export interface ChatPanelProps {
   id?: string
@@ -34,7 +35,11 @@ export function ChatPanel({
   const [shareDialogOpen, setShareDialogOpen] = React.useState(false)
 
   // Get the selected document ID from the Zustand store
-  const selectedDocumentId = useUserArtifactsStore(state => state.selectedArtifactId)
+  const selectedDocumentId = useUserArtifactsStore(
+    state => state.selectedArtifactId
+  )
+
+  const [quickSearchMode, setQuickSearchMode] = React.useState(false)
 
   const handleSubmitMessage = async (message: string) => {
     setMessages(currentMessages => [
@@ -46,12 +51,13 @@ export function ChatPanel({
     ])
 
     // Pass both the message and the selectedDocumentId to submitUserMessage
-    const responseMessage = await submitUserMessage(message, selectedDocumentId)
+    const responseMessage = await submitUserMessage(
+      message,
+      selectedDocumentId,
+      quickSearchMode
+    )
 
-    setMessages(currentMessages => [
-      ...currentMessages,
-      responseMessage
-    ])
+    setMessages(currentMessages => [...currentMessages, responseMessage])
   }
 
   return (
@@ -82,7 +88,7 @@ export function ChatPanel({
                     chat={{
                       id,
                       title,
-                      messages: aiState.messages,
+                      messages: aiState.messages
                     }}
                   />
                 </>
@@ -92,6 +98,9 @@ export function ChatPanel({
         ) : null}
 
         <div className="space-y-4 border-t bg-background px-4 py-2 shadow-lg sm:rounded-t-xl sm:border md:py-4">
+
+          <QuickSearchCheckbox quickSearchMode={quickSearchMode} setQuickSearchMode={setQuickSearchMode} />
+
           <PromptForm
             input={input}
             setInput={setInput}
