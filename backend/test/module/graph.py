@@ -92,6 +92,10 @@ new_document = [
     )
 ]
 
+source = DocumentSource(vanilla_links=["vanilla_link"], file_links=["file_link"], error_links=["error_link"], unsupported_file_links=["unallowed_downloadable_links"])
+
+file_map = {"file_url": "www.test.com", "file_name": "test.pdf"}
+
 def get_doc():
     source = DocumentSource(vanilla_links=["vanilla_link"], file_links=["file_link"], error_links=["error_link"], unsupported_file_links=["unallowed_downloadable_links"])
     return document, source

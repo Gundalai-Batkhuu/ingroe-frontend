@@ -16,7 +16,7 @@ class ReturnCode:
 
 class NameClass:
     """Constants representing plain strings."""
-    S3_BUCKET_NAME: str = get_key(".env", "S3_BUCKET_NAME")
+    S3_BUCKET_NAME: str = get_key(".env", "S3_BUCKET_NAME") or "lai-app-dev"
 
 class ModelDetails:
     """Provides the model id for a provider.

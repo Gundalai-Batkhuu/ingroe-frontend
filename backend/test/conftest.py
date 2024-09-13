@@ -2,14 +2,17 @@ import pytest
 from app.main import app
 from .db.test_database import override_get_db, test_engine, override_get_session
 from app.database import Base, get_db
-from app.scripts.db import (UserCRUD, DocumentCRUD)
+from app.scripts.db import (UserCRUD, DocumentCRUD, CapturedFileCRUD, CapturedDocumentCRUD)
 
 def create_records():
-    """Creates user and document records in the respective table.
+    """Creates user, document, captured document, captured file records in the respective table.
     """
     db = override_get_session()
     document_id = "test_document_123"
     user_id = "test_123"
+    file_id = "test_file_123"
+    captured_document_id = "test_capture_123" 
+    file_name = "test_file.txt"
     UserCRUD.create_user(db=db, name="test user", email="test@gmail.com", user_id=user_id)
     DocumentCRUD.create_document(
                 db=db, 
@@ -22,6 +25,8 @@ def create_records():
                 files=[],  
                 description="test doc description"     
         )
+    CapturedDocumentCRUD.create_record(db, captured_document_id, document_id)
+    CapturedFileCRUD.create_record(db, file_id, captured_document_id, "www.xyz.com", file_name)
     db.close()
 
 # Fixture to override dependencies and set up the test database
