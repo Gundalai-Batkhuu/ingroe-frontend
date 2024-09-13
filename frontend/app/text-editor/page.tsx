@@ -1,7 +1,7 @@
 import React from 'react'
-import { auth } from '@/auth'
+import { auth } from '@/features/authentication/auth'
 import { Session } from '@/lib/types'
-import TextEditorPageContent from '@/features/knowledge-base/components/text-editor-page-content'
+import TextEditorPageContent from '@/features/handwriting-recognition/components/text-editor-page-content'
 
 export default async function TextEditorPage() {
   const session = (await auth()) as Session

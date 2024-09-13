@@ -1,21 +1,22 @@
 import React, { useState, FormEvent } from 'react';
 import { COUNTRIES, Country } from "@/data/countries";
-import { ApiEndpoint } from '@/services/enums';
 import { TextInputWithClearButton } from '@/components/ui/text-input-with-clear-button';
+import { SearchQuery } from '@/lib/types'
+import { documentService } from '@/services/document-service'
 
 type SearchBarProps = {
     setResults: (value: any) => void;
     country: string;
     countrySpecificSearch: boolean;
     searchType: "strict" | "medium" | "open";
-    fileType: string | null;
+    fileType?: "pdf" | "docx";
     results: number;
-    before: number | null;
-    after: number | null;
-    site: string | null;
+    before?: number;
+    after?: number;
+    site?: string;
 };
 
-const SearchBar = ({
+export const SearchBar = ({
     setResults,
     country,
     countrySpecificSearch,
@@ -26,73 +27,44 @@ const SearchBar = ({
     after,
     site
 }: SearchBarProps) => {
+
     const [query, setQuery] = useState("");
     const selectedCountry = COUNTRIES.find((option: Country) => option.value === country)?.title ?? '';
 
     const handleSearch = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        console.log('Searching with parameters:', {
-            query,
-            country: selectedCountry,
-            countrySpecificSearch,
-            searchType,
-            fileType,
-            results,
-            before,
-            after,
-            site
-        });
+        const searchQuery: SearchQuery = {
+        query,
+        country: selectedCountry,
+        country_specific_search: countrySpecificSearch,
+        search_type: searchType,
+        file_type: fileType,
+        results,
+        before,
+        after,
+        site,
+        mix: false
+        };
 
-        try {
-            const response = await fetch(ApiEndpoint.SEARCH_GOOGLE, {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    query,
-                    country: selectedCountry,
-                    country_specific_search: countrySpecificSearch,
-                    search_type: searchType,
-                    file_type: fileType,
-                    results,
-                    before,
-                    after,
-                    site
-                }),
-            });
-
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-
-            const data = await response.json();
-            console.log('Search results:', data);
-            setResults(data);
-
-        } catch (error) {
-            console.error('Error during search:', error);
-        }
-    };
-
-    return (
-        <form onSubmit={handleSearch} className="flex items-stretch">
-            <div className="flex-grow">
-                <TextInputWithClearButton
+        const response = await documentService.searchDocuments(searchQuery);
+        console.log(response);
+        setResults(response.results);
+    }
+        return (
+          <form onSubmit={handleSearch} className="flex items-stretch">
+              <div className="grow">
+                  <TextInputWithClearButton
                     placeholder="Type your keywords here ..."
                     onChange={setQuery}
-                />
-            </div>
-            <button
+                  />
+              </div>
+              <button
                 type="submit"
                 className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 rounded-r-md shadow-sm focus:outline-none focus:ring-1 focus:ring-primary focus:ring-offset-1 transition duration-150 ease-in-out flex items-center"
-            >
-                Search
-            </button>
-        </form>
-    );
-};
-
-export default SearchBar;
+              >
+                  Search
+              </button>
+          </form>
+        )
+}

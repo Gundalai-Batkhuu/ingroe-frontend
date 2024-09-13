@@ -1,30 +1,47 @@
-import { ApiEndpoint } from '@/services/enums'
+import { ApiEndpoint } from '@/services/api_endpoints'
 import {
-  SearchQuery,
-  CreateDocument,
-  QueryDocument,
-  DeleteDocument,
-  DeleteCapturedFile,
-  DeleteCapturedDocument,
-  CreateDocumentCapture,
-  DocumentInfo,
   AcceptSharedDocument,
-  ValidityUpdate,
-  ScopedValidityUpdate,
   Access,
-  ScopedAccess,
-  DocumentStatus,
-  DocumentSharingRemoval,
   AccessorUpdate,
-  SwitchShareType,
+  CreateDocument,
+  CreateDocumentCapture,
+  DeleteCapturedDocument,
+  DeleteCapturedFile,
+  DeleteDocument,
+  DocumentInfo,
+  DocumentSharingRemoval,
+  DocumentStatus,
+  QueryDocument,
+  ScopedAccess,
+  ScopedValidityUpdate,
+  SearchQuery,
   SharedDocumentSelection,
   ShareDocument,
-} from '@/lib/types';
+  SwitchShareType,
+  ValidityUpdate
+} from '@/lib/types'
 
 export const documentService = {
 
   async searchDocuments(query: SearchQuery): Promise<any> {
-    return await fetchApi(ApiEndpoint.SEARCH_QUERY, 'POST', query);
+    try {
+      const response = await fetch(ApiEndpoint.SEARCH_GOOGLE, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(query)
+      })
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok')
+      }
+      return await response.json()
+
+    } catch (error) {
+      console.error('Error during search:', error)
+    }
   },
 
   async createDocumentSelection(document: CreateDocument): Promise<any> {

@@ -1,6 +1,6 @@
 import LoginForm from '@/features/authentication/components/login-form';
 import { Session } from '@/lib/types'
-import { auth } from '@/auth'
+import { auth } from '@/features/authentication/auth'
 import { redirect } from 'next/navigation'
 
 export default async function LoginPage() {

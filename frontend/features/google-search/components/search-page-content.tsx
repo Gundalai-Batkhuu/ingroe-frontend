@@ -1,12 +1,12 @@
 'use client'
 
 import React, { useState } from 'react'
-import SearchBar from '@/features/google-search/components/search-bar'
+import { SearchBar } from '@/features/google-search/components/search-bar'
 import { SearchResultsList } from '@/features/google-search/components/search-results'
 import { SidebarSearch } from '@/features/google-search/components/sidebar-search'
 import { SidebarSelectedDocuments } from '@/features/google-search/components/sidebar-selected-documents'
 import { useSelectedItemsStore } from '@/store/selectedItemsStore'
-import { ManualDocumentUploader } from '@/features/google-search/components/manual-document-uploader'
+import { CountryShortName } from '@/lib/types' // Ensure this type is imported
 
 interface SearchPageContentProps {
   userId: string
@@ -14,17 +14,14 @@ interface SearchPageContentProps {
 
 export default function SearchPageContent({ userId }: SearchPageContentProps) {
   const [searchResults, setSearchResults] = useState([])
-  const [country, setCountry] = useState<string>('AU')
-  const [countrySpecificSearch, setCountrySpecificSearch] =
-    useState<boolean>(true)
-  const [searchType, setSearchType] = useState<'strict' | 'medium' | 'open'>(
-    'medium'
-  )
-  const [fileType, setFileType] = useState<'pdf' | 'docx' | null>(null)
-  const [results, setResults] = useState<number>(10)
-  const [before, setBefore] = useState<number | null>(null)
-  const [after, setAfter] = useState<number | null>(null)
-  const [site, setSite] = useState<string | null>(null)
+  const [country, setCountry] = useState<CountryShortName>('AU')
+  const [countrySpecificSearch, setCountrySpecificSearch] = useState(true)
+  const [searchType, setSearchType] = useState<'strict' | 'medium' | 'open'>('medium')
+  const [fileType, setFileType] = useState<'pdf' | 'docx' | undefined>(undefined)
+  const [results, setResults] = useState(10)
+  const [before, setBefore] = useState<number | undefined>(undefined)
+  const [after, setAfter] = useState<number | undefined>(undefined)
+  const [site, setSite] = useState<string | undefined>(undefined)
   const { selectedItems, setSelectedItems } = useSelectedItemsStore()
 
   return (
@@ -48,16 +45,8 @@ export default function SearchPageContent({ userId }: SearchPageContentProps) {
         setSite={setSite}
         userId={userId}
       />
-      <div
-        className={`
-                    flex-1 overflow-y-auto
-                `}
-      >
-        <div
-          className={`
-                        flex flex-col min-h-full p-6
-                    `}
-        >
+      <div className="flex-1 overflow-y-auto">
+        <div className="flex flex-col min-h-full p-6">
           <div className="grow flex flex-col items-center justify-center space-y-8 max-w-4xl mx-auto">
             <h1 className="text-4xl font-bold">Welcome to the Legal AI App!</h1>
             <p className="text-lg text-center">

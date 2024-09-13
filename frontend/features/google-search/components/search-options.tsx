@@ -1,45 +1,47 @@
 import CountrySelector from '@/features/google-search/components/country-selector'
 import React from 'react'
 import { COUNTRIES, Country } from '@/data/countries'
+import { CountryShortName } from '@/lib/types' // Ensure this type is imported
 
 export interface SearchOptionsProps extends React.ComponentProps<'div'> {
-    country: string;
-    setCountry: (country: string) => void;
+    country: CountryShortName;
+    setCountry: (country: CountryShortName) => void;
     countrySpecificSearch: boolean;
     setCountrySpecificSearch: (value: boolean) => void;
     searchType: "strict" | "medium" | "open";
     setSearchType: (value: "strict" | "medium" | "open") => void;
-    fileType: "pdf" | "docx" | null;
-    setFileType: (value: "pdf" | "docx" | null) => void;
+    fileType: "pdf" | "docx" | undefined;
+    setFileType: (value: "pdf" | "docx" | undefined) => void;
     results: number;
     setResults: (value: number) => void;
-    before: number | null;
-    setBefore: (value: number | null) => void;
-    after: number | null;
-    setAfter: (value: number | null) => void;
-    site: string | null;
-    setSite: (value: string | null) => void;
+    before: number | undefined;
+    setBefore: (value: number | undefined) => void;
+    after: number | undefined;
+    setAfter: (value: number | undefined) => void;
+    site: string | undefined;
+    setSite: (value: string | undefined) => void;
     userId: string;
 }
 
 export function SearchOptions({
-                                  country, setCountry,
-                                  countrySpecificSearch, setCountrySpecificSearch,
-                                  searchType, setSearchType,
-                                  fileType, setFileType,
-                                  results, setResults,
-                                  before, setBefore,
-                                  after, setAfter,
-                                  site, setSite, className
-                              }: SearchOptionsProps) {
+    country, setCountry,
+    countrySpecificSearch, setCountrySpecificSearch,
+    searchType, setSearchType,
+    fileType, setFileType,
+    results, setResults,
+    before, setBefore,
+    after, setAfter,
+    site, setSite,
+    className
+}: SearchOptionsProps) {
 
-  const [isOpen, setIsOpen] = React.useState<boolean>(false)
+  const [isOpen, setIsOpen] = React.useState(false)
   const selectedCountry =
     COUNTRIES.find((option: Country) => option.value === country) ||
     COUNTRIES[0]
 
   return (
-    <div className="w-full max-w-md p-4 space-y-5">
+    <div className={`w-full max-w-md p-4 space-y-5 ${className}`}>
       <div className="mb-6">
         <label className="block text-xs font-medium mb-1">
           Country specific search
@@ -97,7 +99,7 @@ export function SearchOptions({
           value={fileType || ''}
           onChange={e => {
             const value = e.target.value
-            setFileType(value === '' ? null : (value as 'pdf' | 'docx'))
+            setFileType(value === '' ? undefined : (value as 'pdf' | 'docx'))
           }}
           className="w-full bg-background text-foreground border border-input rounded-md shadow-sm pl-2 pr-8 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
         >
@@ -131,7 +133,7 @@ export function SearchOptions({
           type="number"
           value={before || ''}
           onChange={e =>
-            setBefore(e.target.value ? Number(e.target.value) : null)
+            setBefore(e.target.value ? Number(e.target.value) : undefined)
           }
           className="w-full bg-background text-foreground border border-input rounded-md shadow-sm px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
         />
@@ -146,7 +148,7 @@ export function SearchOptions({
           type="number"
           value={after || ''}
           onChange={e =>
-            setAfter(e.target.value ? Number(e.target.value) : null)
+            setAfter(e.target.value ? Number(e.target.value) : undefined)
           }
           className="w-full bg-background text-foreground border border-input rounded-md shadow-sm px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
         />
@@ -160,7 +162,7 @@ export function SearchOptions({
           id="site"
           type="text"
           value={site || ''}
-          onChange={e => setSite(e.target.value || null)}
+          onChange={e => setSite(e.target.value || undefined)}
           className="w-full bg-background text-foreground border border-input rounded-md shadow-sm px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
         />
       </div>

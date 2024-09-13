@@ -1,6 +1,6 @@
 import SignupForm from '@/features/authentication/forms/signup-form';
 import {Session} from '@/lib/types'
-import {auth} from '@/auth'
+import {auth} from '@/features/authentication/auth'
 import { redirect } from 'next/navigation'
 
 export default async function SignupPage() {

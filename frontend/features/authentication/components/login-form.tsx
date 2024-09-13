@@ -1,7 +1,7 @@
 'use client'
 
 import {useFormState, useFormStatus} from 'react-dom'
-import {authenticate} from '@/app/login/actions'
+import {authenticate} from '@/features/authentication/actions/user-actions'
 import Link from 'next/link'
 import {useEffect, useState} from 'react'
 import {toast} from 'sonner'

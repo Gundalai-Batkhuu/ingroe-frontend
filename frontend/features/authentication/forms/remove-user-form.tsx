@@ -1,5 +1,5 @@
 import React from 'react'
-import { removeUser } from '@/app/signup/actions'
+import { removeUser } from '@/features/authentication/actions/user-actions'
 
 interface RemoveUserFormProps {
   email: string;

@@ -1,6 +1,6 @@
 'use client'
 
-import { TextEditor } from '@/features/knowledge-base/components/text-editor'
+import { TextEditor } from '@/features/handwriting-recognition/components/text-editor'
 import { useState } from 'react'
 import { SidebarHandwritten } from '@/features/handwriting-recognition/components/sidebar-handwritten'
 
