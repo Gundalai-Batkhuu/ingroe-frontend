@@ -6,7 +6,6 @@ interface QuickSearchCheckboxProps {
   setQuickSearchMode: (value: boolean) => void
 }
 
-
 export function QuickSearchCheckbox({ quickSearchMode, setQuickSearchMode }: QuickSearchCheckboxProps) {
   const toggleCheckbox = () => {
     setQuickSearchMode(!quickSearchMode)
