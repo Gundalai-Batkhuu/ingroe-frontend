@@ -8,7 +8,6 @@ export default async function TextEditorPage() {
   const userId = session.user.id
 
   return (
-
       <TextEditorPageContent userId={userId} />
   )
 }

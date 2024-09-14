@@ -9,7 +9,7 @@ export enum ApiEndpoint {
   CREATE_DOCUMENT_MANUALLY = API_BASE_URL + '/store/create-document-manually',
   QUERY_DOCUMENT_QUICK = API_BASE_URL + '/store/query-document-quick',
   DELETE_DOCUMENT = API_BASE_URL + '/store/delete-document',
-  CAPTURE_DOCUMENT = API_BASE_URL + '/store/capture-document',
+  CAPTURE_HANDWRITTEN_DOCUMENT = API_BASE_URL + '/store/capture-document',
   UPDATE_CAPTURED_DOCUMENT = API_BASE_URL + '/store/update-captured-document',
   DELETE_CAPTURED_FILE = API_BASE_URL + '/store/delete-captured-file',
   DELETE_CAPTURED_DOCUMENT = API_BASE_URL + '/store/delete-captured-document',

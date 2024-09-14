@@ -64,8 +64,8 @@ export const documentService = {
     return await fetchApi(ApiEndpoint.DELETE_DOCUMENT, 'DELETE', payload);
   },
 
-  async captureDocument(formData: FormData): Promise<any> {
-    return await fetchApi(ApiEndpoint.CAPTURE_DOCUMENT, 'POST', formData, false);
+  async captureHandwrittenDocument(formData: FormData): Promise<any> {
+    return await fetchApi(ApiEndpoint.CAPTURE_HANDWRITTEN_DOCUMENT, 'POST', formData, false);
   },
 
   async updateCaptureDocument(formData: FormData): Promise<any> {

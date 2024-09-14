@@ -3,6 +3,7 @@
 import { TextEditor } from '@/features/handwriting-recognition/components/text-editor'
 import { useState } from 'react'
 import { SidebarHandwritten } from '@/features/handwriting-recognition/components/sidebar-handwritten'
+import HandwrittenDocumentUploadForm from '@/features/handwriting-recognition/components/capture-handwritten-document'
 
 
 interface TextEditorPageContentProps {
@@ -17,6 +18,8 @@ export default function TextEditorPageContent({
   return (
     <div className="flex h-[calc(100vh_-_theme(spacing.16))] overflow-hidden">
       <SidebarHandwritten userId={userId} />
+      <HandwrittenDocumentUploadForm userId={userId} />
+
       <h1 className="text-2xl font-bold text-center py-4">Edit the document</h1>
       <div className="flex flex-col md:flex-row gap-4 p-4 h-[calc(100%_-_4rem)]">
         <div className="flex-1 min-w-0 overflow-auto">
