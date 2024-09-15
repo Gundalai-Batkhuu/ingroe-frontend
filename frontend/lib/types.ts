@@ -133,6 +133,15 @@ export interface DeleteCapturedDocument {
   captured_document_id: string;
 }
 
+export interface CaptureHandwrittenDocumentResponse {
+  message: string;
+  user_id: string;
+  document_id: string;
+  captured_document_id: string;
+  file_id: string;
+  file_map: any; // You might want to define a more specific type for file_map
+}
+
 export interface CreateDocumentCapture extends CreateDocument {
   document_id: string;
 }
