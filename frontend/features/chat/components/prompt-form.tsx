@@ -3,7 +3,6 @@
 import * as React from 'react'
 import Textarea from 'react-textarea-autosize'
 import { useActions, useUIState } from 'ai/rsc'
-import { UserMessage } from './message'
 import { type AI } from '@/features/chat/actions/ai-actions'
 import { Button } from '@/components/ui/button'
 import { IconArrowElbow, IconPlus } from '@/components/ui/icons'
@@ -13,17 +12,17 @@ import {
   TooltipTrigger
 } from '@/components/ui/tooltip'
 import { useEnterSubmit } from '@/hooks/use-enter-submit'
-import { nanoid } from 'nanoid'
 import { useRouter } from 'next/navigation'
+import VoiceTranscription from '@/features/accessibility/components/voice-transcription'
 
 export function PromptForm({
   input,
   setInput,
-  onSubmit  // Add this prop
+  onSubmit // Add this prop
 }: {
   input: string
   setInput: (value: string) => void
-  onSubmit: (value: string) => Promise<void>  // Add this prop type
+  onSubmit: (value: string) => Promise<void> // Add this prop type
 }) {
   const router = useRouter()
   const { formRef, onKeyDown } = useEnterSubmit()
@@ -86,7 +85,10 @@ export function PromptForm({
           value={input}
           onChange={e => setInput(e.target.value)}
         />
-        <div className="absolute right-0 top-[13px] sm:right-4">
+        <div className="absolute right-0 top-[13px] flex items-center space-x-5 sm:right-4">
+          <div className={'pt-2'}>
+            <VoiceTranscription setTranscriptionValue={setInput} />
+          </div>
           <Tooltip>
             <TooltipTrigger asChild>
               <Button type="submit" size="icon" disabled={input === ''}>
