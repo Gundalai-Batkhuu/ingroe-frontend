@@ -5,7 +5,9 @@ import { TailwindIndicator } from '@/components/tailwind-indicator'
 import { Providers } from '@/components/providers'
 import { Header } from '@/layouts/header'
 import { Toaster } from '@/components/ui/sonner'
-import { Nunito } from 'next/font/google';
+// import { Nunito } from 'next/font/google';
+import { GeistSans } from 'geist/font/sans'
+import { GeistMono } from 'geist/font/mono'
 
 export const metadata = {
     title: "Knowledge Commons",
@@ -23,17 +25,19 @@ interface RootLayoutProps {
     children: ReactNode;
 }
 
-const nunito = Nunito({
-  weight: ["200", "300", "400", "500", "600", "700", "800"],
-  subsets: ["latin"],
-})
+// const nunito = Nunito({
+//   weight: ["200", "300", "400", "500", "600", "700", "800"],
+//   subsets: ["latin"],
+// })
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
-          nunito.className
+          'font-sans antialiased',
+          GeistSans.variable,
+          GeistMono.variable
         )}
       >
         <Toaster position="top-center" />

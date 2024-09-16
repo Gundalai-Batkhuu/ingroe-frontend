@@ -9,6 +9,8 @@ import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
 import { StreamableValue } from 'ai/rsc'
 import { useStreamableText } from '@/hooks/use-streamable-text'
+import { ChatMessageActions } from '@/features/chat/components/chat-message-actions'
+import ChatToolCollection from '@/features/chat/components/chat-tool-collection'
 
 export function UserMessage({ children }: { children: React.ReactNode }) {
   return (
@@ -79,6 +81,10 @@ export function BotMessage({
         >
           {text}
         </MemoizedReactMarkdown>
+        <div className="flex items-center justify-between">
+          <ChatToolCollection />
+          <ChatMessageActions message={text} />
+        </div>
       </div>
     </div>
   )
