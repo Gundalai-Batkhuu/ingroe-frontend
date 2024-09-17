@@ -16,7 +16,7 @@ import {
   AlertDialogTitle
 } from '../../../components/ui/alert-dialog'
 import { Button } from '../../../components/ui/button'
-import { IconShare, IconSpinner, IconTrash } from '../../../components/ui/icons'
+import { IconShare, IconSpinner, IconTrash } from '../../../components/icons'
 import { ChatShareDialog } from '@/features/chat/components/chat-share-dialog'
 import {
   Tooltip,

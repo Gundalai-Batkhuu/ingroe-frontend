@@ -14,7 +14,7 @@ import {
   DialogHeader,
   DialogTitle
 } from '../../../components/ui/dialog'
-import { IconSpinner } from '../../../components/ui/icons'
+import { IconSpinner } from '../../../components/icons'
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard'
 
 interface ChatShareDialogProps extends DialogProps {

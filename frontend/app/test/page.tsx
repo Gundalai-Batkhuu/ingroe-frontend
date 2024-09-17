@@ -10,10 +10,10 @@ export default function LayoutPage() {
 
   return (
     <div className="flex min-h-screen">
-      <Navbar  activeSidebar={activeSidebar}
-                setActiveSidebar={setActiveSidebar}
-                isSidebarOpen={isSidebarOpen}
-                toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+      <Navbar activeSidebar={activeSidebar}
+              setActiveSidebar={setActiveSidebar}
+              isSidebarOpen={isSidebarOpen}
+              toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
       />
       <Main />
 

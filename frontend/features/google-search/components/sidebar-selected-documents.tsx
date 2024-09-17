@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useSidebar } from '@/hooks/use-sidebar'
 import { cn } from '@/lib/utils'
 import { CreateDocumentButton } from '@/features/google-search/components/create-document-button'
-import { useSelectedItemsStore } from '@/store/selectedItemsStore'
+import { useSelectedItemsStore } from '@/stores/selectedItemsStore'
 import { TextInputWithClearButton } from '@/components/ui/text-input-with-clear-button'
 
 export interface SidebarProps extends React.ComponentProps<'div'> {

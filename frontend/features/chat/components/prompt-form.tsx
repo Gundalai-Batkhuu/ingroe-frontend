@@ -5,7 +5,7 @@ import Textarea from 'react-textarea-autosize'
 import { useActions, useUIState } from 'ai/rsc'
 import { type AI } from '@/features/chat/actions/ai-actions'
 import { Button } from '@/components/ui/button'
-import { IconArrowElbow, IconPlus } from '@/components/ui/icons'
+import { IconArrowElbow, IconPlus } from '@/components/icons'
 import {
   Tooltip,
   TooltipContent,

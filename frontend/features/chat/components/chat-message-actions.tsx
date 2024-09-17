@@ -2,7 +2,7 @@
 
 import TextToSpeech from '@/features/accessibility/components/text-to-speech'
 import { Button } from '@/components/ui/button'
-import { IconCheck, IconCopy } from '@/components/ui/icons'
+import { IconCheck, IconCopy } from '@/components/icons'
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard'
 import { cn } from '@/lib/utils'
 
