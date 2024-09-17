@@ -16,7 +16,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '../../../components/ui/alert-dialog'
-import { IconSpinner } from '../../../components/ui/icons'
+import { IconSpinner } from '../../../components/icons'
 
 interface ClearHistoryProps {
   isEnabled: boolean

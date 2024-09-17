@@ -5,7 +5,7 @@ import {authenticate} from '@/features/authentication/actions/user-actions'
 import Link from 'next/link'
 import {useEffect, useState} from 'react'
 import {toast} from 'sonner'
-import {IconSpinner} from '@/components/ui/icons'
+import {IconSpinner} from '@/components/icons'
 import {getMessageFromCode} from '@/lib/utils'
 import {useRouter} from 'next/navigation'
 

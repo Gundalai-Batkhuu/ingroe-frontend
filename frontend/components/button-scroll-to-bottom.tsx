@@ -4,7 +4,7 @@ import * as React from 'react'
 
 import { cn } from '@/lib/utils'
 import { Button, type ButtonProps } from './ui/button'
-import { IconArrowDown } from './ui/icons'
+import { IconArrowDown } from './icons'
 
 interface ButtonScrollToBottomProps extends ButtonProps {
   isAtBottom: boolean

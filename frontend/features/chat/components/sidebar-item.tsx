@@ -8,7 +8,7 @@ import { usePathname } from 'next/navigation'
 import { motion } from 'framer-motion'
 
 import { buttonVariants } from '../../../components/ui/button'
-import { IconMessage, IconUsers } from '../../../components/ui/icons'
+import { IconMessage, IconUsers } from '../../../components/icons'
 import {
   Tooltip,
   TooltipContent,

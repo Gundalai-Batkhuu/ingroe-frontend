@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useMemo, useEffect } from "react"
-import RedFlame, { SearchIcon, ListOrderedIcon, ChevronDownIcon } from "@/components/ui/icons"
+import RedFlame, { SearchIcon, ListOrderedIcon, ChevronDownIcon } from "@/components/icons"
 import { Input } from "@/components/ui/input"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
@@ -11,7 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Card, CardContent } from "@/components/ui/card"
 import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
-import { marketArtifactsStore } from "@/store/marketArtifactsStore"
+import { marketArtifactsStore } from "@/stores/marketArtifactsStore"
 import Image from 'next/image'
 
 interface Filters {

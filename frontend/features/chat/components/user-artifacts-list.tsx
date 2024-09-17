@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from 'react'
-import { useUserArtifactsStore } from '@/store/userArtifactsStore'
+import { useUserArtifactsStore } from '@/stores/userArtifactsStore'
 import { Artefact } from '@/lib/types'
 import { useEffect, useState, useCallback } from 'react'
 import { UserArtifact } from '@/features/chat/components/user-artifact'
