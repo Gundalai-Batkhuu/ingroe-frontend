@@ -4,7 +4,7 @@ This project is a FastAPI backend application that uses Neo4j as its database. I
 
 ## Prerequisites
 
-- Python 3.12
+- Python 3.12 
 - [Poetry](https://python-poetry.org/)
 - [Task](https://taskfile.dev/)
 - [Neo4j Desktop](https://neo4j.com/download/)
@@ -18,11 +18,13 @@ This project is a FastAPI backend application that uses Neo4j as its database. I
 
 2. Create a new Neo4j Database:
    - Open Neo4j Desktop
-   - Click on '+ New' and select 'Create a Local Graph'
+   - Click on '+ Add' and select 'Local DBMS'
    - Name your database (e.g., "MyProject")
    - Set a password for the database
    - Choose the latest Neo4j version (or the version specified in your project requirements)
    - Click 'Create'
+   - Press on the new database, choose Plugins options and install the APOC plugin
+   - Click 'Start' to start the database
 
 3. Start the Neo4j Database:
    - In Neo4j Desktop, find your newly created database
