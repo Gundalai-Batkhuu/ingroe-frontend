@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 import "@/public/globals.css";
-import { cn } from '@/utils/utils'
+import { cn } from '@/lib/utils'
 import { TailwindIndicator } from '@/components/tailwind-indicator'
 import { Providers } from '@/components/providers'
 import { Header } from '@/layouts/header'

@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { useEffect } from 'react'
 import { toast } from 'sonner'
 import { IconSpinner } from '@/components/ui/icons'
-import { getMessageFromCode } from '@/utils/utils'
+import { getMessageFromCode } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
 
 export default function SignupForm() {

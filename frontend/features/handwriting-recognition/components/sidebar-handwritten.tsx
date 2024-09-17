@@ -1,4 +1,4 @@
-import { cn } from '@/utils/utils'
+import { cn } from '@/lib/utils'
 import React, { useState } from 'react'
 import { useSidebar } from '@/hooks/use-sidebar'
 import HandwrittenDocumentUploadForm from '@/features/handwriting-recognition/forms/handwritten-document-upload-form'

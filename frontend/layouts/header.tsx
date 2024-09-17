@@ -53,6 +53,11 @@ export function Header() {
                         Search
                     </Button>
                 </Link>
+                <Link href="/database-collection">
+                    <Button variant="ghost">
+                        Database marketplace
+                    </Button>
+                </Link>
                 <Link href="/text-editor">
                     <Button variant="ghost">
                         Text editor

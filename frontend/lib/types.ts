@@ -67,6 +67,22 @@ export interface UserArtifactsResponse {
   artefact_tree: Artefact[]
 }
 
+export interface MarketArtifact {
+  id: number;
+  title: string;
+  description: string;
+  category: string;
+  engagement: number;
+  featured: boolean;
+  image: string;
+  resources: Resource[];
+}
+
+export interface Resource {
+  name: string;
+  sources: string;
+}
+
 export type CountryShortName = string; // Assuming CountryShortName is a string type
 
 export interface SearchQuery {

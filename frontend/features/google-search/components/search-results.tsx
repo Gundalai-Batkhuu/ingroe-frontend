@@ -1,6 +1,6 @@
 import React from 'react'
 import { SearchResult } from '@/lib/types'
-import { truncateText } from '@/utils/utils'
+import { truncateText } from '@/lib/utils'
 
 
 export const SearchResultsList = ({
