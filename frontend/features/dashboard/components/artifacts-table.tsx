@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import {
   TableHead,
@@ -7,7 +7,7 @@ import {
   TableBody,
   Table,
   TableCell
-} from '@/components/ui/table';
+} from '@/components/ui/table'
 import {
   Card,
   CardContent,
@@ -15,29 +15,37 @@ import {
   CardFooter,
   CardHeader,
   CardTitle
-} from '@/components/ui/card';
-import { useRouter } from 'next/navigation';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+} from '@/components/ui/card'
+import { useRouter } from 'next/navigation'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import { Artefact } from '@/lib/types'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu';
+import { MoreHorizontal } from 'lucide-react';
 
 export function ArtifactsTable({
   artifacts,
   offset,
   totalArtifacts
 }: {
-  artifacts: Artefact[];
-  offset: number;
-  totalArtifacts: number;
+  artifacts: Artefact[]
+  offset: number
+  totalArtifacts: number
 }) {
-  const router = useRouter();
+  const router = useRouter()
 
   function prevPage() {
-    router.push(`/?offset=${Math.max(0, offset - 5)}`, { scroll: false });
+    router.push(`/?offset=${Math.max(0, offset - 5)}`, { scroll: false })
   }
 
   function nextPage() {
-    router.push(`/?offset=${offset + 5}`, { scroll: false });
+    router.push(`/?offset=${offset + 5}`, { scroll: false })
   }
 
   return (
@@ -53,21 +61,35 @@ export function ArtifactsTable({
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
-              <TableHead>Description</TableHead>
-              <TableHead>Files</TableHead>
-              <TableHead>Actions</TableHead>
+              <TableHead className="hidden md:table-cell">Description</TableHead>
+              <TableHead className="hidden md:table-cell">Files</TableHead>
+              <TableHead>
+                <span className="sr-only">Actions</span>
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {artifacts.map((artifact) => (
+            {artifacts.map(artifact => (
               <TableRow key={artifact.document_id}>
                 <TableCell>{artifact.document_name}</TableCell>
                 <TableCell>{artifact.description}</TableCell>
                 <TableCell>{artifact.files.length}</TableCell>
                 <TableCell>
-                  <Button variant="ghost" size="sm">
-                    View
-                  </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button aria-haspopup="true" size="icon" variant="ghost">
+                        <MoreHorizontal className="size-4" />
+                        <span className="sr-only">Toggle menu</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                      <DropdownMenuItem>Edit</DropdownMenuItem>
+                      <DropdownMenuItem>
+                          <button type="submit">Delete</button>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </TableCell>
               </TableRow>
             ))}
@@ -77,7 +99,11 @@ export function ArtifactsTable({
       <CardFooter>
         <form className="flex items-center w-full justify-between">
           <div className="text-xs text-muted-foreground">
-            Showing <strong>{offset + 1}-{Math.min(offset + 5, totalArtifacts)}</strong> of <strong>{totalArtifacts}</strong> artifacts
+            Showing{' '}
+            <strong>
+              {offset + 1}-{Math.min(offset + 5, totalArtifacts)}
+            </strong>{' '}
+            of <strong>{totalArtifacts}</strong> artifacts
           </div>
           <div className="flex">
             <Button
@@ -102,5 +128,5 @@ export function ArtifactsTable({
         </form>
       </CardFooter>
     </Card>
-  );
+  )
 }

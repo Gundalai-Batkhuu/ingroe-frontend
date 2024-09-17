@@ -12,7 +12,6 @@ import { Card, CardContent } from "@/components/ui/card"
 import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
 import { marketArtifactsStore } from "@/stores/marketArtifactsStore"
-import Image from 'next/image'
 
 interface Filters {
   category: string[]
@@ -99,16 +98,16 @@ export default function DatabaseCollectionPageContent() {
   if (!artifacts) return <div>No artifacts available</div>
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Database Collection</h1>
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+      <header className="mb-6">
+        <h1 className="text-xl font-bold mb-2">Database Collection</h1>
         <p className="text-muted-foreground">
           Explore and compare a wide range of database solutions for your
           project.
         </p>
       </header>
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-4">
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-2">
           <div className="w-1/3">
             <div className="relative flex items-center space-x-2">
               <SearchIcon className="absolute left-3 text-muted-foreground pointer-events-none" />
@@ -214,14 +213,6 @@ export default function DatabaseCollectionPageContent() {
         {filteredArtifacts.map(artifact => (
           <Link href="/chat" prefetch={false} key={artifact.id}>
             <Card key={artifact.id} className="flex flex-col h-full">
-              <Image
-                src={artifact.image}
-                alt={artifact.title}
-                width={400}
-                height={300}
-                className="w-full h-48 object-cover rounded-t-lg"
-                style={{ aspectRatio: '400/300', objectFit: 'cover' }}
-              />
 
               <CardContent className="p-4 flex flex-col flex-grow">
                 <div className="flex flex-col flex-grow">

@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { VercelLogo } from '@/components/icons'
+import AppLogo from '@/components/icons'
 import { NavItem } from '@/features/dashboard/components/nav-item'
 import {
   Database,
@@ -10,7 +10,8 @@ import {
   PanelLeft,
   Settings, ShoppingCart,
   Store,
-  Users2
+  Users2,
+  FilePlus
 } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
@@ -26,15 +27,10 @@ import {
 export function DesktopNav() {
   return (
     <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
-      <nav className="flex flex-col items-center gap-4 px-2 sm:py-5">
-        <Link
-          href="https://vercel.com/templates/next.js/admin-dashboard-tailwind-postgres-react-nextjs"
-          className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
-        >
-          <VercelLogo className="h-3 w-3 transition-all group-hover:scale-110" />
-          <span className="sr-only">Acme Inc</span>
-        </Link>
-
+      <nav className="flex flex-col items-center gap-4 px-2 sm:py-2">
+        <div className="flex items-center justify-center w-14 h-14">
+        <AppLogo />
+        </div>
         <NavItem href="/" label="Home">
           <Home className="h-5 w-5" />
         </NavItem>
@@ -43,11 +39,15 @@ export function DesktopNav() {
           <Database className="h-5 w-5" />
         </NavItem>
 
+        <NavItem href="/search" label="New database">
+          <FilePlus className="h-5 w-5" />
+        </NavItem>
+
         <NavItem href="/chat" label="Chat">
           <MessageSquareMore className="size-5" />
         </NavItem>
 
-        <NavItem href="#" label="Store">
+        <NavItem href="/database-collection" label="Store">
           <Store className="h-5 w-5" />
         </NavItem>
 
