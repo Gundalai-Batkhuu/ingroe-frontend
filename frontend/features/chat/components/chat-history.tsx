@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import Link from 'next/link'
 
-import { cn } from '@/utils/utils'
+import { cn } from '@/lib/utils'
 import { SidebarList } from '@/features/chat/components/sidebar-list'
 import { buttonVariants } from '@/components/ui/button'
 import { IconPlus } from '@/components/ui/icons'

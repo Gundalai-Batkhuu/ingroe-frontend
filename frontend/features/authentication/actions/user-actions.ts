@@ -1,7 +1,7 @@
 'use server'
 
 import { signIn, signOut } from '@/features/authentication/auth'
-import { ResultCode, getStringFromBuffer } from '@/utils/utils'
+import { ResultCode, getStringFromBuffer } from '@/lib/utils'
 import { userService } from '@/services/user-service';
 import { User } from '@/lib/types'
 import { AuthError } from 'next-auth'

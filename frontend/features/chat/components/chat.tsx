@@ -1,6 +1,6 @@
 'use client'
 
-import { cn } from '@/utils/utils'
+import { cn } from '@/lib/utils'
 import { ChatList } from './chat-list'
 import { ChatPanel } from './chat-panel'
 import { EmptyScreen } from '../../../layouts/empty-screen'

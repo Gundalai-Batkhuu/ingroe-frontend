@@ -16,7 +16,7 @@ import {
 } from '../../../components/ui/tooltip'
 import { useLocalStorage } from '@/hooks/use-local-storage'
 import { type Chat } from '@/lib/types'
-import { cn } from '@/utils/utils'
+import { cn } from '@/lib/utils'
 
 interface SidebarItemProps {
   index: number
