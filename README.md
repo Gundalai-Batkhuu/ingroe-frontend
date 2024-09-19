@@ -1,3 +1,5 @@
+# KnowledgeCommons Feature Dependency Map
+
 ```mermaid
 graph TD
     UM[User Management]
@@ -33,12 +35,13 @@ graph TD
     AI -->|Enhances| RD
     AI -->|Improves| S
     AI -->|Supports| CE
-'''
+```
 
 # legal_ai_app
 
 ### Example POST request for search
 
+```bash
 curl -X POST "http://0.0.0.0:5000/api/v1/items/search-document" \
      -H "Content-Type: application/json" \
      -d '{
@@ -46,3 +49,4 @@ curl -X POST "http://0.0.0.0:5000/api/v1/items/search-document" \
        "country": "United States",
        "country_specific_search": true
      }'
+```
