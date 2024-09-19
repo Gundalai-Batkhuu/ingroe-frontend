@@ -303,7 +303,7 @@ async def update_document_info(payload: DocumentInfo, db: Session = Depends(get_
     """This endpoint is used to update the document information. The information includes document alias and document description.
     """
     try:
-        if not document_exists(payload.document_id, payload.user_id):
+        if not document_exists(payload.document_id, payload.user_id, db):
             raise DocumentDoesNotExistError(message=f"The supplied document id {payload.document_id} does not exist", name="Invalid Document Id")
         UpdateAssets.update_document_info(payload.document_id, payload.document_alias, payload.description, db)
         return JSONResponse(

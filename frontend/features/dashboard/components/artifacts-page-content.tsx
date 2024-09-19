@@ -6,6 +6,7 @@ import { File, PlusCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useUserArtifactsStore } from '@/stores/userArtifactsStore';
 import { ArtifactsTable } from '@/features/dashboard/components/artifacts-table'
+import Link from 'next/link'
 
 export default function ArtifactsPageContent({
   searchParams, userId
@@ -19,7 +20,11 @@ export default function ArtifactsPageContent({
 
   useEffect(() => {
     fetchUserArtifacts(userId);
-  }, [fetchUserArtifacts]);
+  }, [fetchUserArtifacts, userId]);
+
+  const handleArtifactsChange = () => {
+    fetchUserArtifacts(userId);
+  };
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -44,16 +49,18 @@ export default function ArtifactsPageContent({
         </TabsList>
         <div className="ml-auto flex items-center gap-2">
           <Button size="sm" variant="outline" className="h-8 gap-1">
-            <File className="h-3.5 w-3.5" />
+            <File className="size-3.5" />
             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
               Export
             </span>
           </Button>
-          <Button size="sm" className="h-8 gap-1">
-            <PlusCircle className="h-3.5 w-3.5" />
+          <Button size="sm" className="h-8">
+            <Link href={"/search"} className={"flex gap-1"}>
+            <PlusCircle className="size-3.5" />
             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
               Add Database
             </span>
+            </Link>
           </Button>
         </div>
       </div>
@@ -62,9 +69,10 @@ export default function ArtifactsPageContent({
           artifacts={paginatedArtifacts}
           offset={offset}
           totalArtifacts={filteredArtifacts.length}
+          userId={userId}
+          onArtifactsChange={handleArtifactsChange}
         />
       </TabsContent>
     </Tabs>
   );
 }
-

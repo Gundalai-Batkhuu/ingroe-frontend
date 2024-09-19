@@ -5,7 +5,7 @@ import { type DialogProps } from '@radix-ui/react-dialog'
 import { toast } from 'sonner'
 
 import { ServerActionResult, type Chat } from '@/lib/types'
-import { Button } from '../../../components/ui/button'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -13,8 +13,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle
-} from '../../../components/ui/dialog'
-import { IconSpinner } from '../../../components/icons'
+} from '@/components/ui/dialog'
+import { IconSpinner } from '@/components/icons'
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard'
 
 interface ChatShareDialogProps extends DialogProps {

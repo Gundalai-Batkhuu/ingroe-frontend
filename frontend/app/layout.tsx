@@ -9,6 +9,8 @@ import { GeistMono } from 'geist/font/mono'
 import { Toaster } from '@/components/ui/sonner'
 import "@/public/globals.css";
 import { TailwindIndicator } from '@/components/tailwind-indicator'
+import { ThemeToggle } from '@/components/theme-toggle'
+import React from 'react'
 
 export const metadata = {
     title: "Knowledge Commons",
@@ -52,8 +54,11 @@ export default function RootLayout({
                 <SearchInput />
                 <User />
               </header>
-              <main className="grid flex-1 items-start gap-2 p-4 sm:px-6 sm:py-0 md:gap-4 bg-muted/40">
+              <main className="relative grid flex-1 items-start gap-2 p-4 sm:px-6 sm:py-0 md:gap-4 bg-muted/40">
                 {children}
+                <div className="fixed bottom-4 right-4 z-50">
+                  <ThemeToggle />
+                </div>
               </main>
             </div>
             <Analytics />

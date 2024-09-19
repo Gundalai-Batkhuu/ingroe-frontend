@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import {
   TableHead,
   TableRow,
@@ -28,15 +29,20 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal } from 'lucide-react';
+import { DeleteDocumentButton } from '@/features/document-handling/components/delete-doc-button'
 
 export function ArtifactsTable({
   artifacts,
   offset,
-  totalArtifacts
+  totalArtifacts,
+  userId,
+  onArtifactsChange
 }: {
   artifacts: Artefact[]
   offset: number
   totalArtifacts: number
+  userId: string
+  onArtifactsChange: () => void
 }) {
   const router = useRouter()
 
@@ -46,6 +52,14 @@ export function ArtifactsTable({
 
   function nextPage() {
     router.push(`/?offset=${offset + 5}`, { scroll: false })
+  }
+
+  const handleDeleteSuccess = () => {
+    onArtifactsChange()
+  }
+
+  const handleEditArtifact = (artifactId: string) => {
+    router.push(`/database/${artifactId}`)
   }
 
   return (
@@ -84,9 +98,15 @@ export function ArtifactsTable({
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuItem>Edit</DropdownMenuItem>
+                      <DropdownMenuItem onSelect={() => handleEditArtifact(artifact.document_id)}>
+                        Edit
+                      </DropdownMenuItem>
                       <DropdownMenuItem>
-                          <button type="submit">Delete</button>
+                        <DeleteDocumentButton
+                          document_id={artifact.document_id}
+                          user_id={userId}
+                          onSuccess={handleDeleteSuccess}
+                        />
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>

@@ -2,7 +2,6 @@
 
 import * as React from 'react'
 import { useTheme } from 'next-themes'
-
 import { Button } from './ui/button'
 import { IconMoon, IconSun } from './icons'
 
@@ -12,9 +11,9 @@ export function ThemeToggle() {
 
   return (
     <Button
-      variant="nav"
+      variant="ghost"
       size="icon"
-      className="mb-4"
+      className=""
       onClick={() => {
         startTransition(() => {
           setTheme(theme === 'light' ? 'dark' : 'light')
