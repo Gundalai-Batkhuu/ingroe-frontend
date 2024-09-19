@@ -35,7 +35,7 @@ export function DesktopNav() {
           <Home className="h-5 w-5" />
         </NavItem>
 
-        <NavItem href="/dashboard" label="Databases">
+        <NavItem href="/databases" label="Databases">
           <Database className="h-5 w-5" />
         </NavItem>
 
@@ -47,7 +47,7 @@ export function DesktopNav() {
           <MessageSquareMore className="size-5" />
         </NavItem>
 
-        <NavItem href="/database-collection" label="Store">
+        <NavItem href="/database-market" label="Store">
           <Store className="h-5 w-5" />
         </NavItem>
 
@@ -127,7 +127,7 @@ export function MobileNav() {
             href="#"
             className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
           >
-            <LineChart className="h-5 w-5" />
+            <LineChart className="size-5" />
             Settings
           </Link>
         </nav>

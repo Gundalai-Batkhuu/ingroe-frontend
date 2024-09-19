@@ -54,9 +54,6 @@ export function SidebarSearch({
             <ManualDocumentUploader userId={userId} />
           )}
           </div>
-          <div className="p-4">
-            <ThemeToggle />
-          </div>
         </div>
       </div>
     )

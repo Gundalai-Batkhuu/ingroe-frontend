@@ -1,7 +1,7 @@
 import React from 'react'
 import { ChevronDown, ChevronRight } from 'lucide-react'
 import { Artefact } from '@/lib/types'
-import { DeleteDocumentButton } from '@/features/google-search/components/delete-document-button'
+import { DeleteDocumentButton } from '@/features/document-handling/components/delete-doc-button'
 
 interface UserArtifactProps {
   artifact: Artefact
