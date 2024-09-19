@@ -33,6 +33,7 @@ graph TD
     AI -->|Enhances| RD
     AI -->|Improves| S
     AI -->|Supports| CE
+'''
 
 # legal_ai_app
 
