@@ -32,7 +32,7 @@ class QueryDocument:
         ChatGroq | ChatOpenAI: The llm model by either groq or openai.
         """
         llm_instance = LLM(temperature=0)
-        llm = llm_instance.get_model(ModelProvider.GROQ)
+        llm = llm_instance.get_model(ModelProvider.OPENAI)
         return llm
 
     @classmethod
