@@ -59,7 +59,7 @@ export function ArtifactsTable({
   }
 
   const handleEditArtifact = (artifactId: string) => {
-    router.push(`/database/${artifactId}`)
+    router.push(`/databases/${artifactId}`)
   }
 
   return (
@@ -76,6 +76,7 @@ export function ArtifactsTable({
             <TableRow>
               <TableHead>Name</TableHead>
               <TableHead className="hidden md:table-cell">Description</TableHead>
+              <TableHead className="hidden md:table-cell">Web links</TableHead>
               <TableHead className="hidden md:table-cell">Files</TableHead>
               <TableHead>
                 <span className="sr-only">Actions</span>
@@ -87,7 +88,8 @@ export function ArtifactsTable({
               <TableRow key={artifact.document_id}>
                 <TableCell>{artifact.document_name}</TableCell>
                 <TableCell>{artifact.description}</TableCell>
-                <TableCell>{artifact.files.length}</TableCell>
+                <TableCell>{artifact.vanilla_links.length}</TableCell>
+                <TableCell>{artifact.files.length + artifact.file_links.length}</TableCell>
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>

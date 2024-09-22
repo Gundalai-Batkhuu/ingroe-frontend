@@ -3,28 +3,30 @@ import { Button } from '@/components/ui/button'
 import { documentService } from '@/services/document-service'
 import { CreateDocument } from '@/lib/types'
 
+interface CreateDocumentButtonProps extends CreateDocument {
+  className?: string
+}
 
-export const CreateDocumentButton = ({
+export const CreateDocumentButton: React.FC<CreateDocumentButtonProps> = ({
   user_id,
   links,
   document_alias,
-  description
-}: CreateDocument) => {
+  description,
+  className
+}) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     try {
       const document: CreateDocument = {
-        user_id: user_id,
-        links: links,
-        document_alias: document_alias,
-        description: description
+        user_id,
+        links,
+        document_alias,
+        description
       }
 
-      const result = await documentService.createDocumentSelection(
-        document
-      )
+      const result = await documentService.createDocumentSelection(document)
       console.log('Document creation successful:', result)
 
     } catch (error) {
@@ -33,9 +35,9 @@ export const CreateDocumentButton = ({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex items-stretch">
-      <Button variant="ghost" className="bg-emerald-900 hover:bg-emerald-800">
-        Submit new document
+    <form onSubmit={handleSubmit} className={`flex items-stretch ${className || ''}`}>
+      <Button variant="default">
+        Create Knowledge Base
       </Button>
     </form>
   )
