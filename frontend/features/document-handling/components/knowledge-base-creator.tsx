@@ -47,6 +47,7 @@ export default function KnowledgeBaseCreator({
   const [searchInput, setSearchInput] = useState<string>('')
   const [searchResults, setSearchResults] = useState<SearchResult[]>([])
 
+
   const addDocument = (
     type: 'file' | 'link' | 'note' | 'search',
     content: string
