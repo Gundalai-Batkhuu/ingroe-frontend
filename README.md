@@ -1,52 +1,68 @@
-# KnowledgeCommons Feature Dependency Map
+# Next.js Project
 
-```mermaid
-graph TD
-    UM[User Management]
-    KBM[Knowledge Base Management]
-    S[Search]
-    RD[Response Display]
-    AI[Accessibility and Inclusivity]
-    CE[Community Engagement]
-    DSC[Document Sharing and Collaboration]
-    SA[System Administration]
-    AR[Analytics and Reporting]
+This is an existing [Next.js](https://nextjs.org/) project.
 
-    UM -->|Authenticates| KBM
-    UM -->|Personalizes| S
-    UM -->|Authorizes| DSC
-    UM -->|Enables| CE
+## Prerequisites
 
-    KBM -->|Provides content for| S
-    KBM -->|Supplies data to| RD
-    KBM -->|Manages content for| DSC
+Before you begin, ensure you have the following installed on your system:
+- [Node.js](https://nodejs.org/) (version 12.0 or later)
+- [npm](https://www.npmjs.com/) (usually comes with Node.js) or [Yarn](https://yarnpkg.com/)
 
-    S -->|Generates| RD
+## Installation
 
-    RD -->|Adapts for| AI
+1. Clone the repository:
+   ```bash
+   git clone [repository-url]
+   cd [project-directory]
+   ```
 
-    CE -->|Contributes to| KBM
-    CE -->|Facilitates| DSC
+2. Install the dependencies:
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
+3. Create a `.env` file in the root directory of the project and add the environment variables
+   Example:
+   ```bash
+   NEXT_PUBLIC_API_URL=[API_URL]
+   NEXT_PUBLIC_API_KEY=[API_KEY]
+   ```
+   Replace `[API_URL]` with the URL of the API and `[API_KEY]` with the API key.
 
-    DSC -->|Requires monitoring by| SA
+4. 
+## Running the Development Server
 
-    SA -->|Provides data for| AR
-
-    AI -->|Enhances| RD
-    AI -->|Improves| S
-    AI -->|Supports| CE
-```
-
-# legal_ai_app
-
-### Example POST request for search
+To start the development server:
 
 ```bash
-curl -X POST "http://0.0.0.0:5000/api/v1/items/search-document" \
-     -H "Content-Type: application/json" \
-     -d '{
-       "query": "climate change effects",
-       "country": "United States",
-       "country_specific_search": true
-     }'
+npm run dev
+# or
+yarn dev
 ```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Project Structure
+
+- `app/`: Contains the route segments of your application.
+- 'features/': Contains the features of your application.
+- `components/`: Contains the reusable components of your application.
+- `layouts/`: Contains the layout components of your application.
+- 'lib/': Contains the utility functions of your application.
+- 'hooks/': Contains the custom hooks of your application.
+- 'services/': Contains the services of your application.
+- 'store/': Contains the store of your application.
+- 'data/': Contains the data of your application.
+- `public/`: Store static assets like images here.
+
+## Learn More
+
+To learn more about Next.js, check out the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+## Deployment
+
+For deployment options and best practices, refer to the [Next.js deployment documentation](https://nextjs.org/docs/deployment).
