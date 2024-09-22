@@ -1,11 +1,11 @@
 import { type Metadata } from 'next'
 import { notFound, redirect } from 'next/navigation'
 
-import { auth } from '@/auth'
-import { getChat, getMissingKeys } from '@/app/components/chat/actions'
-import { Chat } from '@/app/components/chat/chat'
-import { AI } from '@/app/lib/chat/actions'
-import { Session } from '@/app/lib/types'
+import { auth } from '@/features/authentication/auth'
+import { getChat, getMissingKeys } from '@/features/chat/actions/server-actions'
+import { Chat } from '@/features/chat/components/chat'
+import { AI } from '@/features/chat/actions/ai-actions'
+import { Session } from '@/lib/types'
 
 export interface ChatPageProps {
   params: {
