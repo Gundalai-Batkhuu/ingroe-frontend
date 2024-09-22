@@ -1,7 +1,7 @@
 import { Analytics } from '@vercel/analytics/react'
 import { User } from '@/features/authentication/components/user'
 import { Providers } from '@/components/providers'
-import { SearchInput } from '@/features/dashboard/components/search'
+import { SearchInput } from '@/features/database-dashboard/components/search'
 import { DesktopNav, MobileNav, DashboardBreadcrumb } from '@/layouts/navbar'
 import { cn } from '@/lib/utils'
 import { GeistSans } from 'geist/font/sans'
@@ -11,6 +11,7 @@ import "@/public/globals.css";
 import { TailwindIndicator } from '@/components/tailwind-indicator'
 import { ThemeToggle } from '@/components/theme-toggle'
 import React from 'react'
+import HeaderLayout from '@/layouts/header'
 
 export const metadata = {
     title: "Knowledge Commons",
@@ -45,16 +46,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <main className="flex min-h-screen w-full flex-col bg-muted/40">
+          <main className="flex flex-col min-h-screen w-full bg-muted/40">
             <DesktopNav />
-            <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
-              <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-                <MobileNav />
-                <DashboardBreadcrumb />
-                <SearchInput />
-                <User />
-              </header>
-              <main className="relative grid flex-1 items-start gap-2 p-4 sm:px-6 sm:py-0 md:gap-4 bg-muted/40">
+            <div className="flex flex-col h-full sm:gap-4 sm:py-4 sm:pl-14">
+              <HeaderLayout />
+              <main className="relative grid flex-1 items-start gap-2 p-4 sm:px-6 sm:py-0 md:gap-4 bg-muted/40 overflow-auto">
                 {children}
                 <div className="fixed bottom-4 right-4 z-50">
                   <ThemeToggle />

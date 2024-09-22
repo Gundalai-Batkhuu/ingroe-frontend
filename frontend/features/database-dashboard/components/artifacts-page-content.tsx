@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { File, PlusCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useUserArtifactsStore } from '@/stores/userArtifactsStore';
-import { ArtifactsTable } from '@/features/dashboard/components/artifacts-table'
+import { ArtifactsTable } from '@/features/database-dashboard/components/artifacts-table'
 import Link from 'next/link'
 
 export default function ArtifactsPageContent({

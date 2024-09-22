@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import AppLogo from '@/components/icons'
-import { NavItem } from '@/features/dashboard/components/nav-item'
+import { NavItem } from '@/features/database-dashboard/components/nav-item'
 import {
   Database,
   Home,
@@ -11,7 +11,7 @@ import {
   Settings, ShoppingCart,
   Store,
   Users2,
-  FilePlus
+  FilePlus, Search
 } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
@@ -39,8 +39,12 @@ export function DesktopNav() {
           <Database className="h-5 w-5" />
         </NavItem>
 
-        <NavItem href="/search" label="New database">
+        <NavItem href="/create-knowledge-base" label="New database">
           <FilePlus className="h-5 w-5" />
+        </NavItem>
+
+        <NavItem href="/search" label="New database">
+          <Search className="h-5 w-5" />
         </NavItem>
 
         <NavItem href="/chat" label="Chat">
