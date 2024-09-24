@@ -1,12 +1,8 @@
-import React, { useState } from 'react'
-import {ThemeToggle} from "@/components/theme-toggle";
-import {useSidebar} from "@/hooks/use-sidebar";
+import React from 'react'
 import {cn} from "@/lib/utils";
-import { SearchOptionSwitch } from '@/features/google-search/components/sidebar-search-option-switch'
 import { SearchOptions, SearchOptionsProps } from '@/features/google-search/components/search-options'
-import { ManualDocumentUploader } from '@/features/google-search/components/manual-document-uploader'
 
-export function SidebarSearch({
+export function AdvancedSearchOptions({
                                   country, setCountry,
                                   countrySpecificSearch, setCountrySpecificSearch,
                                   searchType, setSearchType,
@@ -17,29 +13,15 @@ export function SidebarSearch({
                                   site, setSite, className, userId
                               }: SearchOptionsProps) {
 
-    const {isSidebarOpen, isLoading} = useSidebar()
-    const [isSearchMode, setIsSearchMode] = useState(true)
-
-    const handleSwitchChange = (checked: boolean) => {
-      setIsSearchMode(checked);
-    }
-
     return (
       <div
         className={cn(
           className,
-          'h-full flex-col dark:bg-zinc-950',
-          isSidebarOpen && !isLoading ? 'translate-x-0' : '-translate-x-full',
-          'transition-transform duration-300 ease-in-out'
+          'h-full flex-col dark:bg-zinc-950'
         )}
       >
         <div className="flex flex-col h-full inset-y-0 border-r lg:w-[250px] xl:w-[300px] bg-gradient-to-b from-background/10 via-background/50 to-background/80 backdrop-blur-xl overflow-hidden">
-          <div className="w-full h-full overflow-y-auto">
-            <div className="p-4">
-              <SearchOptionSwitch onCheckedChange={handleSwitchChange} isSearchMode={isSearchMode}/>
-            </div>
-
-            {isSearchMode ? (
+          <div className="size-full overflow-y-auto">
             <SearchOptions
               country={country} setCountry={setCountry}
               countrySpecificSearch={countrySpecificSearch} setCountrySpecificSearch={setCountrySpecificSearch}
@@ -50,9 +32,6 @@ export function SidebarSearch({
               after={after} setAfter={setAfter}
               site={site} setSite={setSite} userId={userId}
             />
-          ) : (
-            <ManualDocumentUploader userId={userId} />
-          )}
           </div>
         </div>
       </div>

@@ -36,7 +36,7 @@ export const SearchResultsList = ({
               <div className="overflow-hidden">
                 <a
                   href={result.link}
-                  className="text-sm text-gray-300 hover:underline block whitespace-nowrap overflow-hidden text-overflow-ellipsis"
+                  className="text-sm text-primary/80 hover:underline block whitespace-nowrap overflow-hidden text-overflow-ellipsis"
                   title={result.link}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -56,7 +56,7 @@ export const SearchResultsList = ({
               </a>
             </h3>
             <p
-              className="text-sm text-gray-200"
+              className="text-sm text-primary/70"
               dangerouslySetInnerHTML={{
                 __html: result.html_snippet || result.snippet
               }}
