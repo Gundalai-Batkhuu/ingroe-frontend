@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { documentService } from '@/services/document-service';
+import { Loader2 } from 'lucide-react';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
 
 interface FileDocumentUploaderProps {
   userId: string;
@@ -8,7 +11,9 @@ interface FileDocumentUploaderProps {
 
 export const FileDocumentUploader: React.FC<FileDocumentUploaderProps> = ({ userId, documentId }) => {
   const [file, setFile] = useState<File | null>(null);
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -18,9 +23,11 @@ export const FileDocumentUploader: React.FC<FileDocumentUploaderProps> = ({ user
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setStatus('loading');
     setMessage('');
 
     if (!file) {
+      setStatus('error');
       setMessage('Please select a file');
       return;
     }
@@ -32,18 +39,48 @@ export const FileDocumentUploader: React.FC<FileDocumentUploaderProps> = ({ user
 
     try {
       const response = await documentService.createDocumentManually(submitFormData);
+      setStatus('success');
       setMessage(`${response.message} You can upload another file if needed.`);
       // Clear form field after successful upload
       setFile(null);
-      if (event.target instanceof HTMLFormElement) {
-        event.target.reset();
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
       }
     } catch (error) {
+      setStatus('error');
       if (error instanceof Error) {
         setMessage(`Error: ${error.message}`);
       } else {
         setMessage('An error occurred while uploading the document');
       }
+    }
+  };
+
+  const renderStatusMessage = () => {
+    switch (status) {
+      case 'loading':
+        return (
+          <Alert className="mt-2">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            <AlertDescription>Please wait while we process your request.</AlertDescription>
+          </Alert>
+        );
+      case 'success':
+        return (
+          <Alert className="mt-2">
+            <AlertTitle>Success!</AlertTitle>
+            <AlertDescription>{message}</AlertDescription>
+          </Alert>
+        );
+      case 'error':
+        return (
+          <Alert variant="destructive" className="mt-2">
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>{message}</AlertDescription>
+          </Alert>
+        );
+      default:
+        return null;
     }
   };
 
@@ -57,6 +94,7 @@ export const FileDocumentUploader: React.FC<FileDocumentUploaderProps> = ({ user
           <input
             type="file"
             id="file"
+            ref={fileInputRef}
             onChange={handleFileChange}
             className="w-full bg-background text-foreground border border-input rounded-md shadow-sm px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
           />
@@ -64,24 +102,15 @@ export const FileDocumentUploader: React.FC<FileDocumentUploaderProps> = ({ user
             <p className="mt-1 text-xs text-muted-foreground">{file.name}</p>
           )}
         </div>
-        <button
+        <Button
           type="submit"
-          className="w-full bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+          disabled={status === 'loading'}
+          className="w-full"
         >
           Upload File
-        </button>
+        </Button>
       </form>
-      {message && (
-        <div
-          className={`mt-4 p-4 border rounded-md text-sm ${
-            message.startsWith('Error')
-              ? 'bg-destructive/15 border-destructive text-destructive'
-              : 'bg-primary/15 border-primary text-primary'
-          }`}
-        >
-          {message}
-        </div>
-      )}
+      {renderStatusMessage()}
     </div>
   );
 };

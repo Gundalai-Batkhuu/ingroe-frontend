@@ -35,7 +35,7 @@ export const LinkDocumentUploader = ({ userId, documentId }: LinkDocumentUploade
       const response = await documentService.createDocumentManually(submitFormData);
       setStatus('success');
       setMessage(`${response.message} You can upload another link if needed.`);
-      setLink('');
+      setLink(''); // This will trigger the TextInputWithClearButton to clear
     } catch (error) {
       setStatus('error');
       if (error instanceof Error) {
@@ -52,7 +52,6 @@ export const LinkDocumentUploader = ({ userId, documentId }: LinkDocumentUploade
         return (
           <Alert className="mt-2">
             <Loader2 className="h-4 w-4 animate-spin" />
-            <AlertTitle>Uploading Link...</AlertTitle>
             <AlertDescription>Please wait while we process your request.</AlertDescription>
           </Alert>
         );
