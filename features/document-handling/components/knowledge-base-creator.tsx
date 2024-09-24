@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { Upload, Link, PenTool, File, Plus, X, Search } from 'lucide-react'
+import React, { useState } from 'react'
+import { Upload, Link, PenTool, File, Plus, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -16,20 +16,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Label } from '@/components/ui/label'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
-import { Checkbox } from '@/components/ui/checkbox'
 import { CreateDocumentButton } from '@/features/document-handling/components/create-document-button'
 
-type Document = {
-  id: string
-  type: 'file' | 'link' | 'note' | 'search'
-  content: string
-}
-
-type SearchResult = {
-  id: string
-  title: string
-  url: string
-}
+type ResourceItem =
+  | { id: string; type: 'file' | 'note'; content: File; displayName: string }
+  | { id: string; type: 'link'; content: string; displayName: string }
 
 interface KnowledgeBaseCreatorProps {
   userId: string
@@ -40,34 +31,40 @@ export default function KnowledgeBaseCreator({
 }: KnowledgeBaseCreatorProps) {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
-  const [documents, setDocuments] = useState<Document[]>([])
+  const [resourceItems, setResourceItems] = useState<ResourceItem[]>([])
   const [fileInput, setFileInput] = useState<string>('')
   const [linkInput, setLinkInput] = useState<string>('')
-  const [noteInput, setNoteInput] = useState<string>('')
-  const [searchInput, setSearchInput] = useState<string>('')
-  const [searchResults, setSearchResults] = useState<SearchResult[]>([])
+  const [noteFileInput, setNoteFileInput] = useState<string>('')
 
-
-  const addDocument = (
-    type: 'file' | 'link' | 'note' | 'search',
-    content: string
+  const addResource = (
+    type: 'file' | 'link' | 'note',
+    content: File | string
   ) => {
-    const newDocument: Document = {
-      id: Date.now().toString(),
-      type,
-      content
-    }
-    setDocuments([...documents, newDocument])
+    const newResource: ResourceItem =
+      type === 'link'
+        ? {
+            id: Date.now().toString(),
+            type,
+            content: content as string,
+            displayName: content as string
+          }
+        : {
+            id: Date.now().toString(),
+            type,
+            content: content as File,
+            displayName: (content as File).name
+          };
+    setResourceItems([...resourceItems, newResource])
   }
 
   const removeDocument = (id: string) => {
-    setDocuments(documents.filter(doc => doc.id !== id))
+    setResourceItems(resourceItems.filter(doc => doc.id !== id))
   }
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      addDocument('file', file.name)
+      addResource('file', file)
       setFileInput('')
     }
   }
@@ -75,46 +72,17 @@ export default function KnowledgeBaseCreator({
   const handleLinkAdd = (e: React.FormEvent) => {
     e.preventDefault()
     if (linkInput.trim()) {
-      addDocument('link', linkInput.trim())
+      addResource('link', linkInput.trim())
       setLinkInput('')
     }
   }
 
-  const handleNoteAdd = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (noteInput.trim()) {
-      addDocument('note', noteInput.trim())
-      setNoteInput('')
+  const handleNoteFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      addResource('note', file)
+      setNoteFileInput('')
     }
-  }
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (searchInput.trim()) {
-      // Mock search results
-      const mockResults: SearchResult[] = [
-        {
-          id: '1',
-          title: 'Example Search Result 1',
-          url: 'https://example.com/1'
-        },
-        {
-          id: '2',
-          title: 'Example Search Result 2',
-          url: 'https://example.com/2'
-        },
-        {
-          id: '3',
-          title: 'Example Search Result 3',
-          url: 'https://example.com/3'
-        }
-      ]
-      setSearchResults(mockResults)
-    }
-  }
-
-  const handleSearchResultAdd = (result: SearchResult) => {
-    addDocument('search', `${result.title} (${result.url})`)
   }
 
   return (
@@ -154,7 +122,7 @@ export default function KnowledgeBaseCreator({
               <h3 className="text-lg font-semibold">Uploaded Documents</h3>
               <ScrollArea className="w-full rounded-md border p-4">
                 <ul className="space-y-2">
-                  {documents.map(doc => (
+                  {resourceItems.map(doc => (
                     <li
                       key={doc.id}
                       className="flex items-center justify-between bg-muted p-2 rounded"
@@ -169,10 +137,7 @@ export default function KnowledgeBaseCreator({
                         {doc.type === 'note' && (
                           <PenTool className="h-4 w-4 mr-2" />
                         )}
-                        {doc.type === 'search' && (
-                          <Search className="h-4 w-4 mr-2" />
-                        )}
-                        {doc.content}
+                        {doc.displayName}
                       </span>
                       <Button
                         size="icon"
@@ -193,11 +158,10 @@ export default function KnowledgeBaseCreator({
         <Card className="w-1/2">
           <CardContent className="p-6">
             <Tabs defaultValue="file" className="w-full">
-              <TabsList className="grid w-full grid-cols-4">
+              <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="file">Files</TabsTrigger>
                 <TabsTrigger value="link">Web Links</TabsTrigger>
-                <TabsTrigger value="note">Notes</TabsTrigger>
-                <TabsTrigger value="search">Google Search</TabsTrigger>
+                <TabsTrigger value="note">Handwritten Notes</TabsTrigger>
               </TabsList>
               <TabsContent value="file" className="mt-4 space-y-4">
                 <h2 className="text-lg font-semibold">Upload Files</h2>
@@ -235,65 +199,19 @@ export default function KnowledgeBaseCreator({
               </TabsContent>
               <TabsContent value="note" className="mt-4 space-y-4">
                 <h2 className="text-lg font-semibold">Add Handwritten Notes</h2>
-                <form onSubmit={handleNoteAdd} className="space-y-2">
-                  <Textarea
-                    placeholder="Enter your notes"
-                    value={noteInput}
-                    onChange={e => setNoteInput(e.target.value)}
-                    rows={4}
-                  />
-                  <Button type="submit" className="w-full">
-                    Add Note
-                  </Button>
-                </form>
-              </TabsContent>
-              <TabsContent value="search" className="mt-4 space-y-4">
-                <h2 className="text-lg font-semibold">Google Search</h2>
-                <form
-                  onSubmit={handleSearch}
-                  className="flex items-center space-x-2"
-                >
+                <div className="flex items-center space-x-2">
                   <Input
-                    type="text"
-                    placeholder="Enter search query"
-                    value={searchInput}
-                    onChange={e => setSearchInput(e.target.value)}
+                    type="file"
+                    onChange={handleNoteFileUpload}
+                    value={noteFileInput}
                     className="flex-1"
+                    id="note-file-upload"
                   />
-                  <Button type="submit" size="icon" aria-label="Search">
-                    <Search className="h-4 w-4" />
-                  </Button>
-                </form>
-                <ScrollArea className="h-[200px] w-full rounded-md border p-4">
-                  <ul className="space-y-2">
-                    {searchResults.map(result => (
-                      <li
-                        key={result.id}
-                        className="flex items-center justify-between bg-muted p-2 rounded"
-                      >
-                        <span className="flex items-center">
-                          <Checkbox
-                            id={`search-${result.id}`}
-                            className="mr-2"
-                          />
-                          <label
-                            htmlFor={`search-${result.id}`}
-                            className="text-sm"
-                          >
-                            {result.title}
-                          </label>
-                        </span>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleSearchResultAdd(result)}
-                        >
-                          Add
-                        </Button>
-                      </li>
-                    ))}
-                  </ul>
-                </ScrollArea>
+                  <label htmlFor="note-file-upload" className="cursor-pointer">
+                    <Upload className="h-6 w-6 text-gray-500" />
+                    <span className="sr-only">Upload handwritten note</span>
+                  </label>
+                </div>
               </TabsContent>
             </Tabs>
           </CardContent>
@@ -302,11 +220,10 @@ export default function KnowledgeBaseCreator({
 
       <div className="p-6">
         <CreateDocumentButton
-          user_id={userId}
-          links={documents.map(doc => doc.content)}
-          document_alias={title}
+          userId={userId}
+          title={title}
           description={description}
-        />
+          resourceItems={resourceItems}/>
       </div>
     </div>
   )

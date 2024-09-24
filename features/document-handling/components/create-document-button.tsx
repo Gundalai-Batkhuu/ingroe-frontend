@@ -5,33 +5,72 @@ import { CreateDocument } from '@/lib/types'
 import { Loader2 } from 'lucide-react'
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
 
-interface CreateDocumentButtonProps extends CreateDocument {
+type ResourceItem = {
+  id: string
+  type: 'file' | 'link' | 'note'
+  content: string | File
+  displayName: string
+}
+
+interface CreateDocumentButtonProps {
   className?: string
+  resourceItems: ResourceItem[]
+  title: string,
+  userId: string
+  description: string
 }
 
 export const CreateDocumentButton: React.FC<CreateDocumentButtonProps> = ({
-  user_id,
-  links,
-  document_alias,
+  className,
+  resourceItems,
+  title,
   description,
-  className
+  userId
 }) => {
   const [documentCreationStatus, setDocumentCreationStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     setDocumentCreationStatus('loading')
 
+    const fileItems = resourceItems.filter(res => res.type === 'file' || res.type === 'note')
+    const linkItems = resourceItems.filter(res => res.type === 'link')
+
     try {
-      const document: CreateDocument = {
-        user_id,
-        links,
-        document_alias,
-        description
+      if (fileItems.length > 0) {
+        // Use createDocumentManually for any file uploads
+        const formData = new FormData()
+        formData.append('user_id', userId)
+        formData.append('document_alias', title)
+        formData.append('description', description)
+
+        if (linkItems.length > 0) {
+          formData.append('link', linkItems[0].content as string) // Add only the first link
+        }
+
+        // Append actual File objects
+        fileItems.forEach(fileItem => {
+          if (fileItem.content instanceof File) {
+            formData.append('file', fileItem.content, fileItem.content.name)
+          }
+        })
+
+        const result = await documentService.createDocumentManually(formData)
+        console.log('Document creation with file successful:', result)
+      } else if (linkItems.length > 0) {
+        // Use createDocumentSelection only for links without files
+        const document: CreateDocument = {
+          user_id: userId,
+          links: linkItems.map(item => item.content as string),
+          document_alias: title,
+          description
+        }
+        const result = await documentService.createDocumentSelection(document)
+        console.log('Document creation with links successful:', result)
+      } else {
+        throw new Error('No files or links provided')
       }
 
-      const result = await documentService.createDocumentSelection(document)
-      console.log('Document creation successful:', result)
       setDocumentCreationStatus('success')
     } catch (error) {
       console.error('Error during document creation:', error)
@@ -44,7 +83,7 @@ export const CreateDocumentButton: React.FC<CreateDocumentButtonProps> = ({
       case 'loading':
         return (
           <Alert className="mt-2">
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <Loader2 className="size-4 animate-spin" />
             <AlertTitle>Creating Knowledge Base...</AlertTitle>
             <AlertDescription>Please wait while we process your request.</AlertDescription>
           </Alert>
@@ -70,16 +109,14 @@ export const CreateDocumentButton: React.FC<CreateDocumentButtonProps> = ({
 
   return (
     <div className={className}>
-      <form onSubmit={handleSubmit} className="flex flex-col items-stretch">
-        <Button
-          variant="default"
-          type="submit"
-          disabled={documentCreationStatus === 'loading'}
-          className="relative"
-        >
-          Create Knowledge Base
-        </Button>
-      </form>
+      <Button
+        variant="default"
+        onClick={handleSubmit}
+        disabled={documentCreationStatus === 'loading'}
+        className="relative"
+      >
+        Create Knowledge Base
+      </Button>
       {renderStatusMessage()}
     </div>
   )
