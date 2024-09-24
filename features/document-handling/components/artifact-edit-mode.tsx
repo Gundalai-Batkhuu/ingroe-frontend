@@ -9,11 +9,38 @@ import { Artefact } from '@/lib/types'
 
 interface ArtifactEditModeProps {
   editedArtifact: Artefact
-  handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
+  handleInputChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void
   handleAddItem: (field: string) => void
 }
 
-export function ArtifactEditMode({ editedArtifact, handleInputChange, handleAddItem }: ArtifactEditModeProps) {
+export function ArtifactEditMode({
+  editedArtifact,
+  handleInputChange,
+  handleAddItem
+}: ArtifactEditModeProps) {
+  const isFileLink = (link: string): boolean => {
+    const fileExtensions = [
+      '.pdf',
+      '.doc',
+      '.docx',
+      '.xls',
+      '.xlsx',
+      '.ppt',
+      '.pptx',
+      '.txt',
+      '.csv',
+      '.zip',
+      '.rar'
+    ]
+    return (
+      fileExtensions.some(ext => link.toLowerCase().endsWith(ext)) ||
+      link.includes('/download/') ||
+      link.includes('/file/')
+    )
+  }
+
   return (
     <div className="grid w-full items-center gap-4">
       <ArtifactEditField
@@ -30,14 +57,12 @@ export function ArtifactEditMode({ editedArtifact, handleInputChange, handleAddI
         isTextarea
       />
       <ArtifactListField
-        label="Vanilla Links"
-        value={editedArtifact.vanilla_links.join(', ')}
-        onAdd={() => handleAddItem('vanilla_links')}
-      />
-      <ArtifactListField
-        label="File Links"
-        value={editedArtifact.file_links.join(', ')}
-        onAdd={() => handleAddItem('file_links')}
+        label={'Web links'}
+        value={[
+          ...editedArtifact.vanilla_links,
+          ...editedArtifact.file_links
+        ].join(', ')}
+        onAdd={() => handleAddItem('web_links')}
       />
       <ArtifactListField
         label="Files"
@@ -46,7 +71,9 @@ export function ArtifactEditMode({ editedArtifact, handleInputChange, handleAddI
       />
       <ArtifactListField
         label="Captured Documents"
-        value={editedArtifact.captured_documents.map(doc => doc.captured_document_id).join(', ')}
+        value={editedArtifact.captured_documents
+          .map(doc => doc.captured_document_id)
+          .join(', ')}
         onAdd={() => handleAddItem('captured_documents')}
       />
     </div>
@@ -78,28 +105,26 @@ interface ArtifactEditFieldProps {
   label: string
   name: string
   value: string
-  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
+  onChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void
   isTextarea?: boolean
 }
 
-function ArtifactEditField({ label, name, value, onChange, isTextarea = false }: ArtifactEditFieldProps) {
+function ArtifactEditField({
+  label,
+  name,
+  value,
+  onChange,
+  isTextarea = false
+}: ArtifactEditFieldProps) {
   return (
     <div className="flex flex-col space-y-1.5 text-sm">
       <Label htmlFor={name}>{label}</Label>
       {isTextarea ? (
-        <Textarea
-          id={name}
-          name={name}
-          value={value}
-          onChange={onChange}
-        />
+        <Textarea id={name} name={name} value={value} onChange={onChange} />
       ) : (
-        <Input
-          id={name}
-          name={name}
-          value={value}
-          onChange={onChange}
-        />
+        <Input id={name} name={name} value={value} onChange={onChange} />
       )}
     </div>
   )
