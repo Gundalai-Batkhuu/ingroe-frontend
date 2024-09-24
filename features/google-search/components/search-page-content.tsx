@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { SearchBar } from '@/features/google-search/components/search-bar'
 import { SearchResultsList } from '@/features/google-search/components/search-results'
-import { SidebarSearch } from '@/features/google-search/components/sidebar-search'
+import { AdvancedSearchOptions } from '@/features/google-search/components/advanced-search-options'
 import { SidebarSelectedDocuments } from '@/features/google-search/components/sidebar-selected-documents'
 import { useSelectedItemsStore } from '@/stores/selectedItemsStore'
 import { CountryShortName } from '@/lib/types' // Ensure this type is imported
@@ -26,7 +26,7 @@ export default function SearchPageContent({ userId }: SearchPageContentProps) {
 
   return (
     <div className="flex h-[calc(100vh_-_theme(spacing.16))] overflow-hidden">
-      <SidebarSearch
+      <AdvancedSearchOptions
         country={country}
         setCountry={setCountry}
         countrySpecificSearch={countrySpecificSearch}

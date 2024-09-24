@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { useSidebar } from '@/hooks/use-sidebar'
 import { cn } from '@/lib/utils'
 import { CreateDocumentButton } from '@/features/document-handling/components/create-document-button'
 import { useSelectedItemsStore } from '@/stores/selectedItemsStore'
@@ -9,20 +8,28 @@ export interface SidebarProps extends React.ComponentProps<'div'> {
   userId: string
 }
 
+type ResourceItem =
+  | { id: string; type: 'file' | 'note'; content: File; displayName: string }
+  | { id: string; type: 'link'; content: string; displayName: string }
+
 export function SidebarSelectedDocuments({ className, userId }: SidebarProps) {
-  const { isSidebarOpen, isLoading } = useSidebar()
   const { selectedItems, removeSelectedItem } = useSelectedItemsStore()
-  const selectedLinks = selectedItems.map(item => item.link)
-  const [docAlias, setDocAlias] = useState('')
-  const [docDescription, setDocDescription] = useState('')
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
+
+  // Convert selected items to ResourceItem format
+  const resourceItems: ResourceItem[] = selectedItems.map(item => ({
+    id: item.link, // Using link as a unique identifier
+    type: 'link',
+    content: item.link,
+    displayName: item.title
+  }))
 
   return (
     <div
       className={cn(
         className,
-        'h-full flex-col dark:bg-zinc-950',
-        isSidebarOpen && !isLoading ? 'translate-x-0' : 'translate-x-full',
-        'transition-transform duration-300 ease-in-out'
+        'h-full flex-col dark:bg-zinc-950'
       )}
     >
       <div className="flex flex-col h-full inset-y-0 border-l lg:w-[250px] xl:w-[300px] bg-gradient-to-b from-background/10 via-background/50 to-background/80 backdrop-blur-xl overflow-hidden">
@@ -31,7 +38,7 @@ export function SidebarSelectedDocuments({ className, userId }: SidebarProps) {
             {selectedItems.length > 0 && (
               <div className="space-y-4">
                 <div className="flex justify-center items-center">
-                  <p className="text-center text-white">
+                  <p className="text-center text-primary">
                     {selectedItems.length} item
                     {selectedItems.length > 1 ? 's' : ''} selected
                   </p>
@@ -46,7 +53,7 @@ export function SidebarSelectedDocuments({ className, userId }: SidebarProps) {
                         <div className="font-medium text-blue-400">
                           {item.title}
                         </div>
-                        <div className="text-sm text-gray-300 break-all mt-1">
+                        <div className="text-sm text-primary/70 break-all mt-1">
                           {item.link}
                         </div>
                       </div>
@@ -68,19 +75,19 @@ export function SidebarSelectedDocuments({ className, userId }: SidebarProps) {
             <div className="p-4 flex flex-col items-center space-y-4">
               <div className="w-full space-y-4">
                 <TextInputWithClearButton
-                  placeholder="Enter title... (optional)"
-                  onChange={setDocAlias}
+                  placeholder="Enter title..."
+                  onChange={setTitle}
                 />
                 <TextInputWithClearButton
                   placeholder="Enter description... (optional)"
-                  onChange={setDocDescription}
+                  onChange={setDescription}
                 />
               </div>
               <CreateDocumentButton
-                user_id={userId}
-                links={selectedLinks}
-                document_alias={docAlias}
-                description={docDescription}
+                userId={userId}
+                title={title}
+                description={description}
+                resourceItems={resourceItems}
               />
             </div>
           )}
