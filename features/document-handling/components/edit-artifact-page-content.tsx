@@ -166,7 +166,7 @@ export default function EditArtifactPageContent({ params, userId }: EditArtifact
             </Button>
           </CardHeader>
           <CardContent>
-            {activeField === 'vanilla_links' || activeField === 'file_links' ? (
+            {activeField === 'web_links'? (
               <LinkDocumentUploader userId={userId} documentId={params.id} />
             ) : activeField === 'files' ? (
               <FileDocumentUploader userId={userId} documentId={params.id} />
@@ -176,7 +176,7 @@ export default function EditArtifactPageContent({ params, userId }: EditArtifact
               <div>Form fields for {activeField}</div>
             )}
           </CardContent>
-          {activeField !== 'vanilla_links' && activeField !== 'file_links' && activeField !== 'files' && (
+          {activeField !== 'files' && activeField !== 'web_links' && (
             <CardFooter className="flex justify-end space-x-2">
               <Button variant="outline" onClick={handleCloseSideCard}>Cancel</Button>
               <Button onClick={() => {/* Handle save logic */}}>Add</Button>

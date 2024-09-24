@@ -77,9 +77,6 @@ export const CreateDocumentButton: React.FC<CreateDocumentButtonProps> = ({
           disabled={documentCreationStatus === 'loading'}
           className="relative"
         >
-          {documentCreationStatus === 'loading' && (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          )}
           Create Knowledge Base
         </Button>
       </form>

@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { TextInputWithClearButton } from '@/components/ui/text-input-with-clear-button';
 import { documentService } from '@/services/document-service';
+import { Loader2 } from 'lucide-react';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
 
 interface LinkDocumentUploaderProps {
   userId: string;
@@ -9,13 +12,16 @@ interface LinkDocumentUploaderProps {
 
 export const LinkDocumentUploader = ({ userId, documentId }: LinkDocumentUploaderProps) => {
   const [link, setLink] = useState('');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setStatus('loading');
     setMessage('');
 
     if (!link) {
+      setStatus('error');
       setMessage('Please provide a link');
       return;
     }
@@ -27,15 +33,45 @@ export const LinkDocumentUploader = ({ userId, documentId }: LinkDocumentUploade
 
     try {
       const response = await documentService.createDocumentManually(submitFormData);
+      setStatus('success');
       setMessage(`${response.message} You can upload another link if needed.`);
-      // Clear form field after successful upload
       setLink('');
     } catch (error) {
+      setStatus('error');
       if (error instanceof Error) {
         setMessage(`Error: ${error.message}`);
       } else {
         setMessage('An error occurred while uploading the document');
       }
+    }
+  };
+
+  const renderStatusMessage = () => {
+    switch (status) {
+      case 'loading':
+        return (
+          <Alert className="mt-2">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            <AlertTitle>Uploading Link...</AlertTitle>
+            <AlertDescription>Please wait while we process your request.</AlertDescription>
+          </Alert>
+        );
+      case 'success':
+        return (
+          <Alert className="mt-2">
+            <AlertTitle>Success!</AlertTitle>
+            <AlertDescription>{message}</AlertDescription>
+          </Alert>
+        );
+      case 'error':
+        return (
+          <Alert variant="destructive" className="mt-2">
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>{message}</AlertDescription>
+          </Alert>
+        );
+      default:
+        return null;
     }
   };
 
@@ -51,24 +87,15 @@ export const LinkDocumentUploader = ({ userId, documentId }: LinkDocumentUploade
             placeholder="https://example.com"
           />
         </div>
-        <button
+        <Button
           type="submit"
-          className="w-full bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+          disabled={status === 'loading'}
+          className="w-full"
         >
           Upload Link
-        </button>
+        </Button>
       </form>
-      {message && (
-        <div
-          className={`mt-4 p-4 border rounded-md text-sm ${
-            message.startsWith('Error')
-              ? 'bg-destructive/15 border-destructive text-destructive'
-              : 'bg-primary/15 border-primary text-primary'
-          }`}
-        >
-          {message}
-        </div>
-      )}
+      {renderStatusMessage()}
     </div>
   );
 };
