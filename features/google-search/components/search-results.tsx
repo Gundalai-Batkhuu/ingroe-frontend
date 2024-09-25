@@ -30,7 +30,7 @@ export const SearchResultsList = ({
                 <img
                   src={result.thumbnail}
                   alt=""
-                  className="w-8 h-8 mr-2 rounded-full"
+                  className="size-8 mr-2 rounded-full"
                 />
               )}
               <div className="overflow-hidden">
