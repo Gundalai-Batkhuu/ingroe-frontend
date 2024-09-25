@@ -4,9 +4,9 @@ import React, { useState } from 'react'
 import { SearchBar } from '@/features/google-search/components/search-bar'
 import { SearchResultsList } from '@/features/google-search/components/search-results'
 import { AdvancedSearchOptions } from '@/features/google-search/components/advanced-search-options'
-import { SidebarSelectedDocuments } from '@/features/google-search/components/sidebar-selected-documents'
+import { SelectedSearchResults } from '@/features/google-search/components/selected-search-results'
 import { useSelectedItemsStore } from '@/stores/selectedItemsStore'
-import { CountryShortName } from '@/lib/types' // Ensure this type is imported
+import { CountryShortName } from '@/lib/types'
 
 interface SearchPageContentProps {
   userId: string
@@ -47,13 +47,8 @@ export default function SearchPageContent({ userId }: SearchPageContentProps) {
       />
       <div className="flex-1 overflow-y-auto">
         <div className="flex flex-col min-h-full p-6">
-          <div className="grow flex flex-col items-center justify-center space-y-8 max-w-4xl mx-auto">
-            <h1 className="text-4xl font-bold">Welcome to the Legal AI App!</h1>
-            <p className="text-lg text-center">
-              Get started by choosing a country and searching with keywords to
-              find legal information.
-            </p>
-            <div className="w-full max-w-md">
+          <div className="grow flex flex-col items-center justify-center space-y-8 w-full">
+            <div className="w-full max-w-[90%]">
               <SearchBar
                 setResults={setSearchResults}
                 country={country}
@@ -67,7 +62,7 @@ export default function SearchPageContent({ userId }: SearchPageContentProps) {
               />
             </div>
           </div>
-          <div className="w-full max-w-4xl mx-auto mt-8">
+          <div className="w-full max-w-[90%] mx-auto mt-8">
             <SearchResultsList
               results={searchResults}
               selectedItems={selectedItems}
@@ -76,7 +71,7 @@ export default function SearchPageContent({ userId }: SearchPageContentProps) {
           </div>
         </div>
       </div>
-      <SidebarSelectedDocuments userId={userId} />
+      <SelectedSearchResults userId={userId} />
     </div>
   )
 }
