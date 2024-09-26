@@ -23,12 +23,19 @@ export function UserArtifactsList({ userId }: UserArtifactsListProps) {
   }, [refreshArtifacts])
 
   useEffect(() => {
-    if (artifacts && artifacts.artefact_tree.length > 0) {
+    if (artifacts && artifacts.artefact_tree.length > 0 && !selectedArtifactId) {
+      console.log('No artifact selected, selecting the first one')
       const firstArtifactId = artifacts.artefact_tree[0].document_id
-      setExpandedId(firstArtifactId)
       setSelectedArtifactId(firstArtifactId)
     }
-  }, [artifacts, setSelectedArtifactId])
+  }, [artifacts, selectedArtifactId, setSelectedArtifactId])
+
+  useEffect(() => {
+    if (selectedArtifactId) {
+      console.log('Expanding selected artifact:', selectedArtifactId)
+      setExpandedId(selectedArtifactId)
+    }
+  }, [selectedArtifactId])
 
   if (isLoading) return <div>Loading...</div>
   if (error) return <div>Error: {error}</div>

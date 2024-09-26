@@ -13,7 +13,7 @@ const loadChats = cache(async (userId?: string) => {
   return await getChats(userId)
 })
 
-export async function SidebarList({ userId }: SidebarListProps) {
+export async function ChatHistoryItemsList({ userId }: SidebarListProps) {
   const chats = await loadChats(userId)
 
   return (
@@ -30,7 +30,6 @@ export async function SidebarList({ userId }: SidebarListProps) {
         )}
       </div>
       <div className="flex items-center justify-between p-4">
-        <ThemeToggle />
         <ClearHistory clearChats={clearChats} isEnabled={chats?.length > 0} />
       </div>
     </div>

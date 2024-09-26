@@ -26,7 +26,7 @@ export function AdvancedSearchOptions({
 }: SearchOptionsProps) {
   return (
     <Card className={cn(
-      "h-full w-full lg:w-[250px] xl:w-[300px]",
+      "size-full lg:w-[250px] xl:w-[300px]",
       "border-r dark:bg-zinc-950/50",
       "backdrop-blur-xl",
       className
@@ -35,7 +35,7 @@ export function AdvancedSearchOptions({
         <CardTitle className="text-lg">Advanced Search</CardTitle>
       </CardHeader>
       <CardContent className="p-0">
-        <ScrollArea className="h-[calc(100vh-120px)] lg:h-[calc(100vh-140px)]">
+        <ScrollArea className="h-[calc(100vh-15rem)] lg:h-[calc(100vh-15rem)]">
           <div className="p-4 lg:p-6">
             <SearchOptions
               country={country}

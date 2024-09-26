@@ -27,9 +27,10 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu';
-import { MoreHorizontal } from 'lucide-react';
+} from '@/components/ui/dropdown-menu'
+import { MoreHorizontal } from 'lucide-react'
 import { DeleteDocumentButton } from '@/features/document-handling/components/delete-doc-button'
+import SelectArtifactAndChatButton from '@/features/chat/components/select-artifact-and-chat'
 
 export function ArtifactsTable({
   artifacts,
@@ -75,11 +76,16 @@ export function ArtifactsTable({
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
-              <TableHead className="hidden md:table-cell">Description</TableHead>
+              <TableHead className="hidden md:table-cell">
+                Description
+              </TableHead>
               <TableHead className="hidden md:table-cell">Web links</TableHead>
               <TableHead className="hidden md:table-cell">Files</TableHead>
               <TableHead>
                 <span className="sr-only">Actions</span>
+              </TableHead>
+              <TableHead>
+                <span className="sr-only">Chat</span>
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -89,7 +95,9 @@ export function ArtifactsTable({
                 <TableCell>{artifact.document_name}</TableCell>
                 <TableCell>{artifact.description}</TableCell>
                 <TableCell>{artifact.vanilla_links.length}</TableCell>
-                <TableCell>{artifact.files.length + artifact.file_links.length}</TableCell>
+                <TableCell>
+                  {artifact.files.length + artifact.file_links.length}
+                </TableCell>
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -100,7 +108,11 @@ export function ArtifactsTable({
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuItem onSelect={() => handleEditArtifact(artifact.document_id)}>
+                      <DropdownMenuItem
+                        onSelect={() =>
+                          handleEditArtifact(artifact.document_id)
+                        }
+                      >
                         Edit
                       </DropdownMenuItem>
                       <DropdownMenuItem>
@@ -112,6 +124,10 @@ export function ArtifactsTable({
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
+                </TableCell>
+                <TableCell>
+                  <SelectArtifactAndChatButton
+                    artifactId={artifact.document_id}/>
                 </TableCell>
               </TableRow>
             ))}
