@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils'
 import { ChatHistoryItemsList } from '@/features/chat/components/chat-history-items-list'
 import { buttonVariants } from '@/components/ui/button'
 import { IconPlus } from '@/components/icons'
+import {Card} from "@/components/ui/card";
 
 interface ChatHistoryProps {
   userId?: string
@@ -13,13 +14,16 @@ interface ChatHistoryProps {
 
 export async function ChatHistory({ userId }: ChatHistoryProps) {
   return (
-    <div className="flex flex-col h-full">
+      <Card className={cn(
+      "flex flex-col h-[calc(100vh-6rem)] dark:bg-zinc-950 absolute lg:flex lg:w-[250px] xl:w-[300px] p-4",
+    )}>
+
       <div className="flex items-center justify-between p-4">
-        <h4 className="text-sm font-medium">Chat History</h4>
+        <h4 className="font-bold">Chat History</h4>
       </div>
       <div className="mb-2 px-2">
         <Link
-          href="/public"
+          href="/chat"
           className={cn(
             buttonVariants({ variant: 'outline' }),
             'h-10 w-full justify-start bg-zinc-50 px-4 shadow-none transition-colors hover:bg-zinc-200/40 dark:bg-zinc-900 dark:hover:bg-zinc-300/10'
@@ -41,9 +45,8 @@ export async function ChatHistory({ userId }: ChatHistoryProps) {
           </div>
         }
       >
-        {/* @ts-ignore */}
         <ChatHistoryItemsList userId={userId} />
       </React.Suspense>
-    </div>
+      </Card>
   )
 }

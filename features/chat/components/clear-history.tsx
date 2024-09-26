@@ -4,7 +4,7 @@ import * as React from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { ServerActionResult } from '@/lib/types'
-import { Button } from '../../../components/ui/button'
+import { Button } from '@/components/ui/button'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,8 +15,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger
-} from '../../../components/ui/alert-dialog'
-import { IconSpinner } from '../../../components/icons'
+} from '@/components/ui/alert-dialog'
+import { IconSpinner } from '@/components/icons'
 
 interface ClearHistoryProps {
   isEnabled: boolean
