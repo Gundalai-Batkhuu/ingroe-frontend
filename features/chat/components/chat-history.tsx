@@ -3,7 +3,7 @@ import * as React from 'react'
 import Link from 'next/link'
 
 import { cn } from '@/lib/utils'
-import { SidebarList } from '@/features/chat/components/sidebar-list'
+import { ChatHistoryItemsList } from '@/features/chat/components/chat-history-items-list'
 import { buttonVariants } from '@/components/ui/button'
 import { IconPlus } from '@/components/icons'
 
@@ -42,7 +42,7 @@ export async function ChatHistory({ userId }: ChatHistoryProps) {
         }
       >
         {/* @ts-ignore */}
-        <SidebarList userId={userId} />
+        <ChatHistoryItemsList userId={userId} />
       </React.Suspense>
     </div>
   )

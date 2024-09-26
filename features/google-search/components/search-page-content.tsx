@@ -25,7 +25,7 @@ export default function SearchPageContent({ userId }: SearchPageContentProps) {
   const { selectedItems, setSelectedItems } = useSelectedItemsStore()
 
   return (
-    <div className="flex h-[calc(100vh_-_theme(spacing.16))] overflow-hidden">
+    <div className="flex h-[calc(100vh-6rem)] overflow-hidden pt-6">
       <AdvancedSearchOptions
         country={country}
         setCountry={setCountry}
@@ -46,8 +46,8 @@ export default function SearchPageContent({ userId }: SearchPageContentProps) {
         userId={userId}
       />
       <div className="flex-1 overflow-y-auto">
-        <div className="flex flex-col min-h-full p-6">
-          <div className="grow flex flex-col items-center justify-center space-y-8 w-full">
+        <div className="flex flex-col h-full p-6">
+          <div className="flex-grow flex flex-col items-center justify-center space-y-8 w-full">
             <div className="w-full max-w-[90%]">
               <SearchBar
                 setResults={setSearchResults}
