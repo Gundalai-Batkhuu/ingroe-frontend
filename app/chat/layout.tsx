@@ -1,5 +1,5 @@
 import React from 'react'
-import { SidebarChatHistory } from '@/features/chat/components/sidebar-chat-history'
+import { ChatHistoryContainer } from '@/features/chat/components/chat-history-container'
 import { DocumentViewerSidebarContainer } from '@/features/google-search/components/document-viewer-sidebar-container'
 
 interface ChatLayoutProps {
@@ -9,7 +9,7 @@ interface ChatLayoutProps {
 export default async function ChatLayout({ children }: ChatLayoutProps) {
   return (
     <div className="relative flex h-[calc(100vh_-_theme(spacing.16))] overflow-hidden">
-      <SidebarChatHistory />
+      <ChatHistoryContainer />
       <main className="flex-1 overflow-hidden">{children}</main>
       <DocumentViewerSidebarContainer />
     </div>

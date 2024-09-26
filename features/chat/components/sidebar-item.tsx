@@ -7,13 +7,13 @@ import { usePathname } from 'next/navigation'
 
 import { motion } from 'framer-motion'
 
-import { buttonVariants } from '../../../components/ui/button'
-import { IconMessage, IconUsers } from '../../../components/icons'
+import { buttonVariants } from '@/components/ui/button'
+import { IconMessage, IconUsers } from '@/components/icons'
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger
-} from '../../../components/ui/tooltip'
+} from '@/components/ui/tooltip'
 import { useLocalStorage } from '@/hooks/use-local-storage'
 import { type Chat } from '@/lib/types'
 import { cn } from '@/lib/utils'
