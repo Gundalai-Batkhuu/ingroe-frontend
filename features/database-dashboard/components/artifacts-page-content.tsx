@@ -55,7 +55,7 @@ export default function ArtifactsPageContent({
             </span>
           </Button>
           <Button size="sm" className="h-8">
-            <Link href={"/search"} className={"flex gap-1"}>
+            <Link href={"/create-knowledge-base"} className={"flex gap-1"}>
             <PlusCircle className="size-3.5" />
             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
               Add Database
