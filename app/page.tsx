@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { BookOpen, Users, Search, Brain } from "lucide-react"
 
-export default function Component() {
+export default function HomePage() {
   return (
     <div className="flex flex-col min-h-screen">
       <main className="flex-1">
@@ -11,9 +11,9 @@ export default function Component() {
             <div className="flex flex-col items-center space-y-4 text-center">
               <div className="space-y-2">
                 <div className="flex items-center justify-center">
-                  <Brain className="h-12 w-12 text-primary" />
+                  {/*<Brain className="h-12 w-12 text-primary" />*/}
                   <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none ml-4">
-                    Knowledge Commons
+                    Ingroe
                   </h1>
                 </div>
                 <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">

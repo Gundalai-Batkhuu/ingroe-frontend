@@ -51,11 +51,10 @@ export function UserArtifactsList({ userId }: UserArtifactsListProps) {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex items-center justify-between pb-4">
-        <h4 className="text-sm font-medium">Document store</h4>
+      <div className="flex items-center justify-between p-4">
+        <h4 className="font-bold">Document Collection</h4>
       </div>
-      <div className="flex-grow overflow-auto">
-        <div className="space-y-2">
+      <div className="grow overflow-auto px-2 space-y-3">
           {artifacts.artefact_tree.map((artifact: Artefact) => (
             <UserArtifact
               key={artifact.document_id}
@@ -68,7 +67,6 @@ export function UserArtifactsList({ userId }: UserArtifactsListProps) {
               onDelete={refreshArtifacts}
             />
           ))}
-        </div>
       </div>
     </div>
   )
