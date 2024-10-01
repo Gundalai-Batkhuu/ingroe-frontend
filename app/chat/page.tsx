@@ -6,7 +6,7 @@ import { Session } from '@/lib/types'
 import { getMissingKeys } from '@/features/chat/actions/server-actions'
 
 export const metadata = {
-  title: 'Legal AI Chatbot'
+  title: 'Ingroe',
 }
 
 export default async function IndexPage() {

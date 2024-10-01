@@ -1,22 +1,20 @@
 import { Analytics } from '@vercel/analytics/react'
-import { User } from '@/features/authentication/components/user'
 import { Providers } from '@/components/providers'
-import { SearchInput } from '@/features/database-dashboard/components/search'
 import { DesktopNav, MobileNav, DashboardBreadcrumb } from '@/layouts/navbar'
 import { cn } from '@/lib/utils'
 import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
-import { Toaster } from '@/components/ui/sonner'
-import "@/public/globals.css";
+import { Toaster } from '@/components/ui/toaster'
+import '@/public/globals.css'
 import { TailwindIndicator } from '@/components/tailwind-indicator'
 import { ThemeToggle } from '@/components/theme-toggle'
 import React from 'react'
 import HeaderLayout from '@/layouts/header'
 
 export const metadata = {
-    title: "Knowledge Commons",
-    description: "You gateway to organised knowledge",
-};
+  title: 'Ingroe',
+  description: 'You gateway to organised knowledge'
+}
 
 export const viewport = {
   themeColor: [
@@ -39,7 +37,6 @@ export default function RootLayout({
           GeistMono.variable
         )}
       >
-        <Toaster position="top-center" />
         <Providers
           attribute="class"
           defaultTheme="light"
@@ -61,6 +58,7 @@ export default function RootLayout({
           </main>
           <TailwindIndicator />
         </Providers>
+        <Toaster />
       </body>
     </html>
   )
