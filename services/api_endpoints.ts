@@ -1,7 +1,7 @@
 import urljoin from 'url-join';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_IS_LOCAL === 'true'
-  ? process.env.NEXT_PUBLIC_API_URL_LOCAL
+  ? process.env.NEXT_PUBLIC_LOCAL_API_URL
   : process.env.NEXT_PUBLIC_API_URL;
 
 if (!API_BASE_URL) {
