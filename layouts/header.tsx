@@ -1,5 +1,5 @@
 import { MobileNav } from '@/layouts/navbar'
-import { SearchInput } from '@/features/database-dashboard/components/search'
+import { SearchInput } from '@/features/document-collection/components/search'
 import { User } from '@/features/authentication/components/user'
 import React from 'react'
 import { DynamicBreadcrumb } from '@/layouts/breadcrumb'

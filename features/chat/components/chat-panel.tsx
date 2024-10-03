@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useUserArtifactsStore } from '@/stores/userArtifactsStore'
+import { userArtifactsStore } from '@/stores/userArtifactsStore'
 import { shareChat } from '../actions/server-actions'
 import { Button } from '@/components/ui/button'
 import { PromptForm } from './prompt-form'
@@ -35,7 +35,7 @@ export function ChatPanel({
   const [shareDialogOpen, setShareDialogOpen] = React.useState(false)
 
   // Get the selected document ID from the Zustand store
-  const selectedDocumentId = useUserArtifactsStore(
+  const selectedDocumentId = userArtifactsStore(
     state => state.selectedArtifactId
   )
 
