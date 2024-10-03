@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from 'react'
-import { useUserArtifactsStore } from '@/stores/userArtifactsStore'
+import { userArtifactsStore } from '@/stores/userArtifactsStore'
 import { Artefact } from '@/lib/types'
 import { useEffect, useState, useCallback } from 'react'
 import { UserArtifact } from '@/features/chat/components/user-artifact'
@@ -11,7 +11,7 @@ interface UserArtifactsListProps {
 }
 
 export function UserArtifactsList({ userId }: UserArtifactsListProps) {
-  const { artifacts, isLoading, error, fetchUserArtifacts, selectedArtifactId, setSelectedArtifactId } = useUserArtifactsStore()
+  const { artifacts, isLoading, error, fetchUserArtifacts, selectedArtifactId, setSelectedArtifactId } = userArtifactsStore()
   const [expandedId, setExpandedId] = useState<string | null>(null)
 
   const refreshArtifacts = useCallback(() => {

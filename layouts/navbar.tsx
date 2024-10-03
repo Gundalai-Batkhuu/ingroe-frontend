@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import AppLogo from '@/components/icons'
-import { NavItem } from '@/features/database-dashboard/components/nav-item'
+import { NavItem } from '@/features/document-collection/components/nav-item'
 import {
   Database,
   Home,

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useUserArtifactsStore } from '@/stores/userArtifactsStore'
+import { userArtifactsStore } from '@/stores/userArtifactsStore'
 import {
   Card,
   CardContent,
@@ -34,7 +34,7 @@ interface EditArtifactPageContentProps {
 
 export default function EditArtifactPageContent({ params, userId }: EditArtifactPageContentProps) {
   const router = useRouter()
-  const { artifacts, updateArtifact, removeArtifact, setSelectedArtifactId } = useUserArtifactsStore()
+  const { artifacts, updateArtifact, removeArtifact, setSelectedArtifactId } = userArtifactsStore()
   const [isEditing, setIsEditing] = useState(false)
   const [editedArtifact, setEditedArtifact] = useState<Artefact | null>(null)
   const [showSideCard, setShowSideCard] = useState(false)

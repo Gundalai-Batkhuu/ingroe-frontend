@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { userService } from '@/services/user-service'
-import { UserArtifactsResponse, Artefact } from '@/lib/types'
+import { UserArtifactsResponse, Artefact, SharedDocument } from '@/lib/types'
 
 interface UserArtifactsState {
   artifacts: UserArtifactsResponse | null
@@ -13,9 +13,12 @@ interface UserArtifactsState {
   removeArtifact: (artifactId: string) => void
   updateArtifact: (artifact: Artefact) => void
   setSelectedArtifactId: (artifactId: string | null) => void
+  addSharedDocument: (sharedDocument: SharedDocument) => void
+  removeSharedDocument: (documentId: string) => void
+  updateSharedDocument: (updatedDocument: SharedDocument) => void
 }
 
-export const useUserArtifactsStore = create<UserArtifactsState>()(
+export const userArtifactsStore = create<UserArtifactsState>()(
   persist(
     (set) => ({
       artifacts: null,
@@ -30,7 +33,6 @@ export const useUserArtifactsStore = create<UserArtifactsState>()(
           set((state) => ({
             artifacts: data,
             isLoading: false,
-            // Only set the first artifact as selected if there's no currently selected artifact
             selectedArtifactId: state.selectedArtifactId || (data.artefact_tree.length > 0 ? data.artefact_tree[0].document_id : null)
           }))
         } catch (error) {
@@ -54,7 +56,6 @@ export const useUserArtifactsStore = create<UserArtifactsState>()(
               artefact_tree: state.artifacts.artefact_tree.filter((a) => a.document_id !== artifactId)
             }
           : null,
-        // If the removed artifact was selected, clear the selection
         selectedArtifactId: state.selectedArtifactId === artifactId ? null : state.selectedArtifactId
       })),
 
@@ -69,7 +70,36 @@ export const useUserArtifactsStore = create<UserArtifactsState>()(
           : null
       })),
 
-      setSelectedArtifactId: (artifactId: string | null) => set({ selectedArtifactId: artifactId })
+      setSelectedArtifactId: (artifactId: string | null) => set({ selectedArtifactId: artifactId }),
+
+      addSharedDocument: (sharedDocument: SharedDocument) => set((state) => ({
+        artifacts: state.artifacts
+          ? {
+              ...state.artifacts,
+              shared_documents_owned: [...(state.artifacts.shared_documents_owned || []), sharedDocument]
+            }
+          : null
+      })),
+
+      removeSharedDocument: (documentId: string) => set((state) => ({
+        artifacts: state.artifacts
+          ? {
+              ...state.artifacts,
+              shared_documents_owned: state.artifacts.shared_documents_owned.filter((d) => d.document_id !== documentId)
+            }
+          : null
+      })),
+
+      updateSharedDocument: (updatedDocument: SharedDocument) => set((state) => ({
+        artifacts: state.artifacts
+          ? {
+              ...state.artifacts,
+              shared_documents_owned: state.artifacts.shared_documents_owned.map((d) =>
+                d.document_id === updatedDocument.document_id ? updatedDocument : d
+              )
+            }
+          : null
+      }))
     }),
     {
       name: 'user-artifacts-storage',

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   TableHead,
   TableRow,
@@ -18,7 +18,7 @@ import {
 import { useRouter } from 'next/navigation'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import {Artefact, ShareDocument} from '@/lib/types'
+import { Artefact, ShareDocument } from '@/lib/types'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,26 +30,40 @@ import { MoreHorizontal } from 'lucide-react'
 import { DeleteDocumentButton } from '@/features/document-handling/components/delete-doc-button'
 import SelectArtifactAndChatButton from '@/features/chat/components/select-artifact-and-chat'
 import { ShareDocumentDialog } from "@/features/document-handling/components/share-document-dialog"
-import {documentService} from "@/services/document-service";
+import { documentService } from "@/services/document-service"
 import { useToast } from "@/hooks/use-toast"
+import { userArtifactsStore } from '@/stores/userArtifactsStore'
 
 export function ArtifactsTable({
-  artifacts,
-  offset,
-  totalArtifacts,
-  userId,
-  onArtifactsChange
+  searchParams,
+  userId
 }: {
-  artifacts: Artefact[]
-  offset: number
-  totalArtifacts: number
+  searchParams: { q: string; offset: string }
   userId: string
-  onArtifactsChange: () => void
 }) {
   const router = useRouter()
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false)
   const [selectedDocument, setSelectedDocument] = useState<{ id: string, name: string } | null>(null)
   const { toast } = useToast()
+
+  const { artifacts, isLoading, error, fetchUserArtifacts } = userArtifactsStore()
+  const search = searchParams.q ?? ''
+  const offset = parseInt(searchParams.offset ?? '0', 10)
+
+  useEffect(() => {
+    fetchUserArtifacts(userId)
+  }, [fetchUserArtifacts, userId])
+
+  if (isLoading) return <div>Loading...</div>
+  if (error) return <div>Error: {error}</div>
+  if (!artifacts) return <div>No artifacts found</div>
+
+  const filteredArtifacts = artifacts.artefact_tree.filter(artifact =>
+    artifact.document_name.toLowerCase().includes(search.toLowerCase())
+  )
+
+  const paginatedArtifacts = filteredArtifacts.slice(offset, offset + 5)
+  const totalArtifacts = filteredArtifacts.length
 
   function prevPage() {
     router.push(`/?offset=${Math.max(0, offset - 5)}`, { scroll: false })
@@ -60,7 +74,7 @@ export function ArtifactsTable({
   }
 
   const handleDeleteSuccess = () => {
-    onArtifactsChange()
+    fetchUserArtifacts(userId)
   }
 
   const handleEditArtifact = (artifactId: string) => {
@@ -82,7 +96,7 @@ export function ArtifactsTable({
           accessor_emails: [email]
         }
         documentService.shareDocument(shareDocument)
-         toast({
+        toast({
           title: "Document shared successfully",
           description: `Shared "${selectedDocument.name}" with ${email}`,
         })
@@ -124,7 +138,7 @@ export function ArtifactsTable({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {artifacts.map(artifact => (
+              {paginatedArtifacts.map(artifact => (
                 <TableRow key={artifact.document_id}>
                   <TableCell>{artifact.document_name}</TableCell>
                   <TableCell>{artifact.description}</TableCell>
