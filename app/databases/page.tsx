@@ -5,9 +5,10 @@ import ArtifactsPageContent from '@/features/document-collection/components/arti
 export default async function ArtifactsPage() {
   const session = (await auth()) as Session
   const userId = session.user.id
+  const userEmail = session.user.email
   const searchParams = {q:'', offset:'0'}
   return (
-    <ArtifactsPageContent  searchParams={searchParams} userId={userId}/>
+    <ArtifactsPageContent  searchParams={searchParams} userId={userId} userEmail={userEmail} />
   );
 }
 

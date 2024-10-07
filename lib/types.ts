@@ -65,17 +65,24 @@ export interface Artefact {
 export interface UserArtifactsResponse {
   user_id: string
   artefact_tree: Artefact[]
-  shared_documents_owned: SharedDocument[]
-  // shared_artifacts_loaned: SharedDocument[]
+  shared_documents_owned: SharedDocumentOwned[]
+  shared_artifacts_loaned: SharedDocumentLoaned[]
 }
 
-export interface SharedDocument {
+export interface SharedDocumentOwned {
   document_id: string;
   validity: string | null;
   accessor: number;
   public_access: boolean;
   access_open: boolean;
   shared_at: string;
+}
+
+export interface SharedDocumentLoaned {
+  document_id: string;
+  document_alias: string;
+  description: string;
+  validity: boolean;
 }
 
 export interface MarketArtifact {

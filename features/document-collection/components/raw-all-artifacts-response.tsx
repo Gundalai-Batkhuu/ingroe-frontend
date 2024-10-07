@@ -7,7 +7,7 @@ interface AllArtifactsTableProps {
   userId: string
 }
 
-export function AllArtifactsTable({ userId }: AllArtifactsTableProps) {
+export function RawAllArtifactsResponse({ userId }: AllArtifactsTableProps) {
   const [artifacts, setArtifacts] = useState<any>(null)
   const [error, setError] = useState<string | null>(null)
 
