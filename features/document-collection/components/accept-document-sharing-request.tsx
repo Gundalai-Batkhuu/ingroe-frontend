@@ -7,10 +7,10 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface AcceptDocumentSharingRequestProps {
   userId: string;
+  userEmail: string;
 }
 
-export default function AcceptDocumentSharingRequest({ userId }: AcceptDocumentSharingRequestProps) {
-  const [email, setEmail] = useState('');
+export default function AcceptDocumentSharingRequest({ userId, userEmail }: AcceptDocumentSharingRequestProps) {
   const [shareId, setShareId] = useState('');
   const [verificationToken, setVerificationToken] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -24,7 +24,7 @@ export default function AcceptDocumentSharingRequest({ userId }: AcceptDocumentS
     setSuccess(false);
 
     const payload: AcceptSharedDocument = {
-      email,
+      email: userEmail,
       share_id: shareId,
       user_id: userId,
       verification_token: verificationToken,
@@ -32,6 +32,7 @@ export default function AcceptDocumentSharingRequest({ userId }: AcceptDocumentS
     };
 
     try {
+      console.log('Accepting document sharing request:', payload);
       const response = await documentService.acceptSharedDocument(payload);
       console.log('Document sharing accepted:', response);
       setSuccess(true);
@@ -48,17 +49,6 @@ export default function AcceptDocumentSharingRequest({ userId }: AcceptDocumentS
       <h2 className="text-2xl font-bold mb-4">Accept Document Sharing Request</h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email of the sharer</label>
-          <Input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="mt-1"
-          />
-        </div>
         <div>
           <label htmlFor="shareId" className="block text-sm font-medium text-gray-700">Share ID</label>
           <Input

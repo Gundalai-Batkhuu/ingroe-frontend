@@ -4,7 +4,7 @@ import React, { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { ChevronLeft, ChevronRight, MoreHorizontal } from 'lucide-react'
 import { userArtifactsStore } from '@/stores/userArtifactsStore'
-import { SharedDocument } from '@/lib/types'
+import { SharedDocumentOwned } from '@/lib/types'
 import {
   Table,
   TableBody,
@@ -35,7 +35,7 @@ interface SharedArtifactsTableProps {
   searchParams: { q: string; offset: string }
 }
 
-export function SharedArtifactsTable({ userId, searchParams }: SharedArtifactsTableProps) {
+export function SharedArtifactsOwnedTable({ userId, searchParams }: SharedArtifactsTableProps) {
   const router = useRouter()
   const { artifacts, isLoading, error, fetchUserArtifacts } = userArtifactsStore()
   const search = searchParams.q ?? ''
@@ -91,7 +91,7 @@ export function SharedArtifactsTable({ userId, searchParams }: SharedArtifactsTa
             </TableRow>
           </TableHeader>
           <TableBody>
-            {paginatedDocuments.map((doc: SharedDocument) => {
+            {paginatedDocuments.map((doc: SharedDocumentOwned) => {
               const artifact = artifacts.artefact_tree.find(art => art.document_id === doc.document_id)
               return (
                 <TableRow key={doc.document_id}>
@@ -137,7 +137,7 @@ export function SharedArtifactsTable({ userId, searchParams }: SharedArtifactsTa
               size="sm"
               disabled={offset === 0}
             >
-              <ChevronLeft className="mr-2 h-4 w-4" />
+              <ChevronLeft className="mr-2 size-4" />
               Prev
             </Button>
             <Button
@@ -147,7 +147,7 @@ export function SharedArtifactsTable({ userId, searchParams }: SharedArtifactsTa
               disabled={offset + 5 >= totalDocuments}
             >
               Next
-              <ChevronRight className="ml-2 h-4 w-4" />
+              <ChevronRight className="ml-2 size-4" />
             </Button>
           </div>
         </form>
