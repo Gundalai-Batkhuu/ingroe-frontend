@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import { documentService } from '@/services/document-service'
 import { CreateDocument } from '@/lib/types'
 import { Loader2 } from 'lucide-react'
@@ -13,11 +14,11 @@ type ResourceItem = {
 }
 
 interface CreateDocumentButtonProps {
-  className?: string
-  resourceItems: ResourceItem[]
-  title: string,
   userId: string
+  title: string
   description: string
+  resourceItems: ResourceItem[]
+  className?: string
 }
 
 export const CreateDocumentButton: React.FC<CreateDocumentButtonProps> = ({
@@ -108,16 +109,13 @@ export const CreateDocumentButton: React.FC<CreateDocumentButtonProps> = ({
   }
 
   return (
-    <div className={className}>
-      <Button
-        variant="default"
-        onClick={handleSubmit}
-        disabled={documentCreationStatus === 'loading'}
-        className="relative"
-      >
-        Create Knowledge Base
-      </Button>
-      {renderStatusMessage()}
-    </div>
+    <Button
+      variant="default"
+      onClick={handleSubmit}
+      disabled={documentCreationStatus === 'loading'}
+      className={cn("relative", className)}
+    >
+      Submit
+    </Button>
   )
 }
