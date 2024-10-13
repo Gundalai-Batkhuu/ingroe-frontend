@@ -1,22 +1,22 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Upload, Link, PenTool, File, Plus, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-  CardDescription
+  CardDescription,
+  CardFooter
 } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Label } from '@/components/ui/label'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Separator } from '@/components/ui/separator'
 import { CreateDocumentButton } from '@/features/document-handling/components/create-document-button'
+import { NewDocumentDialog } from '@/features/document-handling/components/new-document-dialog'
+import SearchPageContent from "@/features/google-search/components/search-page-content";
 
 type ResourceItem =
   | { id: string; type: 'file' | 'note'; content: File; displayName: string }
@@ -35,6 +35,11 @@ export default function KnowledgeBaseCreator({
   const [fileInput, setFileInput] = useState<string>('')
   const [linkInput, setLinkInput] = useState<string>('')
   const [noteFileInput, setNoteFileInput] = useState<string>('')
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+
+  useEffect(() => {
+    setIsDialogOpen(true)
+  }, [])
 
   const addResource = (
     type: 'file' | 'link' | 'note',
@@ -53,7 +58,7 @@ export default function KnowledgeBaseCreator({
             type,
             content: content as File,
             displayName: (content as File).name
-          };
+          }
     setResourceItems([...resourceItems, newResource])
   }
 
@@ -86,82 +91,22 @@ export default function KnowledgeBaseCreator({
   }
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex-1 flex gap-6 p-6">
-        <Card className="w-1/2">
+    <div className="flex flex-col h-[calc(100vh-6rem)]">
+      <div className="flex-1 flex gap-6">
+        <Card className="w-3/4">
           <CardHeader>
-            <CardTitle>Create New Knowledge Base</CardTitle>
+            <CardTitle>{title || 'Database name'}</CardTitle>
             <CardDescription>
-              Enter details and add documents to your knowledge base
+              {description || 'Database description'}
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="kb-title">Title</Label>
-                <Input
-                  id="kb-title"
-                  value={title}
-                  onChange={e => setTitle(e.target.value)}
-                  placeholder="Enter knowledge base title"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="kb-description">Description</Label>
-                <Textarea
-                  id="kb-description"
-                  value={description}
-                  onChange={e => setDescription(e.target.value)}
-                  placeholder="Enter knowledge base description"
-                  rows={3}
-                />
-              </div>
-            </div>
-            <Separator />
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Uploaded Documents</h3>
-              <ScrollArea className="w-full rounded-md border p-4">
-                <ul className="space-y-2">
-                  {resourceItems.map(doc => (
-                    <li
-                      key={doc.id}
-                      className="flex items-center justify-between bg-muted p-2 rounded"
-                    >
-                      <span className="flex items-center">
-                        {doc.type === 'file' && (
-                          <File className="h-4 w-4 mr-2" />
-                        )}
-                        {doc.type === 'link' && (
-                          <Link className="h-4 w-4 mr-2" />
-                        )}
-                        {doc.type === 'note' && (
-                          <PenTool className="h-4 w-4 mr-2" />
-                        )}
-                        {doc.displayName}
-                      </span>
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        onClick={() => removeDocument(doc.id)}
-                        aria-label={`Remove ${doc.type}`}
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
-                    </li>
-                  ))}
-                </ul>
-              </ScrollArea>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="w-1/2">
-          <CardContent className="p-6">
+          <CardContent className="px-6">
             <Tabs defaultValue="file" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
+              <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="file">Files</TabsTrigger>
                 <TabsTrigger value="link">Web Links</TabsTrigger>
                 <TabsTrigger value="note">Handwritten Notes</TabsTrigger>
+                <TabsTrigger value="search">Web Search</TabsTrigger>
               </TabsList>
               <TabsContent value="file" className="mt-4 space-y-4">
                 <h2 className="text-lg font-semibold">Upload Files</h2>
@@ -213,18 +158,72 @@ export default function KnowledgeBaseCreator({
                   </label>
                 </div>
               </TabsContent>
+              <TabsContent value="search" className="mt-4 space-y-4">
+                <SearchPageContent userId={userId} />
+              </TabsContent>
             </Tabs>
           </CardContent>
         </Card>
+
+        <Card className="w-1/4 flex flex-col h-full">
+          <CardHeader>
+            <CardTitle>Uploads</CardTitle>
+          </CardHeader>
+          <CardContent className="flex-1 overflow-hidden">
+            <ScrollArea className="h-full">
+              <ul className="space-y-2 p-4">
+                {resourceItems.map(doc => (
+                  <li
+                    key={doc.id}
+                    className="flex items-center justify-between bg-muted p-2 rounded"
+                  >
+                    <span className="flex items-center">
+                      {doc.type === 'file' && <File className="size-4 mr-2" />}
+                      {doc.type === 'link' && <Link className="size-4 mr-2" />}
+                      {doc.type === 'note' && (
+                        <PenTool className="size-4 mr-2" />
+                      )}
+                      {doc.displayName}
+                    </span>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      onClick={() => removeDocument(doc.id)}
+                      aria-label={`Remove ${doc.type}`}
+                    >
+                      <X className="size-4" />
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            </ScrollArea>
+          </CardContent>
+          <CardFooter className="flex justify-between gap-4 p-4">
+            <Button
+              variant="outline"
+              onClick={() => setResourceItems([])}
+              disabled={resourceItems.length === 0}
+              className="flex-1"
+            >
+              Clear All
+            </Button>
+            <CreateDocumentButton
+              userId={userId}
+              title={title}
+              description={description}
+              resourceItems={resourceItems}
+              className="flex-1"
+            />
+          </CardFooter>
+        </Card>
       </div>
 
-      <div className="p-6">
-        <CreateDocumentButton
-          userId={userId}
-          title={title}
-          description={description}
-          resourceItems={resourceItems}/>
-      </div>
+      <NewDocumentDialog
+        setDescription={setDescription}
+        setTitle={setTitle}
+        open={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+      />
     </div>
   )
 }
