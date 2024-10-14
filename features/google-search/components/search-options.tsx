@@ -51,59 +51,63 @@ export function SearchOptions({
   const selectedCountry = COUNTRIES.find((option: Country) => option.value === country) || COUNTRIES[0]
 
   return (
-    <div className={`w-full max-w-md space-y-6 ${className}`}>
-      <div className="space-y-2">
-        <div className="flex items-center space-x-2">
-          <Checkbox
-            id="country-specific-search"
-            checked={countrySpecificSearch}
-            onCheckedChange={(checked) => setCountrySpecificSearch(checked as boolean)}
-          />
-          <Label htmlFor="country-specific-search">Country specific search</Label>
+    <div className={`w-full space-y-4 ${className}`}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <div>
+          <h3 className="text-sm font-semibold mb-2">Search Settings</h3>
+          <div className="space-y-2">
+            <Label className="flex items-center gap-2 text-xs">
+              <Checkbox
+                id="country-specific-search"
+                checked={countrySpecificSearch}
+                onCheckedChange={(checked) => setCountrySpecificSearch(checked as boolean)}
+              />
+              Country specific search
+            </Label>
+          </div>
+          <div className="mt-2">
+            <Label htmlFor="country-selector" className="text-xs">Select a country</Label>
+            <CountrySelector
+              id="country-selector"
+              open={isOpen}
+              onToggle={() => setIsOpen(!isOpen)}
+              onChange={setCountry}
+              selectedValue={selectedCountry}
+            />
+          </div>
+        </div>
+
+        <div>
+          <h3 className="text-sm font-semibold mb-2">Search Type</h3>
+          <Select value={searchType} onValueChange={(value) => setSearchType(value as "strict" | "medium" | "open")}>
+            <SelectTrigger id="search-type" className="text-xs">
+              <SelectValue placeholder="Select search type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="strict" className="text-xs">Strict</SelectItem>
+              <SelectItem value="medium" className="text-xs">Medium</SelectItem>
+              <SelectItem value="open" className="text-xs">Open</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div>
+          <h3 className="text-sm font-semibold mb-2">File Type</h3>
+          <Select value={fileType || 'any'} onValueChange={(value) => setFileType(value === 'any' ? undefined : value as "pdf" | "docx")}>
+            <SelectTrigger id="file-type" className="text-xs">
+              <SelectValue placeholder="Select file type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="any" className="text-xs">Any</SelectItem>
+              <SelectItem value="pdf" className="text-xs">PDF</SelectItem>
+              <SelectItem value="docx" className="text-xs">DOCX</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="country-selector">Select a country</Label>
-        <CountrySelector
-          id="country-selector"
-          open={isOpen}
-          onToggle={() => setIsOpen(!isOpen)}
-          onChange={setCountry}
-          selectedValue={selectedCountry}
-        />
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="search-type">Search type</Label>
-        <Select value={searchType} onValueChange={(value) => setSearchType(value as "strict" | "medium" | "open")}>
-          <SelectTrigger id="search-type">
-            <SelectValue placeholder="Select search type" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="strict">Strict</SelectItem>
-            <SelectItem value="medium">Medium</SelectItem>
-            <SelectItem value="open">Open</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="file-type">File type</Label>
-        <Select value={fileType || 'any'} onValueChange={(value) => setFileType(value === 'any' ? undefined : value as "pdf" | "docx")}>
-          <SelectTrigger id="file-type">
-            <SelectValue placeholder="Select file type" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="any">Any</SelectItem>
-            <SelectItem value="pdf">PDF</SelectItem>
-            <SelectItem value="docx">DOCX</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="results">Number of search results</Label>
+      <div>
+        <h3 className="text-sm font-semibold mb-2">Number of search results</h3>
         <Slider
           id="results"
           min={1}
@@ -112,37 +116,48 @@ export function SearchOptions({
           value={[results]}
           onValueChange={(value) => setResults(value[0])}
         />
-        <div className="text-sm text-muted-foreground text-center">{results}</div>
+        <div className="text-xs text-muted-foreground text-center mt-1">{results}</div>
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="before">Before year</Label>
-        <Input
-          id="before"
-          type="number"
-          value={before || ''}
-          onChange={(e) => setBefore(e.target.value ? Number(e.target.value) : undefined)}
-        />
-      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <h3 className="text-sm font-semibold mb-2">Date Range</h3>
+          <div className="space-y-2">
+            <div>
+              <Label htmlFor="before" className="text-xs">Before year</Label>
+              <Input
+                id="before"
+                type="number"
+                value={before || ''}
+                onChange={(e) => setBefore(e.target.value ? Number(e.target.value) : undefined)}
+                className="text-xs"
+              />
+            </div>
+            <div>
+              <Label htmlFor="after" className="text-xs">After year</Label>
+              <Input
+                id="after"
+                type="number"
+                value={after || ''}
+                onChange={(e) => setAfter(e.target.value ? Number(e.target.value) : undefined)}
+                className="text-xs"
+              />
+            </div>
+          </div>
+        </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="after">After year</Label>
-        <Input
-          id="after"
-          type="number"
-          value={after || ''}
-          onChange={(e) => setAfter(e.target.value ? Number(e.target.value) : undefined)}
-        />
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="site">Site specific search</Label>
-        <Input
-          id="site"
-          type="text"
-          value={site || ''}
-          onChange={(e) => setSite(e.target.value || undefined)}
-        />
+        <div>
+          <h3 className="text-sm font-semibold mb-2">Site Specific Search</h3>
+          <Label htmlFor="site" className="text-xs">Enter website URL</Label>
+          <Input
+            id="site"
+            type="text"
+            value={site || ''}
+            onChange={(e) => setSite(e.target.value || undefined)}
+            placeholder="e.g., example.com"
+            className="text-xs"
+          />
+        </div>
       </div>
     </div>
   )

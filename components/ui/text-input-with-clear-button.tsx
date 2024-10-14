@@ -1,8 +1,9 @@
-import React, { useState, useRef, ChangeEvent } from 'react';
+import React, { useState, useRef, ChangeEvent, KeyboardEvent } from 'react';
 
 type InputWithClearProps = {
   placeholder?: string;
   onChange: (value: string) => void;
+  onKeyPress: (e: KeyboardEvent<HTMLInputElement>) => void;
 };
 
 export const TextInputWithClearButton = ({
