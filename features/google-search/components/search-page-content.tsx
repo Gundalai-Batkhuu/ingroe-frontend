@@ -4,7 +4,6 @@ import React, { useState } from 'react'
 import { SearchBar } from '@/features/google-search/components/search-bar'
 import { SearchResultsList } from '@/features/google-search/components/search-results'
 import { AdvancedSearchOptions } from '@/features/google-search/components/advanced-search-options'
-import { SelectedSearchResults } from '@/features/google-search/components/selected-search-results'
 import { useSelectedItemsStore } from '@/stores/selectedItemsStore'
 import { CountryShortName } from '@/lib/types'
 
@@ -25,53 +24,44 @@ export default function SearchPageContent({ userId }: SearchPageContentProps) {
   const { selectedItems, setSelectedItems } = useSelectedItemsStore()
 
   return (
-    <div className="flex h-[calc(100vh-6rem)] overflow-hidden pt-6">
-      <AdvancedSearchOptions
-        country={country}
-        setCountry={setCountry}
-        countrySpecificSearch={countrySpecificSearch}
-        setCountrySpecificSearch={setCountrySpecificSearch}
-        searchType={searchType}
-        setSearchType={setSearchType}
-        fileType={fileType}
-        setFileType={setFileType}
-        results={results}
-        setResults={setResults}
-        before={before}
-        setBefore={setBefore}
-        after={after}
-        setAfter={setAfter}
-        site={site}
-        setSite={setSite}
-        userId={userId}
-      />
-      <div className="flex-1 overflow-y-auto">
-        <div className="flex flex-col h-full p-6">
-          <div className="flex-grow flex flex-col items-center justify-center space-y-8 w-full">
-            <div className="w-full max-w-[90%]">
-              <SearchBar
-                setResults={setSearchResults}
-                country={country}
-                countrySpecificSearch={countrySpecificSearch}
-                searchType={searchType}
-                fileType={fileType}
-                results={results}
-                before={before}
-                after={after}
-                site={site}
-              />
-            </div>
-          </div>
-          <div className="w-full max-w-[90%] mx-auto mt-8">
-            <SearchResultsList
-              results={searchResults}
-              selectedItems={selectedItems}
-              setSelectedItems={setSelectedItems}
-            />
-          </div>
-        </div>
+    <div className="flex flex-col h-[calc(100vh-6rem)] overflow-y-auto pt-6 px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-3xl mx-auto space-y-6">
+        <AdvancedSearchOptions
+          country={country}
+          setCountry={setCountry}
+          countrySpecificSearch={countrySpecificSearch}
+          setCountrySpecificSearch={setCountrySpecificSearch}
+          searchType={searchType}
+          setSearchType={setSearchType}
+          fileType={fileType}
+          setFileType={setFileType}
+          results={results}
+          setResults={setResults}
+          before={before}
+          setBefore={setBefore}
+          after={after}
+          setAfter={setAfter}
+          site={site}
+          setSite={setSite}
+          userId={userId}
+        />
+        <SearchBar
+          setResults={setSearchResults}
+          country={country}
+          countrySpecificSearch={countrySpecificSearch}
+          searchType={searchType}
+          fileType={fileType}
+          results={results}
+          before={before}
+          after={after}
+          site={site}
+        />
+        <SearchResultsList
+          results={searchResults}
+          selectedItems={selectedItems}
+          setSelectedItems={setSelectedItems}
+        />
       </div>
-      <SelectedSearchResults userId={userId} />
     </div>
   )
 }

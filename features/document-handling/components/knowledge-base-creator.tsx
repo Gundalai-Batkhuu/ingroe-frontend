@@ -208,16 +208,16 @@ export default function KnowledgeBaseCreator({
               Clear All
             </Button>
             <CreateDocumentButton
-              userId={userId}
-              title={title}
-              description={description}
+              userId={userId} 
+              title={title || ''}
+              description={description || ''}
               resourceItems={resourceItems}
               className="flex-1"
             />
           </CardFooter>
         </Card>
       </div>
-
+                
       <NewDocumentDialog
         setDescription={setDescription}
         setTitle={setTitle}
