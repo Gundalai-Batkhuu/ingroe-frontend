@@ -18,7 +18,7 @@ import { DocumentCreationButton } from '@/features/document-creation/components/
 import { NewDocumentDialog } from '@/features/document-creation/components/new-document-dialog'
 import SearchPageContent from "@/features/google-search/components/search-page-content";
 import { useResourceItemsStore } from '@/features/document-creation/stores/useResourceItemsStore'
-
+import { FileWithPath } from 'react-dropzone'
 
 interface KnowledgeBaseCreatorProps {
   userId: string
@@ -33,19 +33,17 @@ export default function DocumentCreator({
   const [linkInput, setLinkInput] = useState<string>('')
   const [noteFileInput, setNoteFileInput] = useState<string>('')
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-
+  
   const { resourceItems, addResourceItem, removeResourceItem, clearResourceItems } = useResourceItemsStore()
 
   useEffect(() => {
     setIsDialogOpen(true)
   }, [])
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
+  const handleFileUpload = (acceptedFiles: FileWithPath[]) => {
+    acceptedFiles.forEach(file => {
       addResourceItem('file', file)
-      setFileInput('')
-    }
+    })
   }
 
   const handleLinkAdd = (e: React.FormEvent) => {
@@ -83,18 +81,31 @@ export default function DocumentCreator({
                 <TabsTrigger value="search">Web Search</TabsTrigger>
               </TabsList>
               <TabsContent value="file" className="mt-4 space-y-4 px-4 sm:px-6 lg:px-8">
-                <h2 className="text-lg font-semibold">Upload Files</h2>
-                <div className="flex items-center space-x-2">
+                <h2 className="text-lg font-semibold">Upload Files and Folders</h2>
+                <div
+                  className="border-2 border-dashed border-gray-300 rounded-md p-8 text-center"
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => {
+                    e.preventDefault()
+                    const files = Array.from(e.dataTransfer.files)
+                    handleFileUpload(files as FileWithPath[])
+                  }}
+                >
                   <Input
                     type="file"
-                    onChange={handleFileUpload}
-                    value={fileInput}
-                    className="flex-1"
+                    onChange={(e) => {
+                      const files = Array.from(e.target.files || [])
+                      handleFileUpload(files as FileWithPath[])
+                    }}
+                    multiple
+                    className="hidden"
                     id="file-upload"
                   />
                   <label htmlFor="file-upload" className="cursor-pointer">
-                    <Upload className="size-6 text-gray-500" />
-                    <span className="sr-only">Upload file</span>
+                    <Upload className="size-12 text-gray-400 mx-auto mb-4" />
+                    <p className="text-sm text-gray-600">
+                      Drag and drop files or folders here, or click to select
+                    </p>
                   </label>
                 </div>
               </TabsContent>
