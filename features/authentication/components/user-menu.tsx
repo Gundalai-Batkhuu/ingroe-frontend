@@ -14,7 +14,7 @@ import { RemoveUserForm } from '@/features/authentication/forms/remove-user-form
 import { SignoutForm } from '@/features/authentication/forms/signout-form'
 import {IconUser} from "@/components/icons";
 
-export async function User() {
+export async function UserMenu() {
   let session = await auth();
   let user = session?.user;
 

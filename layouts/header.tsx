@@ -1,6 +1,6 @@
 import { MobileNav } from '@/layouts/navbar'
 import { SearchInput } from '@/features/document-collection/components/search'
-import { User } from '@/features/authentication/components/user'
+import { UserMenu } from '@/features/authentication/components/user-menu'
 import React from 'react'
 import { DynamicBreadcrumb } from '@/layouts/breadcrumb'
 
@@ -11,7 +11,7 @@ export default function HeaderLayout() {
       <MobileNav />
       <DynamicBreadcrumb />
       <SearchInput />
-      <User />
+      <UserMenu />
     </header>
   )
 }
