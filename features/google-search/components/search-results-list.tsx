@@ -1,6 +1,8 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { SearchResult } from '@/lib/types'
 import { truncateText } from '@/lib/utils'
+import { useResourceItemsStore } from '@/features/document-creation/stores/useResourceItemsStore'
+
 
 interface SearchResultsListProps {
   searchResults: SearchResult[]
@@ -9,8 +11,23 @@ interface SearchResultsListProps {
 export const SearchResultsList = ({
   searchResults,
 }: SearchResultsListProps) => {
+  const { addResourceItem, removeResourceItem, resourceItems } = useResourceItemsStore()
+  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set())
 
+  useEffect(() => {
+    setSelectedItems(new Set(resourceItems.map(item => item.content as string)))
+  }, [resourceItems])
 
+  const handleToggle = (result: SearchResult) => {
+    if (selectedItems.has(result.link)) {
+      const itemToRemove = resourceItems.find(item => item.content === result.link)
+      if (itemToRemove) {
+        removeResourceItem(itemToRemove.id)
+      }
+    } else {
+      addResourceItem('link', result.link)
+    }
+  }
 
   return (
     <div className="max-w-2xl mx-auto mt-8">
@@ -58,6 +75,8 @@ export const SearchResultsList = ({
             <input
               type="checkbox"
               className="size-6 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+              checked={selectedItems.has(result.link)}
+              onChange={() => handleToggle(result)}
             />
           </div>
         </div>

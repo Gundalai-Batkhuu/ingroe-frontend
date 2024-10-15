@@ -82,7 +82,7 @@ export default function DocumentCreator({
                 <TabsTrigger value="note">Handwritten Notes</TabsTrigger>
                 <TabsTrigger value="search">Web Search</TabsTrigger>
               </TabsList>
-              <TabsContent value="file" className="mt-4 space-y-4">
+              <TabsContent value="file" className="mt-4 space-y-4 px-4 sm:px-6 lg:px-8">
                 <h2 className="text-lg font-semibold">Upload Files</h2>
                 <div className="flex items-center space-x-2">
                   <Input
@@ -93,12 +93,12 @@ export default function DocumentCreator({
                     id="file-upload"
                   />
                   <label htmlFor="file-upload" className="cursor-pointer">
-                    <Upload className="h-6 w-6 text-gray-500" />
+                    <Upload className="size-6 text-gray-500" />
                     <span className="sr-only">Upload file</span>
                   </label>
                 </div>
               </TabsContent>
-              <TabsContent value="link" className="mt-4 space-y-4">
+              <TabsContent value="link" className="mt-4 space-y-4 px-4 sm:px-6 lg:px-8">
                 <h2 className="text-lg font-semibold">Add Web Links</h2>
                 <form
                   onSubmit={handleLinkAdd}
@@ -112,11 +112,11 @@ export default function DocumentCreator({
                     className="flex-1"
                   />
                   <Button type="submit" size="icon" aria-label="Add link">
-                    <Plus className="h-4 w-4" />
+                    <Plus className="size-4" />
                   </Button>
                 </form>
               </TabsContent>
-              <TabsContent value="note" className="mt-4 space-y-4">
+              <TabsContent value="note" className="mt-4 space-y-4 px-4 sm:px-6 lg:px-8">
                 <h2 className="text-lg font-semibold">Add Handwritten Notes</h2>
                 <div className="flex items-center space-x-2">
                   <Input
@@ -127,7 +127,7 @@ export default function DocumentCreator({
                     id="note-file-upload"
                   />
                   <label htmlFor="note-file-upload" className="cursor-pointer">
-                    <Upload className="h-6 w-6 text-gray-500" />
+                    <Upload className="size-6 text-gray-500" />
                     <span className="sr-only">Upload handwritten note</span>
                   </label>
                 </div>
