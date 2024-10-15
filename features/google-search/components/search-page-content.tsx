@@ -22,7 +22,7 @@ export default function SearchPageContent({ userId }: SearchPageContentProps) {
   const [site, setSite] = useState<string | undefined>(undefined)
 
   return (
-    <div className="flex flex-col h-[calc(100vh-6rem)] overflow-y-auto pt-6 px-4 sm:px-6 lg:px-8">
+    <div className="flex flex-col h-[calc(100vh-6rem)] overflow-y-auto px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-3xl mx-auto space-y-6">
         <AdvancedSearchOptions
           country={country}
