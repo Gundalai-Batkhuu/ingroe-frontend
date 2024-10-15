@@ -2,9 +2,8 @@
 
 import React, { useState } from 'react'
 import { SearchBar } from '@/features/google-search/components/search-bar'
-import { SearchResultsList } from '@/features/google-search/components/search-results'
+import { SearchResultsList } from '@/features/google-search/components/search-results-list'
 import { AdvancedSearchOptions } from '@/features/google-search/components/advanced-search-options'
-import { useSelectedItemsStore } from '@/stores/selectedItemsStore'
 import { CountryShortName } from '@/lib/types'
 
 interface SearchPageContentProps {
@@ -21,7 +20,6 @@ export default function SearchPageContent({ userId }: SearchPageContentProps) {
   const [before, setBefore] = useState<number | undefined>(undefined)
   const [after, setAfter] = useState<number | undefined>(undefined)
   const [site, setSite] = useState<string | undefined>(undefined)
-  const { selectedItems, setSelectedItems } = useSelectedItemsStore()
 
   return (
     <div className="flex flex-col h-[calc(100vh-6rem)] overflow-y-auto pt-6 px-4 sm:px-6 lg:px-8">
@@ -46,7 +44,7 @@ export default function SearchPageContent({ userId }: SearchPageContentProps) {
           userId={userId}
         />
         <SearchBar
-          setResults={setSearchResults}
+          setSearchResults={setSearchResults}
           country={country}
           countrySpecificSearch={countrySpecificSearch}
           searchType={searchType}
@@ -57,9 +55,7 @@ export default function SearchPageContent({ userId }: SearchPageContentProps) {
           site={site}
         />
         <SearchResultsList
-          results={searchResults}
-          selectedItems={selectedItems}
-          setSelectedItems={setSelectedItems}
+          searchResults={searchResults}
         />
       </div>
     </div>

@@ -21,11 +21,11 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { MoreHorizontal, Trash, Plus, Edit, X } from 'lucide-react'
 import { Artefact } from '@/lib/types'
-import { UpdateDocumentInfo } from '@/features/document-handling/components/update-document-info'
-import { ArtifactEditMode } from '@/features/document-handling/components/artifact-edit-mode'
-import { ArtifactViewMode } from '@/features/document-handling/components/artifact-view-mode'
-import { LinkDocumentUploader } from '@/features/document-handling/components/link-document-uploader'
-import { FileDocumentUploader } from '@/features/document-handling/components/file-document-uploader'
+import { UpdateDocumentInfo } from '@/features/document-creation/components/update-document-info'
+import { ArtifactEditMode } from '@/features/document-creation/components/artifact-edit-mode'
+import { ArtifactViewMode } from '@/features/document-creation/components/artifact-view-mode'
+import { LinkDocumentUploader } from '@/features/document-creation/components/link-document-uploader'
+import { FileDocumentUploader } from '@/features/document-creation/components/file-document-uploader'
 
 interface EditArtifactPageContentProps {
   params: { id: string }

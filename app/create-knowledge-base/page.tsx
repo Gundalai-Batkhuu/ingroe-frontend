@@ -1,4 +1,4 @@
-import KnowledgeBaseCreator from '@/features/document-handling/components/knowledge-base-creator'
+import KnowledgeBaseCreator from '@/features/document-creation/components/document-creator'
 import { auth } from '@/features/authentication/auth'
 import { Session } from '@/lib/types'
 import React from 'react'

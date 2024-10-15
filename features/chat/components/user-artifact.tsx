@@ -1,7 +1,7 @@
 import React from 'react'
 import { ChevronDown, ChevronRight } from 'lucide-react'
 import { Artefact } from '@/lib/types'
-import { DeleteDocumentButton } from '@/features/document-handling/components/delete-doc-button'
+import { DeleteDocumentButton } from '@/features/document-creation/components/delete-doc-button'
 import {Card} from "@/components/ui/card";
 import EditDocumentButton from "@/features/chat/components/editDocumentButton";
 
