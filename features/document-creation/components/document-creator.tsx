@@ -14,62 +14,36 @@ import {
 } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { CreateDocumentButton } from '@/features/document-handling/components/create-document-button'
-import { NewDocumentDialog } from '@/features/document-handling/components/new-document-dialog'
+import { DocumentCreationButton } from '@/features/document-creation/components/document-creation-button'
+import { NewDocumentDialog } from '@/features/document-creation/components/new-document-dialog'
 import SearchPageContent from "@/features/google-search/components/search-page-content";
+import { useResourceItemsStore } from '@/features/document-creation/stores/useResourceItemsStore'
 
-type ResourceItem =
-  | { id: string; type: 'file' | 'note'; content: File; displayName: string }
-  | { id: string; type: 'link'; content: string; displayName: string }
 
 interface KnowledgeBaseCreatorProps {
   userId: string
 }
 
-export default function KnowledgeBaseCreator({
+export default function DocumentCreator({
   userId
 }: KnowledgeBaseCreatorProps) {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
-  const [resourceItems, setResourceItems] = useState<ResourceItem[]>([])
   const [fileInput, setFileInput] = useState<string>('')
   const [linkInput, setLinkInput] = useState<string>('')
   const [noteFileInput, setNoteFileInput] = useState<string>('')
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
+  const { resourceItems, addResourceItem, removeResourceItem, clearResourceItems } = useResourceItemsStore()
+
   useEffect(() => {
     setIsDialogOpen(true)
   }, [])
 
-  const addResource = (
-    type: 'file' | 'link' | 'note',
-    content: File | string
-  ) => {
-    const newResource: ResourceItem =
-      type === 'link'
-        ? {
-            id: Date.now().toString(),
-            type,
-            content: content as string,
-            displayName: content as string
-          }
-        : {
-            id: Date.now().toString(),
-            type,
-            content: content as File,
-            displayName: (content as File).name
-          }
-    setResourceItems([...resourceItems, newResource])
-  }
-
-  const removeDocument = (id: string) => {
-    setResourceItems(resourceItems.filter(doc => doc.id !== id))
-  }
-
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      addResource('file', file)
+      addResourceItem('file', file)
       setFileInput('')
     }
   }
@@ -77,7 +51,7 @@ export default function KnowledgeBaseCreator({
   const handleLinkAdd = (e: React.FormEvent) => {
     e.preventDefault()
     if (linkInput.trim()) {
-      addResource('link', linkInput.trim())
+      addResourceItem('link', linkInput.trim())
       setLinkInput('')
     }
   }
@@ -85,7 +59,7 @@ export default function KnowledgeBaseCreator({
   const handleNoteFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      addResource('note', file)
+      addResourceItem('note', file)
       setNoteFileInput('')
     }
   }
@@ -172,24 +146,24 @@ export default function KnowledgeBaseCreator({
           <CardContent className="flex-1 overflow-hidden">
             <ScrollArea className="h-full">
               <ul className="space-y-2 p-4">
-                {resourceItems.map(doc => (
+                {resourceItems.map(resource => (
                   <li
-                    key={doc.id}
+                    key={resource.id}
                     className="flex items-center justify-between bg-muted p-2 rounded"
                   >
                     <span className="flex items-center">
-                      {doc.type === 'file' && <File className="size-4 mr-2" />}
-                      {doc.type === 'link' && <Link className="size-4 mr-2" />}
-                      {doc.type === 'note' && (
+                      {resource.type === 'file' && <File className="size-4 mr-2" />}
+                      {resource.type === 'link' && <Link className="size-4 mr-2" />}
+                      {resource.type === 'note' && (
                         <PenTool className="size-4 mr-2" />
                       )}
-                      {doc.displayName}
+                      {resource.displayName}
                     </span>
                     <Button
                       size="icon"
                       variant="ghost"
-                      onClick={() => removeDocument(doc.id)}
-                      aria-label={`Remove ${doc.type}`}
+                      onClick={() => removeResourceItem(resource.id)}
+                      aria-label={`Remove ${resource.type}`}
                     >
                       <X className="size-4" />
                     </Button>
@@ -201,17 +175,16 @@ export default function KnowledgeBaseCreator({
           <CardFooter className="flex justify-between gap-4 p-4">
             <Button
               variant="outline"
-              onClick={() => setResourceItems([])}
+              onClick={clearResourceItems}
               disabled={resourceItems.length === 0}
               className="flex-1"
             >
               Clear All
             </Button>
-            <CreateDocumentButton
+            <DocumentCreationButton
               userId={userId} 
               title={title || ''}
               description={description || ''}
-              resourceItems={resourceItems}
               className="flex-1"
             />
           </CardFooter>

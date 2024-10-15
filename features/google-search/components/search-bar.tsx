@@ -6,7 +6,7 @@ import { documentService } from '@/services/document-service'
 import {Button} from "@/components/ui/button";
 
 type SearchBarProps = {
-    setResults: (value: any) => void;
+    setSearchResults: (value: any) => void;
     country: string;
     countrySpecificSearch: boolean;
     searchType: "strict" | "medium" | "open";
@@ -18,7 +18,7 @@ type SearchBarProps = {
 };
 
 export const SearchBar = ({
-    setResults,
+    setSearchResults,
     country,
     countrySpecificSearch,
     searchType,
@@ -50,7 +50,7 @@ export const SearchBar = ({
 
         const response = await documentService.searchDocuments(searchQuery);
         console.log(response);
-        setResults(response.results);
+        setSearchResults(response.results);
     }
 
     const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {

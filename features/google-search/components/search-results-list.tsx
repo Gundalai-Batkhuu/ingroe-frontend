@@ -2,29 +2,21 @@ import React from 'react'
 import { SearchResult } from '@/lib/types'
 import { truncateText } from '@/lib/utils'
 
+interface SearchResultsListProps {
+  searchResults: SearchResult[]
+}
 
 export const SearchResultsList = ({
-  results,
-  selectedItems,
-  setSelectedItems
-}: {
-  results: SearchResult[],
-  selectedItems: SearchResult[],
-  setSelectedItems: React.Dispatch<React.SetStateAction<SearchResult[]>>
-}) => {
-  const toggleItemSelection = (result: SearchResult) => {
-    setSelectedItems(prev =>
-      prev.includes(result)
-        ? prev.filter(item => item !== result)
-        : [...prev, result]
-    )
-  }
+  searchResults,
+}: SearchResultsListProps) => {
+
+
 
   return (
     <div className="max-w-2xl mx-auto mt-8">
-      {results.map((result, index) => (
+      {searchResults.map((result, index) => (
         <div key={index} className="mb-12 flex items-center justify-between">
-          <div className="flex-grow pr-4">
+          <div className="grow pr-4">
             <div className="flex items-center mb-1">
               {result.thumbnail && (
                 <img
@@ -62,12 +54,10 @@ export const SearchResultsList = ({
               }}
             />
           </div>
-          <div className="flex-shrink-0">
+          <div className="shrink-0">
             <input
               type="checkbox"
-              className="w-6 h-6 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
-              checked={selectedItems.includes(result)}
-              onChange={() => toggleItemSelection(result)}
+              className="size-6 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
             />
           </div>
         </div>

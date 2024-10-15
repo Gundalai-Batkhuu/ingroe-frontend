@@ -27,9 +27,9 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { MoreHorizontal } from 'lucide-react'
-import { DeleteDocumentButton } from '@/features/document-handling/components/delete-doc-button'
+import { DeleteDocumentButton } from '@/features/document-creation/components/delete-doc-button'
 import SelectArtifactAndChatButton from '@/features/chat/components/select-artifact-and-chat'
-import { ShareDocumentDialog } from "@/features/document-handling/components/share-document-dialog"
+import { ShareDocumentDialog } from "@/features/document-creation/components/share-document-dialog"
 import { documentService } from "@/services/document-service"
 import { useToast } from "@/hooks/use-toast"
 import { userArtifactsStore } from '@/stores/userArtifactsStore'
