@@ -1,3 +1,6 @@
+'use client'
+
+import { useState } from 'react'
 import Link from 'next/link'
 import AppLogo from '@/components/icons'
 import { NavItem } from '@/features/document-collection/components/nav-item'
@@ -8,10 +11,12 @@ import {
   MessageSquareMore, Package,
   Package2,
   PanelLeft,
-  Settings, ShoppingCart,
+  ShoppingCart,
   Store,
   Users2,
-  FilePlus, Search
+  FilePlus, Search,
+  ChevronRight,
+  ChevronLeft
 } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
@@ -24,14 +29,25 @@ import {
   BreadcrumbSeparator
 } from '@/components/ui/breadcrumb'
 import { SettingsMenu } from '@/features/application-settings/settings-menu'
+import { useNavbar } from '@/hooks/use-navbar'
 
 export function DesktopNav() {
+  const { isNavbarExpanded, toggleNavbar } = useNavbar()
+
   return (
-    <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
-      <nav className="flex flex-col items-center gap-4 px-2 sm:py-2">
+    <aside className={`fixed inset-y-0 left-0 z-10 hidden flex-col border-r bg-background transition-all duration-300 ease-in-out sm:flex ${isNavbarExpanded ? 'w-56' : 'w-14'}`}>
+      <nav className="flex flex-col items-center gap-4 px-2 sm:py-2 overflow-hidden">
         <div className="flex items-center justify-center w-14 h-14">
-        <AppLogo />
+        <Button
+        variant="ghost"
+        size="icon"
+        className="absolute left-2.5 top-2 z-30"
+        onClick={toggleNavbar}
+      >
+        {isNavbarExpanded ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+      </Button>
         </div>
+
         <NavItem href="/" label="Home">
           <Home className="h-5 w-5" />
         </NavItem>
@@ -42,10 +58,6 @@ export function DesktopNav() {
 
         <NavItem href="/create-knowledge-base" label="New database">
           <FilePlus className="h-5 w-5" />
-        </NavItem>
-
-        <NavItem href="/search" label="New database">
-          <Search className="h-5 w-5" />
         </NavItem>
 
         <NavItem href="/chat" label="Chat">
@@ -64,18 +76,18 @@ export function DesktopNav() {
           <LineChart className="h-5 w-5" />
         </NavItem>
       </nav>
-      <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
+      <nav className="mt-auto flex flex-col gap-4 pl-3 sm:py-5">
         <Tooltip>
           <TooltipTrigger asChild>
-            <div
-              className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
-            >
+            <div className="flex h-9 w-9 items-center rounded-lg text-muted-foreground transition-colors 
+            hover:text-foreground md:h-8 md:w-8">
               <SettingsMenu/>
             </div>
           </TooltipTrigger>
           <TooltipContent side="right">Settings</TooltipContent>
         </Tooltip>
       </nav>
+      
     </aside>
   );
 }
