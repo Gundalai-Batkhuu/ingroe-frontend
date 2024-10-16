@@ -23,13 +23,7 @@ Before you begin, ensure you have the following installed on your system:
    yarn install
    ```
 3. Create a `.env` file in the root directory of the project and add the environment variables
-   Example:
-   ```bash
-   NEXT_PUBLIC_API_URL=[API_URL]
-   NEXT_PUBLIC_API_KEY=[API_KEY]
-   ```
-   Replace `[API_URL]` with the URL of the API and `[API_KEY]` with the API key.
-
+  
 4. 
 ## Running the Development Server
 
