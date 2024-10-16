@@ -59,9 +59,6 @@ export const documentService = {
         body: JSON.stringify(query)
       })
 
-      if (!response.ok) {
-        throw new Error('Network response was not ok')
-      }
       return await response.json()
     } catch (error) {
       console.error('Error during search:', error)
@@ -130,7 +127,7 @@ export const documentService = {
   },
 
   async acceptSharedDocument(payload: AcceptSharedDocument): Promise<any> {
-    return await fetchApi(ApiEndpoint.ACCEPT_SHARED_DOCUMENT, 'POST', payload)
+    return await fetchApi(ApiEndpoint.ACCEPT_SHARED_DOCUMENT, 'PATCH', payload)
   },
 
   async changeDocumentValidity(payload: ValidityUpdate): Promise<any> {
@@ -222,10 +219,6 @@ async function fetchApi(
       headers,
       body
     })
-
-    if (!response.ok) {
-      throw new Error('Network response was not ok')
-    }
 
     return await response.json()
   } catch (error) {

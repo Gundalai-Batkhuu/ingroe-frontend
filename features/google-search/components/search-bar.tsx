@@ -1,11 +1,12 @@
-import React, { useState, FormEvent } from 'react';
+import React, { useState, FormEvent, KeyboardEvent } from 'react';
 import { COUNTRIES, Country } from "@/data/countries";
 import { TextInputWithClearButton } from '@/components/ui/text-input-with-clear-button';
 import { SearchQuery } from '@/lib/types'
 import { documentService } from '@/services/document-service'
+import {Button} from "@/components/ui/button";
 
 type SearchBarProps = {
-    setResults: (value: any) => void;
+    setSearchResults: (value: any) => void;
     country: string;
     countrySpecificSearch: boolean;
     searchType: "strict" | "medium" | "open";
@@ -17,7 +18,7 @@ type SearchBarProps = {
 };
 
 export const SearchBar = ({
-    setResults,
+    setSearchResults,
     country,
     countrySpecificSearch,
     searchType,
@@ -49,24 +50,25 @@ export const SearchBar = ({
 
         const response = await documentService.searchDocuments(searchQuery);
         console.log(response);
-        setResults(response.results);
+        setSearchResults(response.results);
+    }
+
+    const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            handleSearch(e as unknown as FormEvent<HTMLFormElement>);
+        }
     }
 
     return (
         <form onSubmit={handleSearch} className="w-full max-w-4xl mx-auto">
             <div className="flex items-stretch">
-                <div className="grow w-full rounded-l-md">
+                <div className="grow w-full rounded-md">
                     <TextInputWithClearButton
                         placeholder="Type your keywords here ..."
                         onChange={setQuery}
+                        onKeyPress={handleKeyPress}
                     />
                 </div>
-                <button
-                    type="submit"
-                    className="bg-primary text-primary-foreground hover:bg-primary/90 px-6 rounded-r-md shadow-sm focus:outline-none focus:ring-1 focus:ring-primary focus:ring-offset-1 transition duration-150 ease-in-out flex items-center"
-                >
-                    Search
-                </button>
             </div>
         </form>
     )

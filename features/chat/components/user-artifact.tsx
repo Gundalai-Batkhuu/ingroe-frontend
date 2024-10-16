@@ -1,7 +1,9 @@
 import React from 'react'
 import { ChevronDown, ChevronRight } from 'lucide-react'
 import { Artefact } from '@/lib/types'
-import { DeleteDocumentButton } from '@/features/document-handling/components/delete-doc-button'
+import { DeleteDocumentButton } from '@/features/document-creation/components/delete-doc-button'
+import {Card} from "@/components/ui/card";
+import EditDocumentButton from "@/features/chat/components/editDocumentButton";
 
 interface UserArtifactProps {
   artifact: Artefact
@@ -27,7 +29,7 @@ export function UserArtifact({
   onDelete
 }: UserArtifactProps) {
   return (
-    <div
+    <Card
       className={`cursor-pointer ${
         isSelected ? 'bg-accent' : ''
       } border p-2 rounded`}
@@ -53,11 +55,12 @@ export function UserArtifact({
               : truncateString(artifact.document_name, 20)}
           </div>
         </div>
-        <DeleteDocumentButton
-          document_id={artifact.document_id}
-          user_id={userId}
-          onSuccess={onDelete}
-        />
+        {/*<DeleteDocumentButton*/}
+        {/*  document_id={artifact.document_id}*/}
+        {/*  user_id={userId}*/}
+        {/*  onSuccess={onDelete}*/}
+        {/*/>*/}
+        <EditDocumentButton document_id={artifact.document_id} />
       </div>
       {isExpanded && (
         <div className="ml-6 mt-2 text-sm">
@@ -69,6 +72,6 @@ export function UserArtifact({
           <p>Captured Documents: {artifact.captured_documents.length}</p>
         </div>
       )}
-    </div>
+    </Card>
   )
 }

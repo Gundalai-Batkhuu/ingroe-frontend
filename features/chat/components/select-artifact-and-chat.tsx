@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { useUserArtifactsStore } from '@/stores/userArtifactsStore';
+import { userArtifactsStore } from '@/stores/userArtifactsStore';
 import { Button } from '@/components/ui/button';
 
 interface SelectArtifactAndChatButtonProps {
@@ -9,7 +9,7 @@ interface SelectArtifactAndChatButtonProps {
 
 const SelectArtifactAndChatButton: React.FC<SelectArtifactAndChatButtonProps> = ({ artifactId }) => {
   const router = useRouter();
-  const { setSelectedArtifactId } = useUserArtifactsStore();
+  const { setSelectedArtifactId } = userArtifactsStore();
 
   const handleClick = () => {
     setSelectedArtifactId(artifactId);

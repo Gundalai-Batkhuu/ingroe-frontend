@@ -1,6 +1,5 @@
 import { Button } from '@/components/ui/button';
 import { auth } from '@/features/authentication/auth';
-import Image from 'next/image';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,8 +12,9 @@ import Link from 'next/link';
 import { ProfileIcon } from '@/features/authentication/components/profile-icon'
 import { RemoveUserForm } from '@/features/authentication/forms/remove-user-form'
 import { SignoutForm } from '@/features/authentication/forms/signout-form'
+import {IconUser} from "@/components/icons";
 
-export async function User() {
+export async function UserMenu() {
   let session = await auth();
   let user = session?.user;
 
@@ -29,13 +29,7 @@ export async function User() {
           {user ? (
             <ProfileIcon name={user.email} />
           ) : (
-            <Image
-              alt="User icon"
-              className="rounded-full"
-              height="32"
-              src="/user.svg"
-              width="32"
-            />
+            <IconUser/>
           )
           }
         </Button>

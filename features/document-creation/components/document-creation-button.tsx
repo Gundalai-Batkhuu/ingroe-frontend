@@ -1,33 +1,27 @@
 import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import { documentService } from '@/services/document-service'
 import { CreateDocument } from '@/lib/types'
 import { Loader2 } from 'lucide-react'
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
-
-type ResourceItem = {
-  id: string
-  type: 'file' | 'link' | 'note'
-  content: string | File
-  displayName: string
-}
+import {useResourceItemsStore} from "@/features/document-creation/stores/useResourceItemsStore";
 
 interface CreateDocumentButtonProps {
-  className?: string
-  resourceItems: ResourceItem[]
-  title: string,
   userId: string
+  title: string
   description: string
+  className?: string
 }
 
-export const CreateDocumentButton: React.FC<CreateDocumentButtonProps> = ({
+export const DocumentCreationButton: React.FC<CreateDocumentButtonProps> = ({
   className,
-  resourceItems,
   title,
   description,
   userId
 }) => {
   const [documentCreationStatus, setDocumentCreationStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const {resourceItems} = useResourceItemsStore()
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
@@ -108,16 +102,13 @@ export const CreateDocumentButton: React.FC<CreateDocumentButtonProps> = ({
   }
 
   return (
-    <div className={className}>
-      <Button
-        variant="default"
-        onClick={handleSubmit}
-        disabled={documentCreationStatus === 'loading'}
-        className="relative"
-      >
-        Create Knowledge Base
-      </Button>
-      {renderStatusMessage()}
-    </div>
+    <Button
+      variant="default"
+      onClick={handleSubmit}
+      disabled={documentCreationStatus === 'loading'}
+      className={cn("relative", className)}
+    >
+      Submit
+    </Button>
   )
 }
