@@ -1,4 +1,14 @@
-const API_BASE_URL = 'http://localhost:5500/api/v1/user';
+import urljoin from 'url-join';
+
+const API_URL = process.env.NEXT_PUBLIC_IS_LOCAL === 'true'
+  ? process.env.NEXT_PUBLIC_LOCAL_API_URL
+  : process.env.NEXT_PUBLIC_API_URL;
+
+if (!API_URL) {
+  throw new Error('API_BASE_URL is not defined. Check your environment variables.');
+}
+
+const API_BASE_URL = urljoin(API_URL, 'user');
 
 interface User {
   name: string;

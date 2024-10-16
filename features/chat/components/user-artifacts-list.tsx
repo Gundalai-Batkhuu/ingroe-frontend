@@ -1,17 +1,18 @@
 "use client"
 
 import * as React from 'react'
-import { useUserArtifactsStore } from '@/stores/userArtifactsStore'
-import { Artefact } from '@/lib/types'
+import { userArtifactsStore } from '@/stores/userArtifactsStore'
+import { Artefact, SharedDocumentLoaned } from '@/lib/types'
 import { useEffect, useState, useCallback } from 'react'
 import { UserArtifact } from '@/features/chat/components/user-artifact'
+import { SharedArtifactLoaned } from '@/features/chat/components/shared-artifact-loaned'
 
 interface UserArtifactsListProps {
   userId: string
 }
 
 export function UserArtifactsList({ userId }: UserArtifactsListProps) {
-  const { artifacts, isLoading, error, fetchUserArtifacts, selectedArtifactId, setSelectedArtifactId } = useUserArtifactsStore()
+  const { artifacts, isLoading, error, fetchUserArtifacts, selectedArtifactId, setSelectedArtifactId } = userArtifactsStore()
   const [expandedId, setExpandedId] = useState<string | null>(null)
 
   const refreshArtifacts = useCallback(() => {
@@ -39,7 +40,7 @@ export function UserArtifactsList({ userId }: UserArtifactsListProps) {
 
   if (isLoading) return <div>Loading...</div>
   if (error) return <div>Error: {error}</div>
-  if (!artifacts || artifacts.artefact_tree.length === 0) return <div>No artifacts found.</div>
+  if (!artifacts || (artifacts.artefact_tree.length === 0 && artifacts.shared_artifacts_loaned.length === 0)) return <div>No artifacts found.</div>
 
   const toggleExpand = (id: string) => {
     setExpandedId(expandedId === id ? null : id)
@@ -50,26 +51,41 @@ export function UserArtifactsList({ userId }: UserArtifactsListProps) {
   }
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex items-center justify-between pb-4">
-        <h4 className="text-sm font-medium">Document store</h4>
-      </div>
-      <div className="flex-grow overflow-auto">
-        <div className="space-y-2">
+      <div className="flex flex-col h-full">
+        <div className="flex items-center justify-between p-4">
+          <h4 className="font-bold">Document Collection</h4>
+        </div>
+        <div className="grow overflow-auto px-2 space-y-3">
           {artifacts.artefact_tree.map((artifact: Artefact) => (
-            <UserArtifact
-              key={artifact.document_id}
-              artifact={artifact}
-              isExpanded={expandedId === artifact.document_id}
-              isSelected={selectedArtifactId === artifact.document_id}
-              onToggleExpand={() => toggleExpand(artifact.document_id)}
-              onSelect={() => handleSelect(artifact.document_id)}
-              userId={userId}
-              onDelete={refreshArtifacts}
-            />
+              <UserArtifact
+                  key={artifact.document_id}
+                  artifact={artifact}
+                  isExpanded={expandedId === artifact.document_id}
+                  isSelected={selectedArtifactId === artifact.document_id}
+                  onToggleExpand={() => toggleExpand(artifact.document_id)}
+                  onSelect={() => handleSelect(artifact.document_id)}
+                  userId={userId}
+                  onDelete={refreshArtifacts}
+              />
           ))}
         </div>
+        {artifacts.shared_artifacts_loaned.length > 0 && (
+            <div className="mt-4">
+              <h4 className="font-bold px-4 py-2">Shared Documents (Loaned)</h4>
+              <div className="px-2 space-y-3">
+                {artifacts.shared_artifacts_loaned.map((sharedArtifact: SharedDocumentLoaned) => (
+                    <SharedArtifactLoaned
+                        key={sharedArtifact.document_id}
+                        sharedArtifact={sharedArtifact}
+                        isExpanded={expandedId === sharedArtifact.document_id}
+                        isSelected={selectedArtifactId === sharedArtifact.document_id}
+                        onToggleExpand={() => toggleExpand(sharedArtifact.document_id)}
+                        onSelect={() => handleSelect(sharedArtifact.document_id)}
+                    />
+                ))}
+              </div>
+            </div>
+        )}
       </div>
-    </div>
   )
 }

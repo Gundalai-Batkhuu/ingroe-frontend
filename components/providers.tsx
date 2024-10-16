@@ -3,15 +3,15 @@
 import * as React from 'react'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
 import { ThemeProviderProps } from 'next-themes/dist/types'
-import { SidebarProvider } from '@/hooks/use-sidebar'
+import { NavbarProvider } from '@/hooks/use-navbar'
 import { TooltipProvider } from './tooltip'
 
 export function Providers({ children, ...props }: ThemeProviderProps) {
   return (
     <NextThemesProvider {...props}>
-      <SidebarProvider>
+      <NavbarProvider>
         <TooltipProvider>{children}</TooltipProvider>
-      </SidebarProvider>
+      </NavbarProvider>
     </NextThemesProvider>
   )
 }

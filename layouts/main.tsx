@@ -1,17 +1,20 @@
-import { useState } from 'react'
-import Sidebar from '@/layouts/sidebar'
-import Content from '@/layouts/content'
+'use client'
 
-const Main = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+import React from 'react'
+import { useNavbar } from '@/hooks/use-navbar'
+
+const MainArea = ({ children }: { children: React.ReactNode }) => {
+  const { isNavbarExpanded } = useNavbar()
 
   return (
-    <div className="flex h-screen overflow-hidden">
-      <Sidebar isSidebarOpen={isSidebarOpen} isMobileMenuOpen={isMobileMenuOpen} />
-      <Content />
+    <div 
+      className={`relative grid flex-1 items-start gap-2 p-2 bg-muted/40 overflow-auto transition-all duration-300 ease-in-out
+        ${isNavbarExpanded ? 'pl-44' : ''}
+      `}
+    >
+      {children}
     </div>
   )
 }
 
-export default Main
+export default MainArea
