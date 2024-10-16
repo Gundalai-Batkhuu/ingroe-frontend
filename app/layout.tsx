@@ -9,6 +9,8 @@ import '@/public/globals.css'
 import { TailwindIndicator } from '@/components/tailwind-indicator'
 import React from 'react'
 import HeaderLayout from '@/layouts/header'
+import MainArea from '@/layouts/main'
+import HeaderContent from '@/layouts/header-content'
 
 export const metadata = {
   title: 'Ingroe',
@@ -27,6 +29,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -45,10 +48,10 @@ export default function RootLayout({
           <main className="flex flex-col min-h-screen w-full bg-muted/40">
             <DesktopNav />
             <div className="flex flex-col h-full sm:gap-4 sm:py-4 sm:pl-14">
-              <HeaderLayout />
-              <main className="relative grid flex-1 items-start gap-2 p-4 sm:px-6 sm:py-0 md:gap-4 bg-muted/40 overflow-auto">
+              <HeaderLayout slot={<HeaderContent />} />
+              <MainArea>
                 {children}
-              </main>
+              </MainArea>
             </div>
             <Analytics />
           </main>

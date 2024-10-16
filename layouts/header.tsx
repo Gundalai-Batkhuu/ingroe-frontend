@@ -1,18 +1,18 @@
-import { MobileNav } from '@/layouts/navbar'
-import { SearchInput } from '@/features/document-collection/components/search'
-import { UserMenu } from '@/features/authentication/components/user-menu'
-import React from 'react'
-import { DynamicBreadcrumb } from '@/layouts/breadcrumb'
+'use client'
 
-export default function HeaderLayout() {
+import React, { ReactNode } from 'react'
+import { useNavbar } from '@/hooks/use-navbar'
+
+export default function HeaderLayout({ slot }: { slot: ReactNode }) {
+  const { isNavbarExpanded } = useNavbar()
+
   return (
     <header
-      className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-      <MobileNav />
-      <DynamicBreadcrumb />
-      <SearchInput />
-      <UserMenu />
+      className={`sticky top-0 z-30 flex h-14 items-center justify-between border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6 
+        transition-all duration-300 ease-in-out ${isNavbarExpanded ? 'sm:pl-48' : ''}
+      `}
+    >
+      {slot}
     </header>
   )
 }
-
