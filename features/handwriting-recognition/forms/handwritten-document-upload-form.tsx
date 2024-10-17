@@ -79,20 +79,26 @@ const HandwrittenDocumentUploadForm = ({
       submitData.append('description', formData.description)
 
     try {
-      const response =
-        await documentService.captureHandwrittenDocument(submitData)
+      const response = await documentService.captureHandwrittenDocument(submitData)
       console.log('API Response:', response)
       if (response && response.file_id) {
         setDocumentId(response.document_id)
         setFileId(response.file_id)
         setCapturedDocumentId(response.captured_document_id)
 
+        console.log('File URL:', response.file_map.file_url);
+
         try {
           const text = await getTextFromS3(response.file_map.file_url)
-          setText(text)
-          setEditedText(text)
+          console.log('Retrieved text:', text.substring(0, 100) + '...'); // Log first 100 characters
+          setText(`<p>${text}</p>`)
+          setEditedText(`<p>${text}</p>`)
         } catch (error) {
           console.error('Error getting text from S3:', error)
+          setMessage({
+            text: 'File uploaded successfully, but there was an error retrieving the text.',
+            type: 'error'
+          })
         }
 
         setMessage({
