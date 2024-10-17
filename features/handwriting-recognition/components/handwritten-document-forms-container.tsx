@@ -1,6 +1,5 @@
 import { cn } from '@/lib/utils'
 import React, { useState } from 'react'
-import { useSidebar } from '@/hooks/use-sidebar'
 import HandwrittenDocumentUploadForm from '@/features/handwriting-recognition/forms/handwritten-document-upload-form'
 import HandwrittenDocumentUpdateForm from '@/features/handwriting-recognition/forms/handwritten-document-update-form'
 
@@ -11,8 +10,7 @@ interface SidebarHandwrittenProps extends React.ComponentProps<'div'> {
   editedText: string
 }
 
-export function SidebarHandwritten({ userId, className, setEditedText, setText, editedText}: SidebarHandwrittenProps) {
-  const {isSidebarOpen, isLoading} = useSidebar()
+export function HandwrittenDocumentFormsContainer({ userId, className, setEditedText, setText, editedText}: SidebarHandwrittenProps) {
   const [capturedDocumentId, setCapturedDocumentId] = useState('')
   const [documentId, setDocumentId] = useState('')
   const [fileId, setFileId] = useState('')
@@ -23,7 +21,6 @@ export function SidebarHandwritten({ userId, className, setEditedText, setText, 
       className={cn(
         className,
         'h-full flex-col dark:bg-zinc-950',
-        isSidebarOpen && !isLoading ? 'translate-x-0' : '-translate-x-full',
         'transition-transform duration-300 ease-in-out'
       )}
     >
@@ -51,7 +48,5 @@ export function SidebarHandwritten({ userId, className, setEditedText, setText, 
         </div>
       </div>
     </div>
-          )
-
-
-          }
+  )
+}

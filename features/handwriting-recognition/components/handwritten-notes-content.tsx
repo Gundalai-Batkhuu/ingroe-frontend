@@ -2,13 +2,13 @@
 
 import { TextEditor } from '@/features/handwriting-recognition/components/text-editor'
 import { useState } from 'react'
-import { SidebarHandwritten } from '@/features/handwriting-recognition/components/sidebar-handwritten'
+import { HandwrittenDocumentFormsContainer } from '@/features/handwriting-recognition/components/handwritten-document-forms-container'
 
 interface TextEditorPageContentProps {
   userId: string
 }
 
-export default function TextEditorPageContent({
+export default function HandwrittenNotesEditor({
   userId
 }: TextEditorPageContentProps) {
   const [text, setText] = useState('<p>Initial text</p>')
@@ -16,7 +16,7 @@ export default function TextEditorPageContent({
 
   return (
     <div className="flex h-[calc(100vh_-_theme(spacing.16))] overflow-hidden">
-      <SidebarHandwritten userId={userId}  editedText={editedText} setText={setText} setEditedText={setEditedText}/>
+      <HandwrittenDocumentFormsContainer userId={userId}  editedText={editedText} setText={setText} setEditedText={setEditedText}/>
 
       <div className="flex flex-col md:flex-row gap-4 p-4 h-[calc(100%_-_4rem)]">
         <div className="flex-1 min-w-0 overflow-auto">

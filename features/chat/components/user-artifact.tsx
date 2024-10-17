@@ -55,16 +55,10 @@ export function UserArtifact({
               : truncateString(artifact.document_name, 20)}
           </div>
         </div>
-        {/*<DeleteDocumentButton*/}
-        {/*  document_id={artifact.document_id}*/}
-        {/*  user_id={userId}*/}
-        {/*  onSuccess={onDelete}*/}
-        {/*/>*/}
         <EditDocumentButton document_id={artifact.document_id} />
       </div>
       {isExpanded && (
         <div className="ml-6 mt-2 text-sm">
-          <p>Name: {artifact.document_name}</p>
           <p>Description: {artifact.description}</p>
           <p>Vanilla Links: {artifact.vanilla_links.length}</p>
           <p>File Links: {artifact.file_links.length}</p>
