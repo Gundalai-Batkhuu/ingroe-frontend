@@ -35,45 +35,30 @@ function parseS3Url(url: string): { bucketName: string, key: string } {
  * @returns {Promise<string>} The text content of the file.
  * @throws {Error} If there's an issue retrieving or reading the file.
  */
-export async function getTextFromS3(url: string): Promise<string> {
-  if (!process.env.NEXT_PUBLIC_AWS_REGION) {
-    throw new Error("AWS Region is not set");
-  }
-
+export async function getTextFromS3(fileUrl: string): Promise<string> {
+  console.log('Attempting to fetch text for file URL:', fileUrl);
+  
   try {
-    const { bucketName, key } = parseS3Url(url);
-
-    // Set up the command to get the object
-    const command = new GetObjectCommand({
-      Bucket: bucketName,
-      Key: key,
+    const response = await fetch('/api/get-s3-file-content', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ fileUrl }),
     });
-
-    // Send the command to S3
-    const response = await s3Client.send(command);
-
-    if (response.Body instanceof ReadableStream) {
-      const reader = response.Body.getReader();
-      const chunks = [];
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        chunks.push(value);
-      }
-      const allUint8Arrays = new Uint8Array(chunks.reduce((acc, val) => acc + val.length, 0));
-      let position = 0;
-      for (const chunk of chunks) {
-        allUint8Arrays.set(chunk, position);
-        position += chunk.length;
-      }
-      return new TextDecoder().decode(allUint8Arrays);
-    } else if (response.Body instanceof Blob) {
-      return await response.Body.text();
-    } else {
-      throw new Error("Unexpected response body type");
+    console.log('Fetch response status:', response.status);
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Error response:', errorText);
+      throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
     }
+    
+    const text = await response.text();
+    console.log('Retrieved text:', text.substring(0, 100) + '...'); // Log first 100 characters
+    return text;
   } catch (error) {
-    console.error("Error retrieving text from S3:", error);
+    console.error('Error in getTextFromS3:', error);
     throw error;
   }
 }
