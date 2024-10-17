@@ -19,6 +19,7 @@ import { NewDocumentDialog } from '@/features/document-creation/components/new-d
 import SearchPageContent from "@/features/google-search/components/search-page-content";
 import { useResourceItemsStore } from '@/features/document-creation/stores/useResourceItemsStore'
 import { FileWithPath } from 'react-dropzone'
+import HandwrittenNotesEditor from "@/features/handwriting-recognition/components/handwritten-notes-content";
 
 interface KnowledgeBaseCreatorProps {
   userId: string
@@ -29,7 +30,6 @@ export default function DocumentCreator({
 }: KnowledgeBaseCreatorProps) {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
-  const [fileInput, setFileInput] = useState<string>('')
   const [linkInput, setLinkInput] = useState<string>('')
   const [noteFileInput, setNoteFileInput] = useState<string>('')
   const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -127,21 +127,8 @@ export default function DocumentCreator({
                   </Button>
                 </form>
               </TabsContent>
-              <TabsContent value="note" className="mt-4 space-y-4 px-4 sm:px-6 lg:px-8">
-                <h2 className="text-lg font-semibold">Add Handwritten Notes</h2>
-                <div className="flex items-center space-x-2">
-                  <Input
-                    type="file"
-                    onChange={handleNoteFileUpload}
-                    value={noteFileInput}
-                    className="flex-1"
-                    id="note-file-upload"
-                  />
-                  <label htmlFor="note-file-upload" className="cursor-pointer">
-                    <Upload className="size-6 text-gray-500" />
-                    <span className="sr-only">Upload handwritten note</span>
-                  </label>
-                </div>
+              <TabsContent value="note" className="mt-4">
+                <HandwrittenNotesEditor userId={userId} />
               </TabsContent>
               <TabsContent value="search" className="mt-4 space-y-4">
                 <SearchPageContent userId={userId} />
