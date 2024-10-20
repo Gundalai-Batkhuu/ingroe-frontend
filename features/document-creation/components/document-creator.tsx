@@ -20,6 +20,8 @@ import SearchPageContent from "@/features/google-search/components/search-page-c
 import { useResourceItemsStore } from '@/features/document-creation/stores/useResourceItemsStore'
 import { FileWithPath } from 'react-dropzone'
 import HandwrittenNotesEditor from "@/features/handwriting-recognition/components/handwritten-notes-content";
+import { FileUploader } from '@/features/document-creation/components/file-uploader'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 
 interface KnowledgeBaseCreatorProps {
   userId: string
@@ -40,8 +42,8 @@ export default function DocumentCreator({
     setIsDialogOpen(true)
   }, [])
 
-  const handleFileUpload = (acceptedFiles: FileWithPath[]) => {
-    acceptedFiles.forEach(file => {
+  const handleFileUpload = (files: FileWithPath[]) => {
+    files.forEach(file => {
       addResourceItem('file', file)
     })
   }
@@ -81,33 +83,7 @@ export default function DocumentCreator({
                 <TabsTrigger value="search">Web Search</TabsTrigger>
               </TabsList>
               <TabsContent value="file" className="mt-4 space-y-4 px-4 sm:px-6 lg:px-8">
-                <h2 className="text-lg font-semibold">Upload Files and Folders</h2>
-                <div
-                  className="border-2 border-dashed border-gray-300 rounded-md p-8 text-center"
-                  onDragOver={(e) => e.preventDefault()}
-                  onDrop={(e) => {
-                    e.preventDefault()
-                    const files = Array.from(e.dataTransfer.files)
-                    handleFileUpload(files as FileWithPath[])
-                  }}
-                >
-                  <Input
-                    type="file"
-                    onChange={(e) => {
-                      const files = Array.from(e.target.files || [])
-                      handleFileUpload(files as FileWithPath[])
-                    }}
-                    multiple
-                    className="hidden"
-                    id="file-upload"
-                  />
-                  <label htmlFor="file-upload" className="cursor-pointer">
-                    <Upload className="size-12 text-gray-400 mx-auto mb-4" />
-                    <p className="text-sm text-gray-600">
-                      Drag and drop files or folders here, or click to select
-                    </p>
-                  </label>
-                </div>
+                <FileUploader onFileUpload={handleFileUpload} />
               </TabsContent>
               <TabsContent value="link" className="mt-4 space-y-4 px-4 sm:px-6 lg:px-8">
                 <h2 className="text-lg font-semibold">Add Web Links</h2>
