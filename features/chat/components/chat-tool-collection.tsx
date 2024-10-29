@@ -1,31 +1,14 @@
 import React, { useState } from 'react';
 import { ThumbsUp, ThumbsDown, SquareMousePointer, FileText } from 'lucide-react';
 import DiscussionForm from '@/features/chat/components/discussion-form'
+import { IconWrapper } from '@/components/ui/icon-wrapper';
+import InformationSourceDisplay from '@/features/information-source/information-source-display';
 
 const cn = (...classes: (string | undefined)[]): string => classes.filter(Boolean).join(' ');
 
 interface ChatToolCollectionProps {
   className?: string;
 }
-
-const IconWrapper = ({ children, tooltip }: { children: React.ReactNode; tooltip: string }) => {
-  const [isHovered, setIsHovered] = useState(false);
-
-  return (
-    <div
-      className="relative"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      {children}
-      {isHovered && (
-        <span className="absolute bottom-full left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 whitespace-nowrap mb-1">
-          {tooltip}
-        </span>
-      )}
-    </div>
-  );
-};
 
 export default function ChatToolCollection({ className }: ChatToolCollectionProps) {
   const [isLiked, setIsLiked] = useState(false);
@@ -70,9 +53,7 @@ export default function ChatToolCollection({ className }: ChatToolCollectionProp
       <IconWrapper tooltip="Talk to a human">
         <SquareMousePointer className="w-5 h-5 text-gray-500 hover:text-gray-700 cursor-pointer" />
       </IconWrapper>
-      <IconWrapper tooltip="Source: https://www.disability...">
-        <FileText className="w-5 h-5 text-gray-500 hover:text-gray-700 cursor-pointer" />
-      </IconWrapper>
+      <InformationSourceDisplay />
       <IconWrapper tooltip="Create a new discussion">
         <DiscussionForm />
       </IconWrapper>
