@@ -11,16 +11,16 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { Toggle } from "@/components/ui/toggle"
 
 interface NewWorkerDialogProps {
     setTitle: (title: string) => void
     setDescription: (description: string) => void
     open: boolean
     onOpenChange: (open: boolean) => void
-    onSubmit: () => void
 }
 
-export function NewWorkerDialog({ setTitle, setDescription, open, onOpenChange, onSubmit }: NewWorkerDialogProps) {
+export function NewWorkerDialog({ setTitle, setDescription, open, onOpenChange }: NewWorkerDialogProps) {
     const [localTitle, setLocalTitle] = useState("")
     const [localDescription, setLocalDescription] = useState("")
     const [step, setStep] = useState(1)
@@ -35,30 +35,35 @@ export function NewWorkerDialog({ setTitle, setDescription, open, onOpenChange, 
 
     const handleFirstStep = (e: React.FormEvent) => {
         e.preventDefault()
-        setTitle(localTitle)
-        setDescription(localDescription)
         setStep(2)
+        setTimeout(() => {
+            setTitle(localTitle)
+            setDescription(localDescription)
+        }, 0)
     }
 
     const handleFinalSubmit = (e: React.FormEvent) => {
         e.preventDefault()
-        onSubmit()
         onOpenChange(false)
-    }
-
-    const handleBack = () => {
-        setStep(1)
     }
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                    <DialogTitle>
+                        {step === 1 ? "Create New Worker" : "Choose service"}
+                    </DialogTitle>
+                    <DialogDescription>
+                        {step === 1 
+                            ? "Enter title and description of your new worker"
+                            : "Please choose the service you want to use"
+                        }
+                    </DialogDescription>
+                </DialogHeader>
+                
                 {step === 1 ? (
                     <form onSubmit={handleFirstStep}>
-                        <DialogHeader>
-                            <DialogTitle>Create New Worker</DialogTitle>
-                            <DialogDescription>Enter title and description of your new worker</DialogDescription>
-                        </DialogHeader>
                         <div className="grid gap-4 py-4">
                             <div className="space-y-4">
                                 <div className="space-y-2">
@@ -88,26 +93,14 @@ export function NewWorkerDialog({ setTitle, setDescription, open, onOpenChange, 
                     </form>
                 ) : (
                     <form onSubmit={handleFinalSubmit}>
-                        <DialogHeader>
-                            <DialogTitle>Confirm Worker Creation</DialogTitle>
-                            <DialogDescription>Please review your worker details before creating</DialogDescription>
-                        </DialogHeader>
                         <div className="grid gap-4 py-4">
-                            <div className="space-y-4">
-                                <div>
-                                    <Label>Title</Label>
-                                    <p className="mt-1 text-sm text-gray-600">{localTitle}</p>
-                                </div>
-                                <div>
-                                    <Label>Description</Label>
-                                    <p className="mt-1 text-sm text-gray-600">{localDescription}</p>
-                                </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <Toggle className="h-24 w-24 flex flex-col items-center justify-center border-2 border-gray-300 rounded-lg">
+                                    <div className="text-center">Ask your files</div>
+                                </Toggle>
                             </div>
                         </div>
                         <DialogFooter>
-                            <Button variant="outline" type="button" onClick={handleBack}>
-                                Back
-                            </Button>
                             <Button type="submit">Create Worker</Button>
                         </DialogFooter>
                     </form>
