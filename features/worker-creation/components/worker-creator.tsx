@@ -14,13 +14,22 @@ import {
 } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ScrollArea } from '@/components/ui/scroll-area'
+<<<<<<<< HEAD:features/worker-creation/components/worker-creator.tsx
 import { WorkerCreationButton } from '@/features/worker-creation/components/worker-creation-button'
 import { NewWorkerDialog } from '@/features/worker-creation/components/new-worker-dialog'
+========
+import { DocumentCreationButton } from '@/features/worker-creation/components/document-creation-button'
+import { NewDocumentDialog } from '@/features/worker-creation/components/new-document-dialog'
+>>>>>>>> d56de1a (Rename knowledge base to worker):features/worker-creation/components/document-creator.tsx
 import SearchPageContent from "@/features/google-search/components/search-page-content";
 import { useResourceItemsStore } from '@/features/worker-creation/stores/useResourceItemsStore'
 import { FileWithPath } from 'react-dropzone'
 import HandwrittenNotesEditor from "@/features/handwriting-recognition/components/handwritten-notes-content";
 import { FileUploader } from '@/features/worker-creation/components/file-uploader'
+<<<<<<<< HEAD:features/worker-creation/components/worker-creator.tsx
+========
+import { Alert, AlertDescription } from '@/components/ui/alert'
+>>>>>>>> d56de1a (Rename knowledge base to worker):features/worker-creation/components/document-creator.tsx
 
 interface WorkerCreatorProps {
   userId: string

@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import AppLogo from '@/components/icons'
-import { NavItem } from '@/features/document-collection/components/nav-item'
+import { NavItem } from '@/features/workers-collection/components/nav-item'
 import {
   Database,
   Home,
@@ -52,7 +52,7 @@ export function DesktopNav() {
           <Home className="h-5 w-5" />
         </NavItem>
 
-        <NavItem href="/databases" label="Databases">
+        <NavItem href="/workers" label="Workers">
           <Database className="h-5 w-5" />
         </NavItem>
 
