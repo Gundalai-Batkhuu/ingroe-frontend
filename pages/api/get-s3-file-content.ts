@@ -43,7 +43,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(200).send(fileContent);
   } catch (error) {
     console.error('Error retrieving file from S3:', error);
-    res.status(500).json({ error: 'Error retrieving file from S3', details: error.message });
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    res.status(500).json({ error: 'Error retrieving file from S3', details: errorMessage });
   }
 }
 

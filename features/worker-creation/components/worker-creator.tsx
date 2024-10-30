@@ -14,22 +14,21 @@ import {
 } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { DocumentCreationButton } from '@/features/document-creation/components/document-creation-button'
-import { NewDocumentDialog } from '@/features/document-creation/components/new-document-dialog'
+import { WorkerCreationButton } from '@/features/worker-creation/components/worker-creation-button'
+import { NewWorkerDialog } from '@/features/worker-creation/components/new-worker-dialog'
 import SearchPageContent from "@/features/google-search/components/search-page-content";
-import { useResourceItemsStore } from '@/features/document-creation/stores/useResourceItemsStore'
+import { useResourceItemsStore } from '@/features/worker-creation/stores/useResourceItemsStore'
 import { FileWithPath } from 'react-dropzone'
 import HandwrittenNotesEditor from "@/features/handwriting-recognition/components/handwritten-notes-content";
-import { FileUploader } from '@/features/document-creation/components/file-uploader'
-import { Alert, AlertDescription } from '@/components/ui/alert'
+import { FileUploader } from '@/features/worker-creation/components/file-uploader'
 
-interface KnowledgeBaseCreatorProps {
+interface WorkerCreatorProps {
   userId: string
 }
 
-export default function DocumentCreator({
+export default function WorkerCreator({
   userId
-}: KnowledgeBaseCreatorProps) {
+}: WorkerCreatorProps) {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [linkInput, setLinkInput] = useState<string>('')
@@ -69,9 +68,9 @@ export default function DocumentCreator({
       <div className="flex-1 flex gap-6">
         <Card className="w-3/4">
           <CardHeader>
-            <CardTitle>{title || 'Database name'}</CardTitle>
+            <CardTitle>{title || 'Worker name'}</CardTitle>
             <CardDescription>
-              {description || 'Database description'}
+              {description || 'Worker description'}
             </CardDescription>
           </CardHeader>
           <CardContent className="px-6">
@@ -155,7 +154,7 @@ export default function DocumentCreator({
             >
               Clear All
             </Button>
-            <DocumentCreationButton
+            <WorkerCreationButton
               userId={userId} 
               title={title || ''}
               description={description || ''}
@@ -165,7 +164,7 @@ export default function DocumentCreator({
         </Card>
       </div>
                 
-      <NewDocumentDialog
+      <NewWorkerDialog
         setDescription={setDescription}
         setTitle={setTitle}
         open={isDialogOpen}

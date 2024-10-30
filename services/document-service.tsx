@@ -3,7 +3,7 @@ import {
   AcceptSharedDocument,
   Access,
   AccessorUpdate,
-  CreateDocument,
+  CreateWorker,
   CreateDocumentCapture,
   DeleteCapturedDocument,
   DeleteCapturedFile,
@@ -23,7 +23,7 @@ import {
 
 export const documentService = {
   // Document Creation and Management
-  async createDocumentSelection(document: CreateDocument): Promise<any> {
+  async createDocumentSelection(document: CreateWorker): Promise<any> {
     return await fetchApi(
       ApiEndpoint.CREATE_DOCUMENT_SELECTION,
       'POST',

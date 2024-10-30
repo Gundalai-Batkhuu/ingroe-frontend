@@ -124,7 +124,7 @@ export interface SearchResult {
   link: string;
 }
 
-export interface CreateDocument {
+export interface CreateWorker {
   user_id: string;
   document_id?: string;
   links: string[];
@@ -176,7 +176,7 @@ export interface CaptureHandwrittenDocumentResponse {
   file_map: any; // You might want to define a more specific type for file_map
 }
 
-export interface CreateDocumentCapture extends CreateDocument {
+export interface CreateDocumentCapture extends CreateWorker {
   document_id: string;
 }
 

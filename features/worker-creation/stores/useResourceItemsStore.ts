@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import {ResourceItem} from "@/features/document-creation/lib/types";
+import {ResourceItem} from "@/features/worker-creation/lib/types";
 
 
 interface ResourceItemsState {

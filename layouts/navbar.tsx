@@ -56,7 +56,7 @@ export function DesktopNav() {
           <Database className="h-5 w-5" />
         </NavItem>
 
-        <NavItem href="/create-knowledge-base" label="New database">
+        <NavItem href="/create-worker" label="New worker">
           <FilePlus className="h-5 w-5" />
         </NavItem>
 
