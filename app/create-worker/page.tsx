@@ -1,10 +1,10 @@
-import KnowledgeBaseCreator from '@/features/document-creation/components/document-creator'
+import KnowledgeBaseCreator from '@/features/worker-creation/components/worker-creator'
 import { auth } from '@/features/authentication/auth'
 import { Session } from '@/lib/types'
 import React from 'react'
 
 
-export default async function CreateKnowledgeBasePage() {
+export default async function CreateWorkerPage() {
   const session = (await auth()) as Session | null
 
   if (!session || !session.user) {

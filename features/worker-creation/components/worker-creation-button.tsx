@@ -2,30 +2,30 @@ import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { documentService } from '@/services/document-service'
-import { CreateDocument } from '@/lib/types'
+import { CreateWorker } from '@/lib/types'
 import { Loader2 } from 'lucide-react'
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
-import {useResourceItemsStore} from "@/features/document-creation/stores/useResourceItemsStore";
+import {useResourceItemsStore} from "@/features/worker-creation/stores/useResourceItemsStore";
 
-interface CreateDocumentButtonProps {
+interface CreateWorkerButtonProps {
   userId: string
   title: string
   description: string
   className?: string
 }
 
-export const DocumentCreationButton: React.FC<CreateDocumentButtonProps> = ({
+export const WorkerCreationButton: React.FC<CreateWorkerButtonProps> = ({
   className,
   title,
   description,
   userId
 }) => {
-  const [documentCreationStatus, setDocumentCreationStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [workerCreationStatus, setWorkerCreationStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const {resourceItems} = useResourceItemsStore()
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
-    setDocumentCreationStatus('loading')
+    setWorkerCreationStatus('loading')
 
     const fileItems = resourceItems.filter(res => res.type === 'file' || res.type === 'note')
     const linkItems = resourceItems.filter(res => res.type === 'link')
@@ -50,35 +50,35 @@ export const DocumentCreationButton: React.FC<CreateDocumentButtonProps> = ({
         })
 
         const result = await documentService.createDocumentManually(formData)
-        console.log('Document creation with file successful:', result)
+        console.log('Worker creation with file successful:', result)
       } else if (linkItems.length > 0) {
-        // Use createDocumentSelection only for links without files
-        const document: CreateDocument = {
+        // Use createWorkerSelection only for links without files
+        const document: CreateWorker = {
           user_id: userId,
           links: linkItems.map(item => item.content as string),
           document_alias: title,
           description
         }
         const result = await documentService.createDocumentSelection(document)
-        console.log('Document creation with links successful:', result)
+        console.log('Worker creation with links successful:', result)
       } else {
         throw new Error('No files or links provided')
       }
 
-      setDocumentCreationStatus('success')
+      setWorkerCreationStatus('success')
     } catch (error) {
-      console.error('Error during document creation:', error)
-      setDocumentCreationStatus('error')
+      console.error('Error during worker creation:', error)
+      setWorkerCreationStatus('error')
     }
   }
 
   const renderStatusMessage = () => {
-    switch (documentCreationStatus) {
+    switch (workerCreationStatus) {
       case 'loading':
         return (
           <Alert className="mt-2">
             <Loader2 className="size-4 animate-spin" />
-            <AlertTitle>Creating Knowledge Base...</AlertTitle>
+            <AlertTitle>Creating Worker...</AlertTitle>
             <AlertDescription>Please wait while we process your request.</AlertDescription>
           </Alert>
         )
@@ -86,14 +86,14 @@ export const DocumentCreationButton: React.FC<CreateDocumentButtonProps> = ({
         return (
           <Alert className="mt-2">
             <AlertTitle>Success!</AlertTitle>
-            <AlertDescription>Your Knowledge Base has been created.</AlertDescription>
+            <AlertDescription>Your Worker has been created.</AlertDescription>
           </Alert>
         )
       case 'error':
         return (
           <Alert variant="destructive" className="mt-2">
             <AlertTitle>Error</AlertTitle>
-            <AlertDescription>There was a problem creating your Knowledge Base. Please try again.</AlertDescription>
+            <AlertDescription>There was a problem creating your Worker. Please try again.</AlertDescription>
           </Alert>
         )
       default:
@@ -105,7 +105,7 @@ export const DocumentCreationButton: React.FC<CreateDocumentButtonProps> = ({
     <Button
       variant="default"
       onClick={handleSubmit}
-      disabled={documentCreationStatus === 'loading'}
+      disabled={workerCreationStatus === 'loading'}
       className={cn("relative", className)}
     >
       Submit
