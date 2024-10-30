@@ -3,24 +3,24 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { File, PlusCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { ArtifactsTable } from '@/features/document-collection/components/artifacts-table'
+import { ArtifactsTable } from '@/features/workers-collection/components/workers-table'
 import Link from 'next/link'
-import {RawAllArtifactsResponse} from "@/features/document-collection/components/raw-all-artifacts-response";
-import { SharedArtifactsOwnedTable } from '@/features/document-collection/components/shared-artifacts-owned-table'
-import AcceptDocumentSharingRequest from "@/features/document-collection/components/accept-document-sharing-request";
-import {SharedArtifactsLoanedTable} from "@/features/document-collection/components/shared-artifacts-loaned-table";
+import {RawAllArtifactsResponse} from "@/features/workers-collection/components/raw-all-artifacts-response";
+import { SharedArtifactsOwnedTable } from '@/features/workers-collection/components/shared-artifacts-owned-table'
+import AcceptDocumentSharingRequest from "@/features/workers-collection/components/accept-document-sharing-request";
+import {SharedArtifactsLoanedTable} from "@/features/workers-collection/components/shared-artifacts-loaned-table";
 
-interface ArtifactsTableProps {
+interface WorkersTableProps {
     searchParams: { q: string; offset: string };
     userId: string;
     userEmail: string;
 }
 
-export default function ArtifactsPageContent({
+export default function WorkersPageContent({
   searchParams,
     userId,
     userEmail
-}: ArtifactsTableProps) {
+}: WorkersTableProps) {
   return (
     <Tabs defaultValue="owned">
       <div className="flex items-center">

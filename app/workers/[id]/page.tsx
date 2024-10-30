@@ -1,6 +1,6 @@
 import { Session } from '@/lib/types'
 import { auth } from '@/features/authentication/auth'
-import EditArtifactPageContent from '@/features/document-creation/components/edit-artifact-page-content'
+import EditArtifactPageContent from '@/features/worker-creation/components/edit-artifact-page-content'
 import React from 'react'
 
 export default async function EditArtifactPage({ params }: { params: { id: string } }) {
