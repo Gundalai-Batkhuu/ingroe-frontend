@@ -664,8 +664,6 @@ export {
   IconRefresh,
   IconStop,
   IconSidebar,
-  IconMoon,
-  IconSun,
   IconCopy,
   IconCheck,
   IconDownload,

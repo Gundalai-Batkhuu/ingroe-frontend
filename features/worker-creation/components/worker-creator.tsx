@@ -74,18 +74,25 @@ export default function WorkerCreator({
             <Tabs defaultValue="file" className="w-full">
               <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="file">Files</TabsTrigger>
-                <TabsTrigger value="link">Web Links</TabsTrigger>
+                <TabsTrigger value="web-links">Web Links</TabsTrigger>
+                <TabsTrigger value="electronics">Electronic Files</TabsTrigger>
                 <TabsTrigger value="note">Handwritten Notes</TabsTrigger>
-                <TabsTrigger value="search">Web Search</TabsTrigger>
               </TabsList>
               <TabsContent value="file" className="mt-4 space-y-4 px-4 sm:px-6 lg:px-8">
                 <FileUploader onFileUpload={handleFileUpload} />
               </TabsContent>
-              <TabsContent value="link" className="mt-4 space-y-4 px-4 sm:px-6 lg:px-8">
-                <h2 className="text-lg font-semibold">Add Web Links</h2>
+              <TabsContent value="electronics" className="mt-4 space-y-4 px-4 sm:px-6 lg:px-8">
+                
+              </TabsContent>
+              <TabsContent value="note" className="mt-4">
+                <HandwrittenNotesEditor userId={userId} />
+              </TabsContent>
+              <TabsContent value="web-links" className="mt-4 space-y-4">
+                <div className="flex flex-col gap-2 px-28 pt-4">
+                <h2 className="text-sm font-semibold px-2">Add Web Links</h2>
                 <form
                   onSubmit={handleLinkAdd}
-                  className="flex items-center space-x-2"
+                  className="flex items-center space-x-2 px-2"
                 >
                   <Input
                     type="url"
@@ -98,11 +105,7 @@ export default function WorkerCreator({
                     <Plus className="size-4" />
                   </Button>
                 </form>
-              </TabsContent>
-              <TabsContent value="note" className="mt-4">
-                <HandwrittenNotesEditor userId={userId} />
-              </TabsContent>
-              <TabsContent value="search" className="mt-4 space-y-4">
+                </div>
                 <SearchPageContent userId={userId} />
               </TabsContent>
             </Tabs>

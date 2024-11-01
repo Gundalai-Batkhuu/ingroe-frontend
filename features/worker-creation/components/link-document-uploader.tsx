@@ -81,10 +81,10 @@ export const LinkDocumentUploader = ({ userId, documentId }: LinkDocumentUploade
           <label htmlFor="link" className="block text-xs font-medium mb-1">
             Link
           </label>
-          <TextInputWithClearButton
-            onChange={setLink}
-            placeholder="https://example.com"
-          />
+          {/*<TextInputWithClearButton*/}
+          {/*  onChange={setLink}*/}
+          {/*  placeholder="https://example.com"*/}
+          {/* onKeyPress=*/}
         </div>
         <Button
           type="submit"
