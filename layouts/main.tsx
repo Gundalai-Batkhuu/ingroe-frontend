@@ -8,7 +8,7 @@ const MainArea = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div 
-      className={`relative grid flex-1 items-start gap-2 p-2 bg-muted/40 overflow-auto transition-all duration-300 ease-in-out
+      className={`p-2 h-full overflow-y-hidden transition-all duration-300 ease-in-out
         ${isNavbarExpanded ? 'pl-44' : ''}
       `}
     >
