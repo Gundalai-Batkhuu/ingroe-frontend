@@ -9,16 +9,19 @@ import { IconArrowDown } from './icons'
 interface ButtonScrollToBottomProps extends ButtonProps {
   isAtBottom: boolean
   scrollToBottom: () => void
+  type?: 'button'
 }
 
 export function ButtonScrollToBottom({
   className,
   isAtBottom,
   scrollToBottom,
+  type = 'button',
   ...props
 }: ButtonScrollToBottomProps) {
   return (
     <Button
+      type={type}
       variant="outline"
       size="icon"
       className={cn(
