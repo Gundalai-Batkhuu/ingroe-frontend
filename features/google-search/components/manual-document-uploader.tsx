@@ -120,6 +120,7 @@ export const ManualDocumentUploader = ({
           </label>
           <TextInputWithClearButton
             onChange={setDocumentAlias}
+            onKeyPress={() => {}}
           />
         </div>
         <div className="mb-6">
@@ -130,7 +131,8 @@ export const ManualDocumentUploader = ({
             Description (Optional)
           </label>
           <TextInputWithClearButton
-            onChange={setDescription}
+            onChange={setDocumentAlias}
+            onKeyPress={() => {}}
           />
         </div>
         <button

@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/breadcrumb";
 
 export function DynamicBreadcrumb(): JSX.Element {
-  const pathname: string = usePathname();
+  const pathname = usePathname() ?? '';
   const pathSegments: string[] = pathname.split('/').filter((segment: string) => segment !== '');
 
   const capitalize = (str: string): string => {
