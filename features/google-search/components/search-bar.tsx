@@ -60,7 +60,7 @@ export const SearchBar = ({
     }
 
     return (
-        <form onSubmit={handleSearch} className="w-full max-w-4xl mx-auto">
+        <form onSubmit={handleSearch} className="w-full">
             <div className="flex items-stretch">
                 <div className="grow w-full rounded-md">
                     <TextInputWithClearButton

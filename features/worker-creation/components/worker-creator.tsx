@@ -16,7 +16,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { WorkerCreationButton } from '@/features/worker-creation/components/worker-creation-button'
 import { NewWorkerDialog } from '@/features/worker-creation/components/new-worker-dialog'
-import SearchPageContent from "@/features/google-search/components/search-page-content";
+import WebSearchContainer from "@/features/google-search/components/web-search-container";
 import { useResourceItemsStore } from '@/features/worker-creation/stores/useResourceItemsStore'
 import { FileWithPath } from 'react-dropzone'
 import HandwrittenNotesEditor from "@/features/handwriting-recognition/components/handwritten-notes-content";
@@ -32,7 +32,6 @@ export default function WorkerCreator({
 }: WorkerCreatorProps) {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
-  const [linkInput, setLinkInput] = useState<string>('')
   const [noteFileInput, setNoteFileInput] = useState<string>('')
   const [isDialogOpen, setIsDialogOpen] = useState(true)
   
@@ -44,14 +43,6 @@ export default function WorkerCreator({
     })
   }
 
-  const handleLinkAdd = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (linkInput.trim()) {
-      addResourceItem('link', linkInput.trim())
-      setLinkInput('')
-    }
-  }
-
   const handleNoteFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
@@ -61,7 +52,7 @@ export default function WorkerCreator({
   }
 
   return (
-    <div className="flex flex-col h-[calc(100vh-6rem)]">
+    <div className="flex flex-col h-full overflow-y-hidden">
       <div className="flex-1 flex gap-6">
         <Card className="w-3/4">
           <CardHeader>
@@ -87,26 +78,8 @@ export default function WorkerCreator({
               <TabsContent value="note" className="mt-4">
                 <HandwrittenNotesEditor userId={userId} />
               </TabsContent>
-              <TabsContent value="web-links" className="mt-4 space-y-4">
-                <div className="flex flex-col gap-2 px-28 pt-4">
-                <h2 className="text-sm font-semibold px-2">Add Web Links</h2>
-                <form
-                  onSubmit={handleLinkAdd}
-                  className="flex items-center space-x-2 px-2"
-                >
-                  <Input
-                    type="url"
-                    placeholder="Enter URL"
-                    value={linkInput}
-                    onChange={e => setLinkInput(e.target.value)}
-                    className="flex-1"
-                  />
-                  <Button type="submit" size="icon" aria-label="Add link">
-                    <Plus className="size-4" />
-                  </Button>
-                </form>
-                </div>
-                <SearchPageContent userId={userId} />
+              <TabsContent value="web-links">
+                <WebSearchContainer userId={userId} />
               </TabsContent>
             </Tabs>
           </CardContent>

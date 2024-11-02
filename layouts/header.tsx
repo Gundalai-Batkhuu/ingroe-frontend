@@ -8,7 +8,7 @@ export default function HeaderLayout({ slot }: { slot: ReactNode }) {
 
   return (
     <header
-      className={`sticky top-0 z-30 flex h-14 items-center justify-between border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6 
+      className={`sticky top-0 z-30 flex h-14 items-center justify-between border-b sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6 
         transition-all duration-300 ease-in-out ${isNavbarExpanded ? 'sm:pl-48' : ''}
       `}
     >

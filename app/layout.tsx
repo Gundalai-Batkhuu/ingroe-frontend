@@ -11,6 +11,12 @@ import React from 'react'
 import HeaderLayout from '@/layouts/header'
 import MainArea from '@/layouts/main'
 import HeaderContent from '@/layouts/header-content'
+import { Manrope } from 'next/font/google'
+
+const manrope = Manrope({
+  subsets: ['latin'],
+  variable: '--font-manrope',
+})
 
 export const metadata = {
   title: 'Ingroe',
@@ -31,21 +37,15 @@ export default function RootLayout({
 }) {
   
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={cn(
-          'font-sans antialiased',
-          GeistSans.variable,
-          GeistMono.variable
-        )}
-      >
+    <html lang="en" className={`${manrope.variable}`} suppressHydrationWarning>
+      <body>
         <Providers
           attribute="class"
           defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >
-          <main className="flex flex-col min-h-screen w-full bg-muted/40">
+          <div className="flex flex-col h-screen w-full bg-muted/40">
             <DesktopNav />
             <div className="flex flex-col h-full sm:gap-4 sm:py-4 sm:pl-14">
               <HeaderLayout slot={<HeaderContent />} />
@@ -54,7 +54,7 @@ export default function RootLayout({
               </MainArea>
             </div>
             <Analytics />
-          </main>
+          </div>
           <TailwindIndicator />
         </Providers>
         <Toaster />
