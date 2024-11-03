@@ -107,14 +107,17 @@ function IconAI({ className, ...props }: React.ComponentProps<'svg'>) {
 }
 
 
-export default function AppLogo() {
+export default function AppLogo({ className }: { className?: string }) {
   return (
-    <Image
-      src="/logo.svg"
-      width={65}
-      height={65}
-      alt="App logo"
-    />
+    <div className={className}>
+      <Image
+        src="/logo.svg"
+        width={25}
+        height={25}
+        alt="App logo"
+        className="text-brand-green"
+      />
+    </div>
   )
 }
 
