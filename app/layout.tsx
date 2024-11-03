@@ -42,9 +42,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="flex h-screen w-full bg-muted/40">
+          <div className="flex h-screen w-screen bg-muted/40">
             <DesktopNavbar />
-            <div className="flex flex-col h-full sm:gap-4 sm:py-4 sm:pl-14">
+            <div className="flex-1 flex-col h-full overflow-x-hidden">
               <HeaderContainer slot={<HeaderContent />} />
               <MainArea>
                 {children}
