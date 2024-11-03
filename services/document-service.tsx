@@ -7,7 +7,7 @@ import {
   CreateDocumentCapture,
   DeleteCapturedDocument,
   DeleteCapturedFile,
-  DeleteDocument,
+  DeleteWorker,
   DocumentInfo,
   DocumentSharingRemoval,
   DocumentStatus,
@@ -44,7 +44,7 @@ export const documentService = {
     return await fetchApi(ApiEndpoint.UPDATE_DOCUMENT_INFO, 'PATCH', payload)
   },
 
-  async deleteDocument(payload: DeleteDocument): Promise<any> {
+  async deleteDocument(payload: DeleteWorker): Promise<any> {
     return await fetchApi(ApiEndpoint.DELETE_DOCUMENT, 'DELETE', payload)
   },
 

@@ -2,12 +2,13 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import { userArtifactsStore } from '@/stores/userArtifactsStore';
 import { Button } from '@/components/ui/button';
+import { BotMessageSquare } from 'lucide-react';
 
-interface SelectArtifactAndChatButtonProps {
+interface WorkerChatButtonProps {
   artifactId: string;
 }
 
-const SelectArtifactAndChatButton: React.FC<SelectArtifactAndChatButtonProps> = ({ artifactId }) => {
+export const WorkerChatButton: React.FC<WorkerChatButtonProps> = ({ artifactId }) => {
   const router = useRouter();
   const { setSelectedArtifactId } = userArtifactsStore();
 
@@ -17,10 +18,12 @@ const SelectArtifactAndChatButton: React.FC<SelectArtifactAndChatButtonProps> = 
   };
 
   return (
-    <Button onClick={handleClick} variant={'secondary'}>
-      Chat
+    <Button onClick={handleClick} 
+      variant="outline"
+      className="bg-brand-green text-white hover:text-white hover:bg-brand-green/90 gap-2"
+    >
+      <BotMessageSquare className="size-4" />
+      Chat with worker
     </Button>
   );
 };
-
-export default SelectArtifactAndChatButton;

@@ -7,7 +7,7 @@ interface DashboardButtonProps {
 
 export function DashboardButton({ isNavbarExpanded }: DashboardButtonProps) {
   return (
-    <div className="w-full flex justify-center rounded-lg px-2">
+    <div className={`w-full flex justify-center rounded-lg ${isNavbarExpanded ? 'px-2' : ''}`}>
       <Button 
         variant="ghost" 
         className={`${

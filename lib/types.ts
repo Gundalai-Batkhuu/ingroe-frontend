@@ -152,7 +152,7 @@ export interface User {
   user_id: string;
 }
 
-export interface DeleteDocument {
+export interface DeleteWorker {
   document_id: string;
   user_id: string;
 }

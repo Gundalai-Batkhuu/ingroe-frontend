@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect } from "react"
-import { BotMessageSquare, ChevronDown, ChevronUp, Folder, Gauge, LineChart, Settings, Users, Workflow } from "lucide-react"
+import { Bot, BotMessageSquare, ChevronDown, ChevronUp, Folder, Gauge, LineChart, Settings, Users, Workflow } from "lucide-react"
 import { useState } from "react"
 import Link from "next/link"
 
@@ -52,7 +52,7 @@ export default function NavbarItems({ isNavbarExpanded, toggleNavbar }: NavbarIt
       ]
     },
     {
-      icon: <BotMessageSquare className="size-5 text-muted-foreground" />,
+      icon: <Bot className="size-5 text-muted-foreground" />,
       label: "Workers",
       items: [
         { name: "Manage workers", href: "/workers" },
@@ -81,7 +81,7 @@ export default function NavbarItems({ isNavbarExpanded, toggleNavbar }: NavbarIt
 
   function getIconClass(itemLabel: string) {
     const isActive = openSection === itemLabel || 
-      (activeItem && navItems.find(item => item.label === itemLabel)?.items?.includes(activeItem));
+      (activeItem && navItems.find(item => item.label === itemLabel)?.items?.some(i => i.name === activeItem));
     return `size-5 transition-colors ${isActive ? 'text-brand-green' : 'text-muted-foreground group-hover:text-brand-green'}`;
   }
 
