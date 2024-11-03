@@ -6,7 +6,7 @@ const MainArea = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div 
-      className={`h-full overflow-y-hidden px-4 pt-4`}
+      className={`h-[calc(100%-3.5rem)] overflow-y-auto px-4 pt-4 pb-4`}
     >
       {children}
     </div>

@@ -1,75 +1,105 @@
 'use client'
-
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { File, PlusCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { ArtifactsTable } from '@/features/workers-collection/components/workers-table'
-import Link from 'next/link'
-import {RawAllArtifactsResponse} from "@/features/workers-collection/components/raw-all-artifacts-response";
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Calendar, Plus } from 'lucide-react'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { cn } from '@/lib/utils'
+import { AvailableWorkersTable } from '@/features/workers-collection/components/available-workers-table'
 import { SharedArtifactsOwnedTable } from '@/features/workers-collection/components/shared-artifacts-owned-table'
-import AcceptDocumentSharingRequest from "@/features/workers-collection/components/accept-document-sharing-request";
-import {SharedArtifactsLoanedTable} from "@/features/workers-collection/components/shared-artifacts-loaned-table";
+import { SharedArtifactsLoanedTable } from '@/features/workers-collection/components/shared-artifacts-loaned-table'
+import {RawAllArtifactsResponse} from "@/features/workers-collection/components/raw-all-artifacts-response"
 
-interface WorkersTableProps {
-    searchParams: { q: string; offset: string };
-    userId: string;
-    userEmail: string;
+interface WorkersPageContentProps {
+  searchParams: { q: string; offset: string }
+  userId: string
 }
 
 export default function WorkersPageContent({
   searchParams,
-    userId,
-    userEmail
-}: WorkersTableProps) {
+  userId,
+}: WorkersPageContentProps) {
+  const tabs = [
+    { id: 'available', label: 'Available' },
+    { id: 'shared-to-you', label: 'Shared to you' },
+    { id: 'shared-by-you', label: 'Shared by you' },
+    { id: 'raw', label: 'Raw' },
+  ]
+  const [activeTab, setActiveTab] = useState('available')
+
   return (
-    <Tabs defaultValue="owned">
-      <div className="flex items-center">
-        <TabsList>
-          <TabsTrigger value="owned">Owned</TabsTrigger>
-          <TabsTrigger value="shared by you">Shared by you</TabsTrigger>
-            <TabsTrigger value="shared to you">Shared to you</TabsTrigger>
-            <TabsTrigger value="request">Request</TabsTrigger>
-            <TabsTrigger value="raw">Raw artifacts response</TabsTrigger>
-        </TabsList>
-        <div className="ml-auto flex items-center gap-2">
-          <Button size="sm" variant="outline" className="h-8 gap-1">
-            <File className="size-3.5" />
-            <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-              Export
-            </span>
+    <div className="flex-col space-y-6 py-4 px-5 bg-background rounded-lg h-full">
+      {/* Header Section */}
+      <div className="items-center justify-between flex">
+        <div>
+          <h1 className="text-2xl font-semibold">Workers Hub</h1>
+          <p className="text-sm text-muted-foreground">Manage workers</p>
+        </div>
+        
+        <div className="flex items-center gap-3">
+          <Select defaultValue="all">
+            <SelectTrigger className="w-36">
+              <SelectValue placeholder="Filter" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              {/* Add more filter options */}
+            </SelectContent>
+          </Select>
+
+          <Button variant="outline" className="gap-2">
+            <Calendar className="h-4 w-4" />
+            01 Mar 2024 - 10 Nov 2024
           </Button>
-          <Button size="sm" className="h-8">
-            <Link href={'/create-knowledge-base'} className={'flex gap-1'}>
-              <PlusCircle className="size-3.5" />
-              <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                Add Database
-              </span>
-            </Link>
+
+          <Button className="gap-2">
+            <Plus className="h-4 w-4" />
+            Add New
           </Button>
         </div>
       </div>
-      <TabsContent value="owned">
-        <ArtifactsTable searchParams={searchParams} userId={userId} />
-      </TabsContent>
 
-      <TabsContent value={'shared by you'}>
-        <SharedArtifactsOwnedTable
-          searchParams={searchParams}
-          userId={userId}
-        />
-      </TabsContent>
-      <TabsContent value={'shared to you'}>
-        <SharedArtifactsLoanedTable
-          searchParams={searchParams}
-          userId={userId}
-        />
-      </TabsContent>
-      <TabsContent value={'request'}>
-        <AcceptDocumentSharingRequest userId={userId} userEmail={userEmail} />
-      </TabsContent>
-        <TabsContent value={'raw'}>
-            <RawAllArtifactsResponse userId={userId} />
-        </TabsContent>
-    </Tabs>
+      {/* Navigation Tabs */}
+      <div className="border-b">
+        <nav className="flex space-x-8">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={cn(
+                'px-2 pb-1 text-sm font-medium transition-colors hover:text-primary',
+                {
+                  'border-b-2 border-brand-green text-brand-green': activeTab === tab.id,
+                  'text-muted-foreground': activeTab !== tab.id,
+                }
+              )}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </nav>
+      </div>
+
+      {/* Content Section */}
+      <div className="h-[calc(100%-8rem)]">
+        {activeTab === 'available' && (
+          <AvailableWorkersTable searchParams={searchParams} userId={userId} />
+        )}
+        {activeTab === 'shared-by-you' && (
+          <SharedArtifactsOwnedTable searchParams={searchParams} userId={userId} />
+        )}
+        {activeTab === 'shared-to-you' && (
+          <SharedArtifactsLoanedTable searchParams={searchParams} userId={userId} />
+        )}
+        {activeTab === 'raw' && (
+          <RawAllArtifactsResponse userId={userId} />
+        )}
+      </div>
+    </div>
   )
 }
