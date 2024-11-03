@@ -82,7 +82,7 @@ export function FileUploader({ onFileUpload }: FileUploaderProps) {
   }
 
   return (
-    <div>
+    <>
       <h2 className="text-lg font-semibold">Upload Files and Folders</h2>
       <div
         className="border-2 border-dashed border-gray-300 rounded-md p-8 text-center"
@@ -127,6 +127,6 @@ export function FileUploader({ onFileUpload }: FileUploaderProps) {
           </AlertDescription>
         </Alert>
       )}
-    </div>
+    </>
   )
 }

@@ -1,28 +1,30 @@
 import React from 'react';
-import { DeleteDocument } from '@/lib/types'
+import { DeleteWorker } from '@/lib/types'
 import { documentService } from '@/services/document-service'
+import { Button } from '@/components/ui/button';
+import { Trash } from 'lucide-react';
 
 
-interface DeleteDocumentButtonProps extends DeleteDocument {
+interface DeleteWorkerButtonProps extends DeleteWorker {
   onSuccess?: () => void
   className?: string
 }
 
-export const DeleteDocumentButton = ({
+export const DeleteWorkerButton = ({
   user_id,
   document_id,
   onSuccess,
   className
-}: DeleteDocumentButtonProps) => {
+}: DeleteWorkerButtonProps) => {
 
   const handleDelete = async () => {
     try {
-      const document = {
+      const worker = {
         user_id: user_id,
         document_id: document_id
       };
 
-      const result = await documentService.deleteDocument(document);
+      const result = await documentService.deleteDocument(worker);
       console.log('Document deletion successful:', result);
 
       if (onSuccess) {
@@ -34,10 +36,10 @@ export const DeleteDocumentButton = ({
   };
 
   return (
-    <button type="button" onClick={handleDelete} className={className}>
-      Delete
-    </button>
+    <Button variant="destructive" size="smIcon" onClick={handleDelete}>
+      <Trash className="size-4" />
+    </Button>
   );
 };
 
-export default DeleteDocumentButton;
+export default DeleteWorkerButton;

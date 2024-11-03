@@ -2,16 +2,30 @@ import { MobileNav } from '@/layouts/navbar'
 import { SearchInput } from '@/features/workers-collection/components/search'
 import { UserMenu } from '@/features/authentication/components/user-menu'
 import React from 'react'
-import { DynamicBreadcrumb } from '@/layouts/breadcrumb'
+import { Button } from '@/components/ui/button'
+import { Mail, MessageSquareText } from 'lucide-react'
 
 export default function HeaderContent() {
   return (
     <>
       <div className='flex items-center gap-4'>
+        <SearchInput />
         <MobileNav />
-        <DynamicBreadcrumb />
+        <Button variant="ghost">
+          Documents
+        </Button>
+        <Button variant="ghost">
+          Service Hub
+        </Button>
+        <Button variant="ghost">
+          Reports
+        </Button>
       </div>
-      <UserMenu />
+      <div className='flex items-center gap-6'>
+        <Mail className='size-5' />
+        <MessageSquareText className='size-5' />
+        <UserMenu />
+      </div>
     </>
   )
 }
