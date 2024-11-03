@@ -1,8 +1,9 @@
 'use client'
 
 import React, { useEffect } from "react"
-import { ChevronDown, ChevronUp, Folder, Gauge, LineChart, Settings, Users } from "lucide-react"
+import { BotMessageSquare, ChevronDown, ChevronUp, Folder, Gauge, LineChart, Settings, Users, Workflow } from "lucide-react"
 import { useState } from "react"
+import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
@@ -10,7 +11,10 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 interface NavItem {
   icon: React.ReactNode
   label: string
-  items?: string[]
+  items?: Array<{
+    name: string
+    href: string
+  }>
 }
 
 interface NavbarItemsProps {
@@ -33,27 +37,45 @@ export default function NavbarItems({ isNavbarExpanded, toggleNavbar }: NavbarIt
     {
       icon: <Users className="size-5 text-muted-foreground" />,
       label: "Users",
-      items: ["Users", "Groups", "Roles"]
+      items: [
+        { name: "Users", href: "/users" },
+        { name: "Groups", href: "/users/groups" },
+        { name: "Roles", href: "/users/roles" }
+      ]
     },
     {
-      icon: <Gauge className="size-5 text-muted-foreground" />,
+      icon: <Workflow className="size-5 text-muted-foreground" />,
       label: "Services",
-      items: ["Services", "Service groups"]
+      items: [
+        { name: "Services", href: "/services" },
+        { name: "Service groups", href: "/services/groups" }
+      ]
     },
     {
-      icon: <Settings className="size-5 text-muted-foreground" />,
+      icon: <BotMessageSquare className="size-5 text-muted-foreground" />,
       label: "Workers",
-      items: ["Manage workers", "Shared to you", "Shared by you", "Settings"]
+      items: [
+        { name: "Manage workers", href: "/workers" },
+        { name: "Shared to you", href: "/workers/shared-to-you" },
+        { name: "Shared by you", href: "/workers/shared-by-you" },
+        { name: "Settings", href: "/workers/settings" }
+      ]
     },
     {
       icon: <Folder className="size-5 text-muted-foreground" />,
       label: "Assets",
-      items: ["Assets", "Asset groups"]
+      items: [
+        { name: "Assets", href: "/assets" },
+        { name: "Asset groups", href: "/assets/groups" }
+      ]
     },
     {
       icon: <LineChart className="size-5 text-muted-foreground" />,
       label: "Analytics",
-      items: ["Analytics", "Analytics groups"]
+      items: [
+        { name: "Analytics", href: "/analytics" },
+        { name: "Analytics groups", href: "/analytics/groups" }
+      ]
     }
   ]
 
@@ -119,18 +141,22 @@ export default function NavbarItems({ isNavbarExpanded, toggleNavbar }: NavbarIt
             <CollapsibleContent className="space-y-1 px-2 py-1">
               <div className="border-l-2 border-gray-200 dark:border-gray-700 ml-3 pl-2">
                 {item.items.map((subItem) => (
-                  <div key={subItem} className="relative flex items-center">
-                    {/* Horizontal line */}
+                  <div key={subItem.name} className="relative flex items-center">
                     <div className="absolute left-0 w-4 border-t-2 border-gray-200 dark:border-gray-700" />
-                    <Button
-                      variant="ghost"
-                      className={`w-full justify-start pl-6 text-sm font-bold text-foreground dark:text-foreground hover:bg-gray-100 dark:hover:bg-gray-800 ${
-                        activeItem === subItem ? "bg-gray-100 dark:bg-gray-800" : ""
-                      }`}
-                      onClick={() => setActiveItem(subItem)}
+                    <Link 
+                      href={subItem.href}
+                      className="w-full"
                     >
-                      {subItem}
-                    </Button>
+                      <Button
+                        variant="ghost"
+                        className={`w-full justify-start pl-6 text-sm font-bold text-foreground dark:text-foreground hover:bg-gray-100 dark:hover:bg-gray-800 ${
+                          activeItem === subItem.name ? "bg-gray-100 dark:bg-gray-800" : ""
+                        }`}
+                        onClick={() => setActiveItem(subItem.name)}
+                      >
+                        {subItem.name}
+                      </Button>
+                    </Link>
                   </div>
                 ))}
               </div>
