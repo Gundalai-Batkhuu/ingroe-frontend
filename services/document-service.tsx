@@ -80,7 +80,7 @@ export const documentService = {
 
   // Handwritten Document Capture
   async captureHandwrittenDocument(formData: FormData): Promise<any> {
-    const response = await fetch(ApiEndpoint.CAPTURE_HANDWRITTEN_DOCUMENT, {
+    const response = await fetch(ApiEndpoint.CAPTURE_DOCUMENT, {
       method: 'POST',
       body: formData
     })
@@ -120,7 +120,7 @@ export const documentService = {
     payload: CreateDocumentCapture
   ): Promise<any> {
     return await fetchApi(
-      ApiEndpoint.CREATE_DOCUMENT_FROM_CAPTURED_DOCUMENT,
+      ApiEndpoint.CREATE_WORKER_FROM_CAPTURED_DOCUMENT,
       'POST',
       payload
     )

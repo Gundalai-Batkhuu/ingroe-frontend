@@ -11,6 +11,7 @@ import { StreamableValue } from 'ai/rsc'
 import { useStreamableText } from '@/hooks/use-streamable-text'
 import { ChatMessageActions } from '@/features/chat/components/chat-message-actions'
 import ChatToolCollection from '@/features/chat/components/chat-tool-collection'
+import { Context } from '@/lib/types'
 
 export function UserMessage({ children }: { children: React.ReactNode }) {
   return (
@@ -25,13 +26,17 @@ export function UserMessage({ children }: { children: React.ReactNode }) {
   )
 }
 
+interface BotMessageProps {
+  content: string | StreamableValue<string>
+  context?: Context[]
+  className?: string
+}
+
 export function BotMessage({
   content,
+  context,
   className
-}: {
-  content: string | StreamableValue<string>
-  className?: string
-}) {
+}: BotMessageProps) {
   const text = useStreamableText(content)
 
   return (
@@ -82,7 +87,7 @@ export function BotMessage({
           {text}
         </MemoizedReactMarkdown>
         <div className="flex items-center justify-between">
-          <ChatToolCollection />
+          <ChatToolCollection context={context} />
           <ChatMessageActions message={text} />
         </div>
       </div>
