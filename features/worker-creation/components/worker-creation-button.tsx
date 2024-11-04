@@ -8,6 +8,7 @@ import { Loader2 } from 'lucide-react'
 import { Toast, ToastAction } from '@/components/ui/toast'
 import { useToast } from '@/hooks/use-toast'
 import { ApiEndpoint } from '@/services/api_endpoints'
+import { WorkerCreationSuccessDialog } from './worker-creation-success-dialog'
 
 interface WorkerCreationButtonProps {
   userId: string
@@ -24,6 +25,7 @@ export function WorkerCreationButton({
 }: WorkerCreationButtonProps) {
   const { resourceItems, clearResourceItems } = useResourceItemsStore()
   const [isLoading, setIsLoading] = useState(false)
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false)
   const { toast } = useToast()
 
   const handleCreateWorker = async () => {
@@ -78,10 +80,7 @@ export function WorkerCreationButton({
       console.log('API_BASE_URL_V2: ', ApiEndpoint.CREATE_WORKER)
       await documentService.createWorker(formData)
       clearResourceItems()
-      toast({
-        title: "Worker Created",
-        description: "Your worker has been created successfully",
-      })
+      setShowSuccessDialog(true)
     } catch (error) {
       console.error('Error creating worker:', error)
       toast({
@@ -98,19 +97,26 @@ export function WorkerCreationButton({
   }
 
   return (
-    <Button 
-      onClick={handleCreateWorker}
-      className={className}
-      disabled={isLoading}
-    >
-      {isLoading ? (
-        <>
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          Creating...
-        </>
-      ) : (
-        'Create Worker'
-      )}
-    </Button>
+    <>
+      <Button 
+        onClick={handleCreateWorker}
+        className={className}
+        disabled={isLoading}
+      >
+        {isLoading ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Creating...
+          </>
+        ) : (
+          'Create Worker'
+        )}
+      </Button>
+
+      <WorkerCreationSuccessDialog 
+        isOpen={showSuccessDialog}
+        onOpenChange={setShowSuccessDialog}
+      />
+    </>
   )
 }
