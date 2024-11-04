@@ -11,7 +11,7 @@ if (!API_BASE_URL) {
 
 export const ApiEndpoint = {
   // Document Creation and Management
-  CREATE_WORKER: urljoin(API_BASE_URL, 'api', 'v1', 'store', 'create-document'),
+  CREATE_WORKER: urljoin(API_BASE_URL, 'api', 'v2', 'store', 'create-document'),
   CREATE_DOCUMENT_MANUALLY: urljoin(API_BASE_URL, 'api', 'v1', 'store', 'create-document-manually'),
   UPDATE_DOCUMENT_INFO: urljoin(API_BASE_URL, 'api', 'v1', 'store', 'update-document-info'),
   DELETE_DOCUMENT: urljoin(API_BASE_URL, 'api', 'v1', 'store', 'delete-document'),
