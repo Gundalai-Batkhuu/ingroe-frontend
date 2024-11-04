@@ -20,6 +20,7 @@ export default function SignupForm() {
       } else {
         toast.success(getMessageFromCode(result.resultCode))
         router.refresh()
+        router.push('/workers')
       }
     }
   }, [result, router])
