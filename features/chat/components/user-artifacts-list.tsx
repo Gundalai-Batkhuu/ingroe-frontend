@@ -5,7 +5,6 @@ import { userArtifactsStore } from '@/stores/userArtifactsStore'
 import { Artefact, SharedDocumentLoaned } from '@/lib/types'
 import { useEffect, useState, useCallback } from 'react'
 import { UserArtifact } from '@/features/chat/components/user-artifact'
-import { SharedArtifactLoaned } from '@/features/chat/components/shared-artifact-loaned'
 
 interface UserArtifactsListProps {
   userId: string
@@ -69,23 +68,6 @@ export function UserArtifactsList({ userId }: UserArtifactsListProps) {
               />
           ))}
         </div>
-        {artifacts.shared_artifacts_loaned.length > 0 && (
-            <div className="mt-4">
-              <h4 className="font-bold px-4 py-2">Shared Documents (Loaned)</h4>
-              <div className="px-2 space-y-3">
-                {artifacts.shared_artifacts_loaned.map((sharedArtifact: SharedDocumentLoaned) => (
-                    <SharedArtifactLoaned
-                        key={sharedArtifact.document_id}
-                        sharedArtifact={sharedArtifact}
-                        isExpanded={expandedId === sharedArtifact.document_id}
-                        isSelected={selectedArtifactId === sharedArtifact.document_id}
-                        onToggleExpand={() => toggleExpand(sharedArtifact.document_id)}
-                        onSelect={() => handleSelect(sharedArtifact.document_id)}
-                    />
-                ))}
-              </div>
-            </div>
-        )}
       </div>
   )
 }

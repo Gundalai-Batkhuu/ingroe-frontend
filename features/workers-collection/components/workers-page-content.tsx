@@ -14,7 +14,7 @@ import { AvailableWorkersTable } from '@/features/workers-collection/components/
 import { SharedArtifactsOwnedTable } from '@/features/workers-collection/components/shared-artifacts-owned-table'
 import { SharedArtifactsLoanedTable } from '@/features/workers-collection/components/shared-artifacts-loaned-table'
 import {RawAllArtifactsResponse} from "@/features/workers-collection/components/raw-all-artifacts-response"
-
+import { useRouter } from 'next/navigation'
 interface WorkersPageContentProps {
   searchParams: { q: string; offset: string }
   userId: string
@@ -31,7 +31,7 @@ export default function WorkersPageContent({
     { id: 'raw', label: 'Raw' },
   ]
   const [activeTab, setActiveTab] = useState('available')
-
+  const router = useRouter()
   return (
     <div className="flex-col space-y-6 py-4 px-5 bg-background rounded-lg h-full">
       {/* Header Section */}
@@ -57,7 +57,7 @@ export default function WorkersPageContent({
             01 Mar 2024 - 10 Nov 2024
           </Button>
 
-          <Button className="gap-2">
+          <Button className="gap-2" onClick={() => router.push('/create-worker')}>
             <Plus className="h-4 w-4" />
             Add New
           </Button>
