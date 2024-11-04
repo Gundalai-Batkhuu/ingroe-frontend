@@ -1,6 +1,4 @@
 import 'server-only'
-
-import { ApiEndpoint } from '@/services/api_endpoints'
 import { createAI, getMutableAIState, getAIState } from 'ai/rsc'
 import { BotMessage, UserMessage } from '@/features/chat/components/message'
 import { nanoid } from '@/lib/utils'
@@ -42,7 +40,7 @@ async function submitUserMessage(content: string, documentId: string, quickSearc
       query: content,
       document_id: documentId,
       user_id: session.user.id,
-      tag: 'quick'
+   // tag: 'quick'
     }
 
     let data;
