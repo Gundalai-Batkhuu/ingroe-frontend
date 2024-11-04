@@ -8,8 +8,6 @@ if (!API_URL) {
   throw new Error('API_URL is not defined. Check your environment variables.');
 }
 
-const USER_API_BASE_URL = urljoin(API_URL, 'api', 'v1', 'user');
-
 interface User {
   name: string;
   email: string;
@@ -30,7 +28,7 @@ export const userService = {
         email: email,
         user_id: userId
       };
-      const response = await fetch(`${USER_API_BASE_URL}/create`, {
+      const response = await fetch(`${API_URL}/api/v1/user/create`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -49,7 +47,7 @@ export const userService = {
 
   async getUserArtifacts(userId: string): Promise<any> {
     try {
-      const response = await fetch(`${USER_API_BASE_URL}/get-user-artifacts?user_id=${encodeURIComponent(userId)}`);
+      const response = await fetch(`${API_URL}/api/v1/user/get-user-artifacts?user_id=${encodeURIComponent(userId)}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -66,7 +64,7 @@ export const userService = {
         user_id: payload.user_id,
         document_id: payload.document_id,
       });
-      const response = await fetch(`${USER_API_BASE_URL}/get-shared-document-state?${params}`);
+      const response = await fetch(`${API_URL}/api/v1/user/get-shared-document-state?${params}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
