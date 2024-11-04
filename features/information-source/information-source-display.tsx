@@ -7,7 +7,8 @@ import {
     DialogTrigger,
   } from "@/components/ui/dialog"
 import { IconWrapper } from "@/components/ui/icon-wrapper";
-  import { FileText } from "lucide-react";
+import { FileText } from "lucide-react";
+import { Context } from '@/lib/types';
 
 const dummyInformationSource = {
     "document_id": "a1d19d6e53244dfc9c4b134078352705",
@@ -65,9 +66,11 @@ const dummyInformationSource = {
 }
 
 interface InformationSourceDisplayProps {
+  context: Context[];
 }
 
-export default function InformationSourceDisplay({ }: InformationSourceDisplayProps) {
+export default function InformationSourceDisplay({ context }: InformationSourceDisplayProps) {
+    if (context.length === 0) return null;
     return (
         <Dialog>
             <DialogTrigger>
@@ -81,11 +84,11 @@ export default function InformationSourceDisplay({ }: InformationSourceDisplayPr
                 <DialogHeader>
                     <DialogTitle>Information Source</DialogTitle>
                     <DialogDescription>
-                        {dummyInformationSource.response.answer}
+                        {context[0]?.page_content}
                     </DialogDescription>
                 </DialogHeader>
                 <div className="mt-4 space-y-4">
-                    {dummyInformationSource.response.context.map((context, index) => (
+                    {context.map((context, index) => (
                         <div key={index} className="border rounded-lg p-4">
                             <div className="flex items-center gap-2 mb-2">
                                 <FileText className="w-4 h-4" />

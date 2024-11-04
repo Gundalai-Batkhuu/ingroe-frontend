@@ -5,7 +5,7 @@ import { createAI, getMutableAIState, getAIState } from 'ai/rsc'
 import { BotMessage, UserMessage } from '@/features/chat/components/message'
 import { nanoid } from '@/lib/utils'
 import { saveChat } from '@/features/chat/actions/server-actions'
-import { Chat, Message, QueryDocument } from '@/lib/types'
+import { Chat, Context, Message, QueryDocument } from '@/lib/types'
 import { auth } from '@/features/authentication/auth'
 import { documentService } from '@/services/document-service'
 
@@ -42,10 +42,8 @@ async function submitUserMessage(content: string, documentId: string, quickSearc
       query: content,
       document_id: documentId,
       user_id: session.user.id,
-      tag: undefined  // Optional, add if needed
+      tag: 'quick'
     }
-
-    console.log('Request payload:', payload)
 
     let data;
 
@@ -55,9 +53,13 @@ async function submitUserMessage(content: string, documentId: string, quickSearc
       data = await documentService.queryDocument(payload)
     }
 
-    console.log('API response data:', data)
-
-    const assistantMessage = data.response
+    const assistantMessage = {
+      answer: data.response.answer,
+      context: data.response.context?.map((doc: any) => ({
+        ...doc,
+        id: doc.id || nanoid()
+      }))
+    }
 
     aiState.update({
       ...aiState.get(),
@@ -66,15 +68,16 @@ async function submitUserMessage(content: string, documentId: string, quickSearc
         {
           id: nanoid(),
           role: 'assistant',
-          content: assistantMessage
+          content: assistantMessage.answer,
+          context: assistantMessage.context
         }
       ]
     })
-
+    
     // Return the UI representation of the assistant's message
     return {
       id: nanoid(),
-      display: <BotMessage content={assistantMessage} />
+      display: <BotMessage content={assistantMessage.answer} />
     }
   } catch (error) {
     console.error('Error in submitUserMessage:', error)
@@ -186,7 +189,10 @@ export const getUIStateFromAIState = (aiState: Chat) => {
           <UserMessage>{message.content as string}</UserMessage>
         ) : message.role === 'assistant' &&
           typeof message.content === 'string' ? (
-          <BotMessage content={message.content} />
+          <BotMessage 
+            content={message.content} 
+            context={message.context as Context[] | undefined} 
+          />
         ) : null
     }))
 }

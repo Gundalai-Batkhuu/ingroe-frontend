@@ -1,7 +1,10 @@
 import { CoreMessage } from 'ai'
 
-export type Message = CoreMessage & {
+export interface Message {
   id: string
+  role: 'user' | 'assistant' | 'system'
+  content: string
+  context?: Context[]
 }
 
 export interface Chat extends Record<string, any> {
@@ -259,5 +262,20 @@ export interface SwitchShareType {
 export interface SharedDocumentSelection {
   user_id: string;
   current_timestamp: Date;
+}
+
+export interface Context {
+  id: string | null;
+  metadata: {
+    chunkid: string;
+    document_id: string;
+    file_name: string;
+    page: number;
+    source: string;
+    type: string;
+    user_id: string;
+  };
+  page_content: string;
+  type: string;
 }
 

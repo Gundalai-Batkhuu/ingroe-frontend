@@ -25,6 +25,7 @@ import { WorkerChatButton } from '@/features/chat/components/chat-with-worker-bu
 import { userArtifactsStore } from '@/stores/userArtifactsStore'
 import { EditWorkerButton } from '@/features/worker-creation/components/edit-worker-button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import Image from 'next/image'
 
 interface TableRowData {
   captured_document_id: string
@@ -71,6 +72,22 @@ export function AvailableWorkersTable({
 
   const paginatedArtifacts = filteredArtifacts.slice(offset, offset + 5)
   const totalArtifacts = filteredArtifacts.length
+
+  if (totalArtifacts === 0) {
+    return (
+      <Card className="h-full flex flex-col items-center justify-center p-8">
+        <Image
+          src="/no_workers.png"
+          alt="No workers found"
+          width={300}
+          height={300}
+          priority
+        />
+        <CardTitle className="mt-4">No workers available</CardTitle>
+        <CardDescription className="mt-2">Create a new worker to get started</CardDescription>
+      </Card>
+    )
+  }
 
   function prevPage() {
     router.push(`/?offset=${Math.max(0, offset - 5)}`, { scroll: false })

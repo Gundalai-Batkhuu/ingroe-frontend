@@ -1,14 +1,14 @@
 import urljoin from 'url-join';
 
 const API_URL = process.env.NEXT_PUBLIC_IS_LOCAL === 'true'
-  ? process.env.NEXT_PUBLIC_LOCAL_API_URL_V1
+  ? process.env.NEXT_PUBLIC_LOCAL_API_URL
   : process.env.NEXT_PUBLIC_API_URL;
 
 if (!API_URL) {
   throw new Error('API_URL is not defined. Check your environment variables.');
 }
 
-const USER_API_BASE_URL = urljoin(API_URL, 'user');
+const USER_API_BASE_URL = urljoin(API_URL, 'api', 'v1', 'user');
 
 interface User {
   name: string;
