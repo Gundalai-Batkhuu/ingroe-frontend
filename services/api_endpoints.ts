@@ -19,7 +19,7 @@ export const ApiEndpoint = {
 
   // Document Querying and Search
   SEARCH_GOOGLE: urljoin(API_BASE_URL, 'api', 'v1', 'store', 'search-query'),
-  QUERY_DOCUMENT: urljoin(API_BASE_URL, 'api', 'v1', 'store', 'query-document'),
+  QUERY_DOCUMENT: urljoin(API_BASE_URL, 'api', 'v2', 'store', 'query-document'),
   QUERY_DOCUMENT_QUICK: urljoin(API_BASE_URL, 'api', 'v1', 'store', 'query-document-quick'),
 
   // Handwritten Document Capture
