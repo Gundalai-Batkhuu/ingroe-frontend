@@ -50,7 +50,7 @@ export const documentService = {
   },
 
   async deleteDocument(payload: DeleteWorker): Promise<any> {
-    return await fetchApi(ApiEndpoint.DELETE_DOCUMENT, 'DELETE', payload)
+    return await fetchApi(ApiEndpoint.DELETE_WORKER, 'DELETE', payload)
   },
 
   async searchDocuments(query: SearchQuery): Promise<any> {
