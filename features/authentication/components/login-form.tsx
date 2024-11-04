@@ -21,7 +21,7 @@ export default function LoginForm() {
                 toast.error(getMessageFromCode(result.resultCode))
             } else {
                 toast.success(getMessageFromCode(result.resultCode))
-                router.push('/') // Redirect to home page after successful login
+                router.push('/workers')
                 router.refresh()
             }
         }
