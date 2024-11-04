@@ -14,8 +14,8 @@ export const ApiEndpoint = {
   CREATE_WORKER: urljoin(API_BASE_URL, 'api', 'v2', 'store', 'create-document'),
   CREATE_DOCUMENT_MANUALLY: urljoin(API_BASE_URL, 'api', 'v1', 'store', 'create-document-manually'),
   UPDATE_DOCUMENT_INFO: urljoin(API_BASE_URL, 'api', 'v1', 'store', 'update-document-info'),
-  DELETE_DOCUMENT: urljoin(API_BASE_URL, 'api', 'v1', 'store', 'delete-document'),
-  DELETE_ARTIFACTS_FROM_DOCUMENT: urljoin(API_BASE_URL, 'api', 'v1', 'store', 'delete-artifacts-from-document'),
+  DELETE_WORKER: urljoin(API_BASE_URL, 'api', 'v2', 'store', 'delete-document'),
+  DELETE_ARTIFACTS_FROM_DOCUMENT: urljoin(API_BASE_URL, 'api', 'v2', 'store', 'delete-artifacts-from-document'),
 
   // Document Querying and Search
   SEARCH_GOOGLE: urljoin(API_BASE_URL, 'api', 'v1', 'store', 'search-query'),
