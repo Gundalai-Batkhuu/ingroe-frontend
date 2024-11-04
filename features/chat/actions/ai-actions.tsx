@@ -14,14 +14,14 @@ async function submitUserMessage(content: string, documentId: string, quickSearc
   'use server'
 
   const aiState = getMutableAIState<typeof AI>()
+  const session = await auth()
 
-  console.log('Sending the message: ', content)
-  console.log('Document ID: ', documentId)
+  if (!session?.user?.id) {
+    throw new Error('User not authenticated')
+  }
 
   if (!documentId) {
-    throw new Error(
-      'Document ID is missing. Please ensure a document is selected.'
-    )
+    throw new Error('Document ID is missing. Please ensure a document is selected.')
   }
 
   try {
@@ -40,7 +40,9 @@ async function submitUserMessage(content: string, documentId: string, quickSearc
 
     const payload = {
       query: content,
-      document_id: documentId
+      document_id: documentId,
+      user_id: session.user.id,
+      tag: undefined  // Optional, add if needed
     }
 
     console.log('Request payload:', payload)
@@ -98,7 +100,7 @@ async function submitUserMessage(content: string, documentId: string, quickSearc
     // Return an error message to be displayed in the UI
     return {
       id: nanoid(),
-      display: (
+      display: (    
         <BotMessage
           content={`An error occurred: ${(error as AppError).message}`}
         />

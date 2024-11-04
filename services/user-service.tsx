@@ -1,14 +1,14 @@
 import urljoin from 'url-join';
 
 const API_URL = process.env.NEXT_PUBLIC_IS_LOCAL === 'true'
-  ? process.env.NEXT_PUBLIC_LOCAL_API_URL
+  ? process.env.NEXT_PUBLIC_LOCAL_API_URL_V1
   : process.env.NEXT_PUBLIC_API_URL;
 
 if (!API_URL) {
-  throw new Error('API_BASE_URL is not defined. Check your environment variables.');
+  throw new Error('API_URL is not defined. Check your environment variables.');
 }
 
-const API_BASE_URL = urljoin(API_URL, 'user');
+const USER_API_BASE_URL = urljoin(API_URL, 'user');
 
 interface User {
   name: string;
@@ -30,7 +30,7 @@ export const userService = {
         email: email,
         user_id: userId
       };
-      const response = await fetch(`${API_BASE_URL}/create`, {
+      const response = await fetch(`${USER_API_BASE_URL}/create`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -49,7 +49,7 @@ export const userService = {
 
   async getUserArtifacts(userId: string): Promise<any> {
     try {
-      const response = await fetch(`${API_BASE_URL}/get-user-artifacts?user_id=${encodeURIComponent(userId)}`);
+      const response = await fetch(`${USER_API_BASE_URL}/get-user-artifacts?user_id=${encodeURIComponent(userId)}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -66,7 +66,7 @@ export const userService = {
         user_id: payload.user_id,
         document_id: payload.document_id,
       });
-      const response = await fetch(`${API_BASE_URL}/get-shared-document-state?${params}`);
+      const response = await fetch(`${USER_API_BASE_URL}/get-shared-document-state?${params}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }

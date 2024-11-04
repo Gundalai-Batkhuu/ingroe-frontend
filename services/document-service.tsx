@@ -22,13 +22,18 @@ import {
 } from '@/lib/types'
 
 export const documentService = {
-  // Document Creation and Management
-  async createDocumentSelection(document: CreateWorker): Promise<any> {
-    return await fetchApi(
-      ApiEndpoint.CREATE_DOCUMENT_SELECTION,
-      'POST',
-      document
-    )
+  // Worker Creation and Management
+  async createWorker(formData: FormData) {
+    const response = await fetch(ApiEndpoint.CREATE_WORKER, {
+      method: 'POST',
+      body: formData, 
+    })
+  
+    if (!response.ok) {
+      throw new Error('Failed to create worker')
+    }
+  
+    return response.json()
   },
 
   async createDocumentManually(formData: FormData): Promise<any> {
