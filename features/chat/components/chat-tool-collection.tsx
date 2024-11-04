@@ -3,14 +3,16 @@ import { ThumbsUp, ThumbsDown, SquareMousePointer, FileText } from 'lucide-react
 import DiscussionForm from '@/features/chat/components/discussion-form'
 import { IconWrapper } from '@/components/ui/icon-wrapper';
 import InformationSourceDisplay from '@/features/information-source/information-source-display';
-
+import { Context } from '@/lib/types';
 const cn = (...classes: (string | undefined)[]): string => classes.filter(Boolean).join(' ');
 
 interface ChatToolCollectionProps {
   className?: string;
+  messageId?: string;
+  context?: Context[];
 }
 
-export default function ChatToolCollection({ className }: ChatToolCollectionProps) {
+export default function ChatToolCollection({ className, context}: ChatToolCollectionProps) {
   const [isLiked, setIsLiked] = useState(false);
   const [isDisliked, setIsDisliked] = useState(false);
 
@@ -53,7 +55,7 @@ export default function ChatToolCollection({ className }: ChatToolCollectionProp
       <IconWrapper tooltip="Talk to a human">
         <SquareMousePointer className="w-5 h-5 text-gray-500 hover:text-gray-700 cursor-pointer" />
       </IconWrapper>
-      <InformationSourceDisplay />
+      <InformationSourceDisplay context={context || []} />
       <IconWrapper tooltip="Create a new discussion">
         <DiscussionForm />
       </IconWrapper>
