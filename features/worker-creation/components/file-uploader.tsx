@@ -6,6 +6,8 @@ import { Input } from '@/components/ui/input'
 import { FileWithPath } from 'react-dropzone'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
+import Image from 'next/image'
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 interface FileUploaderProps {
   onFileUpload: (files: FileWithPath[]) => void
@@ -82,51 +84,70 @@ export function FileUploader({ onFileUpload }: FileUploaderProps) {
   }
 
   return (
-    <>
-      <h2 className="text-lg font-semibold">Upload Files and Folders</h2>
-      <div
-        className="border-2 border-dashed border-gray-300 rounded-md p-8 text-center"
-        onDragOver={(e) => e.preventDefault()}
-        onDrop={handleDrop}
-      >
-        <Input
-          type="file"
-          onChange={handleFileChange}
-          multiple
-          className="hidden"
-          ref={fileInputRef}
-          accept={SUPPORTED_EXTENSIONS.join(',')}
-        />
-        <Input
-          type="file"
-          onChange={handleFileChange}
-          multiple
-          className="hidden"
-          ref={dirInputRef}
-          webkitdirectory=""
-          directory=""
-        />
-        <Upload className="size-12 text-gray-400 mx-auto mb-4" />
-        <p className="text-sm text-gray-600 mb-4">
-          Drag and drop files or folders here, or use the buttons below to select
-        </p>
-        <div className="flex justify-center space-x-4">
-          <Button onClick={handleSelectFiles}>Select Files</Button>
-          <Button onClick={handleSelectDirectories}>Select Folders</Button>
+    <Card className="w-full h-full shadow-none">
+      <CardHeader>
+        <CardTitle>Upload knowledge files</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div
+          className="text-center"
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={handleDrop}
+        >
+          <Input
+            type="file"
+            onChange={handleFileChange}
+            multiple
+            className="hidden"
+            ref={fileInputRef}
+            accept={SUPPORTED_EXTENSIONS.join(',')}
+          />
+          <Input
+            type="file"
+            onChange={handleFileChange}
+            multiple
+            className="hidden"
+            ref={dirInputRef}
+            webkitdirectory=""
+            directory=""
+          />
+          <Image 
+            src="/upload_documents.png"
+            alt="Upload" 
+            width={128} 
+            height={128}
+            className="mx-auto mb-6"
+          />
+          <h2 className="text-lg font-semibold mb-2">
+            Drag & Drop here to upload
+          </h2>
+          <p className="text-sm text-muted-foreground mb-6">
+            or use the buttons below to select
+          </p>
+          <div className="flex justify-center space-x-4">
+            <Button variant="default" onClick={handleSelectFiles}>
+              <Upload className="mr-2 size-4" />
+              Upload File
+            </Button>
+            <Button variant="default" onClick={handleSelectDirectories}>
+              <Upload className="mr-2 size-4" />
+              Upload Folder
+            </Button>
+          </div>
+          <p className="text-xs text-muted-foreground mt-6">
+            Supported file types: {SUPPORTED_EXTENSIONS.join(', ')}
+          </p>
         </div>
-        <p className="text-xs text-gray-500 mt-4">
-          Supported file types: {SUPPORTED_EXTENSIONS.join(', ')}
-        </p>
-      </div>
-      {(unsupportedCount > 0 || supportedCount > 0) && (
-        <Alert variant="default" className="mt-4">
-          <AlertDescription>
-            {unsupportedCount > 0 && `${unsupportedCount} unsupported file${unsupportedCount > 1 ? 's were' : ' was'} ignored. `}
-            {supportedCount > 0 && `${supportedCount} supported file${supportedCount > 1 ? 's have' : ' has'} been uploaded successfully.`}
-            {supportedCount === 0 && 'No supported files were uploaded.'}
-          </AlertDescription>
-        </Alert>
-      )}
-    </>
+        {(unsupportedCount > 0 || supportedCount > 0) && (
+          <Alert variant="default" className="mt-4">
+            <AlertDescription>
+              {unsupportedCount > 0 && `${unsupportedCount} unsupported file${unsupportedCount > 1 ? 's were' : ' was'} ignored. `}
+              {supportedCount > 0 && `${supportedCount} supported file${supportedCount > 1 ? 's have' : ' has'} been uploaded successfully.`}
+              {supportedCount === 0 && 'No supported files were uploaded.'}
+            </AlertDescription>
+          </Alert>
+        )}
+      </CardContent>
+    </Card>
   )
 }

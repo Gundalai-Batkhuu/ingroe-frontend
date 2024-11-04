@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { Upload, Link, PenTool, File, Plus, X } from 'lucide-react'
+import { Upload, Link, PenTool, File, Plus, X, Trash2, FileText, FileSpreadsheet } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -59,15 +59,15 @@ export default function WorkerCreator({
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex-1 flex gap-6">
-        <Card className="w-3/4">
+      <div className="flex-1 flex gap-6 h-full">
+        <Card className="w-3/4 h-full">
           <CardHeader>
             <CardTitle>{title || 'Worker name'}</CardTitle>
             <CardDescription>
               {description || 'Worker description'}
             </CardDescription>
           </CardHeader>
-          <CardContent className="px-6">
+          <CardContent className="px-6 flex flex-col h-[calc(100%-5.5rem)]">
             <div className="border-b">
               <nav className="flex space-x-8">
                 {tabs.map((tab) => (
@@ -77,7 +77,7 @@ export default function WorkerCreator({
                     className={cn(
                       'px-2 pb-1 text-sm font-medium transition-colors hover:text-primary',
                       {
-                        'border-b-2 border-brand-green text-brand-green': activeTab === tab.id,
+                        'border-b-2 border-brand-green text-brand-green font-semibold hover:text-brand-green': activeTab === tab.id,
                         'text-muted-foreground': activeTab !== tab.id,
                       }
                     )}
@@ -88,7 +88,7 @@ export default function WorkerCreator({
               </nav>
             </div>
 
-            <div className="mt-4 space-y-4 px-4 sm:px-6 lg:px-8">
+            <div className="h-full mt-4">
               {activeTab === 'file' && <FileUploader onFileUpload={handleFileUpload} />}
               {activeTab === 'electronics' && <div />}
               {activeTab === 'note' && <HandwrittenNotesEditor userId={userId} />}
@@ -99,35 +99,41 @@ export default function WorkerCreator({
 
         <Card className="w-1/4 flex flex-col h-full">
           <CardHeader>
-            <CardTitle>Uploads</CardTitle>
+            <CardTitle>Uploaded files</CardTitle>
           </CardHeader>
           <CardContent className="flex-1 overflow-hidden">
             <ScrollArea className="h-full">
-              <ul className="space-y-2 p-4">
-                {resourceItems.map(resource => (
-                  <li
-                    key={resource.id}
-                    className="flex items-center justify-between bg-muted p-2 rounded"
-                  >
-                    <span className="flex items-center">
-                      {resource.type === 'file' && <File className="size-4 mr-2" />}
-                      {resource.type === 'link' && <Link className="size-4 mr-2" />}
-                      {resource.type === 'note' && (
-                        <PenTool className="size-4 mr-2" />
-                      )}
-                      {resource.displayName}
-                    </span>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      onClick={() => removeResourceItem(resource.id)}
-                      aria-label={`Remove ${resource.type}`}
+                <ul className="space-y-2">
+                  {resourceItems.map(resource => (
+                    <li
+                      key={resource.id}
+                      className="flex items-center justify-between py-1.5"
                     >
-                      <X className="size-4" />
-                    </Button>
-                  </li>
-                ))}
-              </ul>
+                      <span className="flex items-center text-sm">
+                        {resource.type === 'file' && (
+                          <>
+                            {/\.(pdf)$/i.test(resource.displayName) && <FileText className="size-4 mr-2 text-gray-600" />}
+                            {/\.(xlsx|xls)$/i.test(resource.displayName) && <FileSpreadsheet className="size-4 mr-2 text-gray-600" />}
+                            {/\.(docx|md|txt)$/i.test(resource.displayName) && <File className="size-4 mr-2 text-gray-600" />}
+                            {!/\.(pdf|xlsx|xls|docx|md|txt)$/i.test(resource.displayName) && <File className="size-4 mr-2 text-gray-600" />}
+                          </>
+                        )}
+                        {resource.type === 'link' && <Link className="size-4 mr-2 text-gray-600" />}
+                        {resource.type === 'note' && <PenTool className="size-4 mr-2 text-gray-600" />}
+                        <span className="mx-2 text-gray-900">{resource.displayName}</span>
+                      </span>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => removeResourceItem(resource.id)}
+                        aria-label={`Remove ${resource.type}`}
+                        className="pl-2 size-6 hover:bg-transparent"
+                      >
+                        <Trash2 className="size-4 text-gray-400 hover:text-red-500 transition-colors" />
+                      </Button>
+                    </li>
+                  ))}
+                </ul>
             </ScrollArea>
           </CardContent>
           <CardFooter className="flex justify-between gap-4 p-4">

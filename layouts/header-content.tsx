@@ -22,8 +22,8 @@ export default function HeaderContent() {
         </Button>
       </div>
       <div className='flex items-center gap-6'>
-        <Mail className='size-5' />
-        <MessageSquareText className='size-5' />
+        <Mail className='size-5 text-muted-foreground' />
+        <MessageSquareText className='size-5 text-muted-foreground' />
         <UserMenu />
       </div>
     </>
