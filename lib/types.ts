@@ -125,11 +125,13 @@ export interface SearchResult {
 }
 
 export interface CreateWorker {
-  user_id: string;
-  document_id?: string;
-  links: string[];
-  document_alias: string;
-  description: string;
+  user_id: string
+  document_id?: string
+  links?: string[]
+  file?: File[]
+  document_alias: string
+  description: string
+  config?: Record<string, any>[]
 }
 
 export type ManualDocumentFormData = {
@@ -144,6 +146,8 @@ export type ManualDocumentFormData = {
 export interface QueryDocument {
   query: string;
   document_id: string;
+  user_id: string;
+  tag?: string;
 }
 
 export interface User {
