@@ -3,8 +3,9 @@ import { CoreMessage } from 'ai'
 export interface Message {
   id: string
   role: 'user' | 'assistant' | 'system'
-  content: string
+  content: string | { answer: string }
   context?: Context[]
+  chunkid?: string[]
 }
 
 export interface Chat extends Record<string, any> {
@@ -278,4 +279,5 @@ export interface Context {
   page_content: string;
   type: string;
 }
+
 

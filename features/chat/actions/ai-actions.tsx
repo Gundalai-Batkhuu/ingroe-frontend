@@ -56,8 +56,9 @@ async function submitUserMessage(content: string, documentId: string, quickSearc
       context: data.response.context?.map((doc: any) => ({
         ...doc,
         id: doc.id || nanoid(),
-      chunkid: doc.chunkid
-      }))
+        chunkid: doc.chunkid
+      })),
+      chunkid: data.response.chunkid
     }
 
     aiState.update({
@@ -68,7 +69,8 @@ async function submitUserMessage(content: string, documentId: string, quickSearc
           id: nanoid(),
           role: 'assistant',
           content: assistantMessage.answer,
-          context: assistantMessage.context
+          context: assistantMessage.context,
+          chunkid: assistantMessage.chunkid
         }
       ]
     })
@@ -79,6 +81,7 @@ async function submitUserMessage(content: string, documentId: string, quickSearc
       display: <BotMessage 
         content={assistantMessage.answer} 
         context={assistantMessage.context}
+        chunkid={assistantMessage.chunkid}
       />
     }
   } catch (error) {

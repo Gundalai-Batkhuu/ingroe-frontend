@@ -29,18 +29,18 @@ export function UserMessage({ children }: { children: React.ReactNode }) {
 interface BotMessageProps {
   content: string | StreamableValue<string>
   context?: Context[]
-  className?: string
+  chunkid?: string[]
 }
 
 export function BotMessage({
   content,
   context,
-  className
+  chunkid
 }: BotMessageProps) {
   const text = useStreamableText(content)
 
   return (
-    <div className={cn('group relative flex items-start md:-ml-12', className)}>
+    <div className={cn('group relative flex items-start md:-ml-12', chunkid)}>
       <div className="flex size-[24px] shrink-0 select-none items-center justify-center rounded-md border bg-primary text-primary-foreground shadow-sm">
         <IconAI />
       </div>
@@ -87,7 +87,7 @@ export function BotMessage({
           {text}
         </MemoizedReactMarkdown>
         <div className="flex items-center justify-between">
-          <ChatToolCollection context={context} />
+          <ChatToolCollection message={text} context={context} chunkid={chunkid}/>
           <ChatMessageActions message={text} />
         </div>
       </div>
