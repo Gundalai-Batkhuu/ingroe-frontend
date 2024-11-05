@@ -7,7 +7,7 @@ import {
     DialogTrigger,
   } from "@/components/ui/dialog"
 import { IconWrapper } from "@/components/ui/icon-wrapper";
-import { FileText } from "lucide-react";
+import { Copy, FileText } from "lucide-react";
 import { Context } from '@/lib/types';
 
 const dummyInformationSource = {
@@ -66,11 +66,17 @@ const dummyInformationSource = {
 }
 
 interface InformationSourceDisplayProps {
-  context: Context[];
+  context?: Context[];
+  chunkid?: string[];
+  message?: string;
 }
 
-export default function InformationSourceDisplay({ context }: InformationSourceDisplayProps) {
-    if (context.length === 0) return null;
+export default function InformationSourceDisplay({ context, chunkid, message }: InformationSourceDisplayProps) {
+   
+    const filteredContext = context?.filter(ctx => 
+        chunkid?.includes(ctx.metadata.chunkid)
+    );
+
     return (
         <Dialog>
             <DialogTrigger>
@@ -82,29 +88,48 @@ export default function InformationSourceDisplay({ context }: InformationSourceD
             </DialogTrigger>
             <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
                 <DialogHeader>
-                    <DialogTitle>Information Source</DialogTitle>
+                    <DialogTitle>AI Response</DialogTitle>
                     <DialogDescription>
-                        {context[0]?.page_content}
+                    {message && (
+                        <div className="mt-2 mb-2">
+                            <p className="text-sm text-gray-700">{message}</p>
+                        </div>
+                    )}
                     </DialogDescription>
                 </DialogHeader>
-                <div className="mt-4 space-y-4">
-                    {context.map((context, index) => (
-                        <div key={index} className="border rounded-lg p-4">
-                            <div className="flex items-center gap-2 mb-2">
-                                <FileText className="w-4 h-4" />
-                                <p className="text-sm font-medium">
-                                    {context.metadata.file_name} (Page {context.metadata.page + 1})
+                <p className="font-semibold text-primary text-lg">Source Documents</p>
+                {filteredContext?.length ? (
+                    <div className="mt-1 space-y-4">
+                        {filteredContext.map((context, index) => (
+                            <div key={index} className="border rounded-lg p-4">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <FileText className="w-4 h-4" />
+                                    <p className="font-medium">
+                                        {context.metadata.chunkid.split(':')[0]} (Page {context.metadata.chunkid.split(':')[1]} Line {context.metadata.chunkid.split(':')[2]})
+                                    </p>
+                                </div>
+                                <p className="text-sm whitespace-pre-wrap">
+                                    {context.page_content}
                                 </p>
+                                <div className="flex items-center justify-between text-gray-800 mt-2">
+                                    <p>Source: {context.metadata.source}</p>
+                                    <IconWrapper tooltip="Copy source">
+                                        <button 
+                                            onClick={() => navigator.clipboard.writeText(context.metadata.source)}
+                                            className="p-1 hover:bg-gray-100 rounded"
+                                        >
+                                            <Copy className="w-4 h-4" />
+                                        </button>
+                                    </IconWrapper>
+                                </div>
                             </div>
-                            <p className="text-sm whitespace-pre-wrap">
-                                {context.page_content}
-                            </p>
-                            <p className="text-xs text-gray-500 mt-2">
-                                Source: {context.metadata.source}
-                            </p>
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="mt-4 text-center text-gray-500">
+                        This message was generated without referencing any specific documents.
+                    </div>
+                )}
             </DialogContent>
         </Dialog>
     )

@@ -33,7 +33,9 @@ export const documentService = {
       throw new Error('Failed to create worker')
     }
   
-    return response.json()
+    const data = await response.json()
+    console.log('Worker created successfully:', data)
+    return data
   },
 
   async createDocumentManually(formData: FormData): Promise<any> {

@@ -8,11 +8,12 @@ const cn = (...classes: (string | undefined)[]): string => classes.filter(Boolea
 
 interface ChatToolCollectionProps {
   className?: string;
-  messageId?: string;
+  message?: string;
   context?: Context[];
+  chunkid?: string[];
 }
 
-export default function ChatToolCollection({ className, context}: ChatToolCollectionProps) {
+export default function ChatToolCollection({ className, message, context, chunkid}: ChatToolCollectionProps) {
   const [isLiked, setIsLiked] = useState(false);
   const [isDisliked, setIsDisliked] = useState(false);
 
@@ -55,7 +56,7 @@ export default function ChatToolCollection({ className, context}: ChatToolCollec
       <IconWrapper tooltip="Talk to a human">
         <SquareMousePointer className="w-5 h-5 text-gray-500 hover:text-gray-700 cursor-pointer" />
       </IconWrapper>
-      <InformationSourceDisplay context={context || []} />
+      <InformationSourceDisplay context={context || []} chunkid={chunkid} message={message}/>
       <IconWrapper tooltip="Create a new discussion">
         <DiscussionForm />
       </IconWrapper>
