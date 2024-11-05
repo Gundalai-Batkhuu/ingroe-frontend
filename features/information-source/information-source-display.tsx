@@ -97,15 +97,15 @@ export default function InformationSourceDisplay({ context, chunkid, message }: 
                     )}
                     </DialogDescription>
                 </DialogHeader>
-                <p className="font-semibold text-primary text-lg">Source Documents</p>
+                <p className="font-semibold text-primary text-lg">Source Documents:</p>
                 {filteredContext?.length ? (
                     <div className="mt-1 space-y-4">
                         {filteredContext.map((context, index) => (
                             <div key={index} className="border rounded-lg p-4">
                                 <div className="flex items-center gap-2 mb-2">
                                     <FileText className="w-4 h-4" />
-                                    <p className="font-medium">
-                                        {context.metadata.chunkid.split(':')[0]} (Page {context.metadata.chunkid.split(':')[1]} Line {context.metadata.chunkid.split(':')[2]})
+                                    <p className="text-sm font-medium">
+                                        {context.metadata.chunkid.split(':')[0]} (Page {context.metadata.chunkid.split(':')[1]})
                                     </p>
                                 </div>
                                 <p className="text-sm whitespace-pre-wrap">

@@ -44,11 +44,20 @@ async function submitUserMessage(content: string, documentId: string, quickSearc
     }
 
     let data;
-
-    if (quickSearchMode) {
-      data = await documentService.queryDocumentQuick(payload)
-    } else {
-      data = await documentService.queryDocument(payload)
+    try {
+      if (quickSearchMode) {
+        data = await documentService.queryDocumentQuick(payload)
+      } else {
+        data = await documentService.queryDocument(payload)
+      }
+    } catch (error) {
+      // Handle JSON parsing error
+      return {
+        id: nanoid(),
+        display: <BotMessage 
+          content="Answer cannot be found in this document"
+        />
+      }
     }
 
     const assistantMessage = {
