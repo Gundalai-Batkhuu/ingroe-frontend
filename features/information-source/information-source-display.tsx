@@ -66,11 +66,10 @@ const dummyInformationSource = {
 }
 
 interface InformationSourceDisplayProps {
-  context: Context[];
+  context?: Context[];
 }
 
 export default function InformationSourceDisplay({ context }: InformationSourceDisplayProps) {
-    if (context.length === 0) return null;
     return (
         <Dialog>
             <DialogTrigger>
@@ -84,27 +83,36 @@ export default function InformationSourceDisplay({ context }: InformationSourceD
                 <DialogHeader>
                     <DialogTitle>Information Source</DialogTitle>
                     <DialogDescription>
-                        {context[0]?.page_content}
+                        {context?.length 
+                            ? context[0]?.page_content
+                            : "No source information available for this message."
+                        }
                     </DialogDescription>
                 </DialogHeader>
-                <div className="mt-4 space-y-4">
-                    {context.map((context, index) => (
-                        <div key={index} className="border rounded-lg p-4">
-                            <div className="flex items-center gap-2 mb-2">
-                                <FileText className="w-4 h-4" />
-                                <p className="text-sm font-medium">
-                                    {context.metadata.file_name} (Page {context.metadata.page + 1})
+                {context?.length ? (
+                    <div className="mt-4 space-y-4">
+                        {context.map((context, index) => (
+                            <div key={index} className="border rounded-lg p-4">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <FileText className="w-4 h-4" />
+                                    <p className="text-sm font-medium">
+                                        {context.metadata.file_name} (Page {context.metadata.page + 1})
+                                    </p>
+                                </div>
+                                <p className="text-sm whitespace-pre-wrap">
+                                    {context.page_content}
+                                </p>
+                                <p className="text-xs text-gray-500 mt-2">
+                                    Source: {context.metadata.source}
                                 </p>
                             </div>
-                            <p className="text-sm whitespace-pre-wrap">
-                                {context.page_content}
-                            </p>
-                            <p className="text-xs text-gray-500 mt-2">
-                                Source: {context.metadata.source}
-                            </p>
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="mt-4 text-center text-gray-500">
+                        This message was generated without referencing any specific documents.
+                    </div>
+                )}
             </DialogContent>
         </Dialog>
     )

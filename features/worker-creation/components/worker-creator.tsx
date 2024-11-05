@@ -112,10 +112,10 @@ export default function WorkerCreator({
                       <span className="flex items-center text-sm">
                         {resource.type === 'file' && (
                           <>
-                            {/\.(pdf)$/i.test(resource.displayName) && <FileText className="size-4 mr-2 text-gray-600" />}
-                            {/\.(xlsx|xls)$/i.test(resource.displayName) && <FileSpreadsheet className="size-4 mr-2 text-gray-600" />}
-                            {/\.(docx|md|txt)$/i.test(resource.displayName) && <File className="size-4 mr-2 text-gray-600" />}
-                            {!/\.(pdf|xlsx|xls|docx|md|txt)$/i.test(resource.displayName) && <File className="size-4 mr-2 text-gray-600" />}
+                            {/\.(pdf)$/i.test(resource.displayName) && <FileText className="size-6 mr-2 text-gray-600" />}
+                            {/\.(xlsx|xls)$/i.test(resource.displayName) && <FileSpreadsheet className="size-6 mr-2 text-gray-600" />}
+                            {/\.(docx|md|txt)$/i.test(resource.displayName) && <File className="size-6 mr-2 text-gray-600" />}
+                            {!/\.(pdf|xlsx|xls|docx|md|txt)$/i.test(resource.displayName) && <File className="size-6 mr-2 text-gray-600" />}
                           </>
                         )}
                         {resource.type === 'link' && <Link className="size-4 mr-2 text-gray-600" />}

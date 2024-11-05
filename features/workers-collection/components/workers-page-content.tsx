@@ -59,7 +59,7 @@ export default function WorkersPageContent({
 
           <Button className="gap-2" onClick={() => router.push('/create-worker')}>
             <Plus className="h-4 w-4" />
-            Add New
+            Create New
           </Button>
         </div>
       </div>
