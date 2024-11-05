@@ -94,25 +94,45 @@ export async function createUser(
 
     try {
       // Create user in Redis
-      await kv.hmset(`user:${email}`, user)
+      try {
+        await kv.hmset(`user:${email}`, user)
+      } catch (redisError) {
+        console.error('Failed to create user in Redis:', redisError)
+        return {
+          type: 'error',
+          resultCode: ResultCode.DatabaseError
+        }
+      }
 
       // Create user in the backend database
-      await userService.createUser(user.id, email)
+      try {
+        await userService.createUser(user.id, email)
+      } catch (dbError) {
+        console.error('Failed to create user in backend database:', dbError)
+        // Clean up Redis since backend creation failed
+        try {
+          await kv.del(`user:${email}`)
+        } catch (cleanupError) {
+          console.error('Failed to clean up Redis after backend error:', cleanupError)
+        }
+        return {
+          type: 'error',
+          resultCode: ResultCode.DatabaseError
+        }
+      }
 
       return {
         type: 'success',
         resultCode: ResultCode.UserCreated
       }
     } catch (error) {
-      console.error('Failed to create user:', error)
-
-      // Attempt to clean up Redis in case of failure
+      console.error('Unexpected error during user creation:', error)
+      // Attempt to clean up Redis in case of unexpected errors
       try {
         await kv.del(`user:${email}`)
       } catch (cleanupError) {
-        console.error('Failed to clean up Redis after user creation error:', cleanupError)
+        console.error('Failed to clean up Redis after unexpected error:', cleanupError)
       }
-
       return {
         type: 'error',
         resultCode: ResultCode.UnknownError
