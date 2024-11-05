@@ -48,7 +48,7 @@ export function WorkerCreationButton({
       // Add user details
       formData.append('user_id', userId)
       formData.append('document_alias', title)
-      formData.append('description', description)
+      formData.append('description', description || '')
 
       // Add files
       const files = resourceItems
@@ -59,26 +59,26 @@ export function WorkerCreationButton({
         formData.append('file', file)
       })
 
-      // Add links
+      // Modify links handling - send only one link
       const links = resourceItems
         .filter(item => item.type === 'link')
         .map(item => item.content as string)
       
-      links.forEach(link => {
-        formData.append('link', link)
-      })
+      // Only append the first link since the API expects a single link
+      if (links.length > 0) {
+        formData.append('link', links[0])
+      }
 
-      // Log the payload
       const payload = {
         user_id: userId,
         document_alias: title,
-        description,
-        files: files.map(f => ({ name: f.name, size: f.size, type: f.type })),
-        links
+        description: description,
+        files: files,
+        links: links
       }
       console.log('Worker creation payload:', payload)
-      console.log('API_BASE_URL_V2: ', ApiEndpoint.CREATE_WORKER)
       await documentService.createWorker(formData)
+      
       clearResourceItems()
       setShowSuccessDialog(true)
     } catch (error) {
