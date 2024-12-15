@@ -5,9 +5,9 @@ import {authenticate} from '@/features/authentication/actions/user-actions'
 import Link from 'next/link'
 import {useEffect, useState} from 'react'
 import {toast} from 'sonner'
-import {IconSpinner} from '@/components/icons'
 import {getMessageFromCode} from '@/lib/utils'
 import {useRouter} from 'next/navigation'
+import { Loader2 } from 'lucide-react'
 
 export default function LoginForm() {
     const router = useRouter()
@@ -109,7 +109,7 @@ function LoginButton() {
             className="my-4 flex h-10 w-full flex-row items-center justify-center rounded-md bg-zinc-900 p-2 text-sm font-semibold text-zinc-100 hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
             aria-disabled={pending}
         >
-            {pending ? <IconSpinner/> : 'Log in'}
+            {pending ? <Loader2 className="size-4" /> : 'Log in'}
         </button>
     )
 }
