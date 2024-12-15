@@ -1,5 +1,5 @@
 import React from 'react';
-import { Spinner } from '@/components/icons';
+import { Spinner } from '@/components/ui/icons';
 
 const Loading: React.FC = () => {
     return (

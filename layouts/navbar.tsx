@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import AppLogo from '@/components/icons'
+import AppLogo from '@/components/ui/icons'
 import {
   Home,
   LineChart,Package,

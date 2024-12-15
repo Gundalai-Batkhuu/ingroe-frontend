@@ -9,8 +9,21 @@ import { cn } from "@/lib/utils"
 import { Button } from '@/components/ui/button'
 
 export function ThemeToggleCompact() {
-  const { setTheme, theme } = useTheme()
+  const { setTheme, theme, systemTheme } = useTheme()
+  const [isMounted, setIsMounted] = React.useState(false)
   const [_, startTransition] = React.useTransition()
+
+  React.useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+  if (!isMounted) return (
+    <Button variant="ghost" size="icon" className="group">
+      <span className="sr-only">Loading theme</span>
+    </Button>
+  )
+
+  const currentTheme = theme === 'system' ? systemTheme : theme
 
   return (
     <Button
@@ -19,11 +32,11 @@ export function ThemeToggleCompact() {
       className="group hover:text-brand-green"
       onClick={() => {
         startTransition(() => {
-          setTheme(theme === 'light' ? 'dark' : 'light')
+          setTheme(currentTheme === 'light' ? 'dark' : 'light')
         })
       }}
     >
-      {!theme ? null : theme === 'dark' ? (
+      {currentTheme === 'dark' ? (
         <Moon className="transition-all size-5 text-muted-foreground group-hover:text-brand-green" />
       ) : (
         <Sun className="transition-all size-5 text-muted-foreground group-hover:text-brand-green" />
@@ -79,25 +92,31 @@ const ThemeToggleExpanded = React.forwardRef<
 ThemeToggleExpanded.displayName = "ThemeToggleExpanded"
 
 interface ThemeSwitchProps {
-    isNavbarExpanded: boolean
+  isNavbarExpanded: boolean
 }
 
-
 export function ThemeSwitch({ isNavbarExpanded }: ThemeSwitchProps) {
-  const { setTheme, theme } = useTheme()
+  const { setTheme, theme, systemTheme } = useTheme()
+  const [isMounted, setIsMounted] = React.useState(false)
   const [_, startTransition] = React.useTransition()
 
+  React.useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+  if (!isMounted) return null
+
+  const currentTheme = theme === 'system' ? systemTheme : theme
+
   if (!isNavbarExpanded) {
-    return (
-      <ThemeToggleCompact />
-    )
+    return <ThemeToggleCompact />
   }
 
   return (
     <div className="flex items-center">
       <ThemeToggleExpanded
         id="theme-mode"
-        checked={theme === 'dark'}
+        checked={currentTheme === 'dark'}
         onCheckedChange={(checked) => {
           startTransition(() => {
             setTheme(checked ? 'dark' : 'light')

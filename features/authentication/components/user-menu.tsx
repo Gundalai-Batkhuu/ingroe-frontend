@@ -12,7 +12,7 @@ import Link from 'next/link';
 import { ProfileIcon } from '@/features/authentication/components/profile-icon'
 import { RemoveUserForm } from '@/features/authentication/forms/remove-user-form'
 import { SignoutForm } from '@/features/authentication/forms/signout-form'
-import {IconUser} from "@/components/icons";
+import {IconUser} from "@/components/ui/icons";
 import { ChevronDown } from 'lucide-react';
 
 export async function UserMenu() {
