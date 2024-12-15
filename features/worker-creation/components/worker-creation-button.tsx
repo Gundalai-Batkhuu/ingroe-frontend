@@ -6,7 +6,7 @@ import { useResourceItemsStore } from '@/features/worker-creation/stores/useReso
 import { useState } from 'react'
 import { Loader2 } from 'lucide-react'
 import { Toast, ToastAction } from '@/components/ui/toast'
-import { useToast } from '@/hooks/use-toast'
+import { useToast } from '@/components/hooks/use-toast'
 import { ApiEndpoint } from '@/services/api_endpoints'
 import { WorkerCreationSuccessDialog } from './worker-creation-success-dialog'
 
