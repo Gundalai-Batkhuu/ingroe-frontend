@@ -1,4 +1,4 @@
-import LoginForm from '@/features/authentication/components/login-form';
+import { LoginForm } from '@/features/authentication/forms/login-form';
 import { Session } from '@/lib/types'
 import { auth } from '@/features/authentication/auth'
 import { redirect } from 'next/navigation'
