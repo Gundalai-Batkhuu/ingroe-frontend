@@ -13,7 +13,7 @@ import { Toaster } from "@/components/ui/toaster"
 export function LoginForm() {
     const router = useRouter()
     const { toast } = useToast()
-    const [result, dispatch] = useFormState(authenticate, undefined)
+    const [result, formAction] = useFormState(authenticate, undefined)
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
 
@@ -30,8 +30,10 @@ export function LoginForm() {
                     title: "Success",
                     description: getMessageFromCode(result.resultCode)
                 })
-                router.push('/workers')
-                router.refresh()
+                setTimeout(() => {
+                    router.push('/workers')
+                    router.refresh()
+                }, 1000)
             }
         }
     }, [result, router, toast])
@@ -39,7 +41,7 @@ export function LoginForm() {
     return (
         <>
             <form
-                action={dispatch}
+                action={formAction}
                 className="flex flex-col items-center gap-4 space-y-3"
             >
                 <div
