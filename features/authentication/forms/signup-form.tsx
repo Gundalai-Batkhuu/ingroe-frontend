@@ -4,21 +4,29 @@ import { useFormState, useFormStatus } from 'react-dom'
 import { signup } from '@/features/authentication/actions/user-actions'
 import Link from 'next/link'
 import { useEffect } from 'react'
-import { toast } from 'sonner'
-import { IconSpinner } from '@/components/icons'
+import { useToast } from '@/components/hooks/use-toast'
+import { Loader2 } from 'lucide-react'
 import { getMessageFromCode } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
 
 export default function SignupForm() {
   const router = useRouter()
+  const { toast } = useToast()
   const [result, formAction] = useFormState(signup, undefined)
 
   useEffect(() => {
     if (result) {
       if (result.type === 'error') {
-        toast.error(getMessageFromCode(result.resultCode))
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: getMessageFromCode(result.resultCode)
+        })
       } else {
-        toast.success(getMessageFromCode(result.resultCode))
+        toast({
+          title: "Success",
+          description: getMessageFromCode(result.resultCode)
+        })
         router.refresh()
         router.push('/workers')
       }
@@ -87,7 +95,7 @@ function SignupButton() {
       className="my-4 flex h-10 w-full flex-row items-center justify-center rounded-md bg-zinc-900 p-2 text-sm font-semibold text-zinc-100 hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
       aria-disabled={pending}
     >
-      {pending ? <IconSpinner /> : 'Create account'}
+      {pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Create account'}
     </button>
   )
 }

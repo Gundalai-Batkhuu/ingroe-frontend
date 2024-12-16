@@ -28,7 +28,8 @@ export const userService = {
         email: email,
         user_id: userId
       };
-      const response = await fetch(`${API_URL}/api/v1/user/create`, {
+      const url = urljoin(API_URL, '/api/v1/user/create')
+      const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -238,3 +238,18 @@ export async function removeUser(email: String): Promise<Result> {
     }
   }
 }
+
+export async function signout(): Promise<Result> {
+  try {
+    await signOut({ redirect: false })
+    return {
+      type: 'success',
+      resultCode: ResultCode.UserLoggedOut
+    }
+  } catch (error) {
+    return {
+      type: 'error',
+      resultCode: ResultCode.UnknownError
+    }
+  }
+}

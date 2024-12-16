@@ -70,7 +70,8 @@ export enum ResultCode {
   UserCreated = 'USER_CREATED',
   UserLoggedIn = 'USER_LOGGED_IN',
   UserRemoved = 'USER_REMOVED',
-  DatabaseError = 'DATABASE_ERROR'
+  DatabaseError = 'DATABASE_ERROR',
+  UserLoggedOut = 'USER_LOGGED_OUT'
 }
 
 export const getMessageFromCode = (resultCode: string) => {
@@ -87,6 +88,8 @@ export const getMessageFromCode = (resultCode: string) => {
       return 'Something went wrong, please try again!'
     case ResultCode.UserLoggedIn:
       return 'Logged in!'
+    case ResultCode.UserLoggedOut:
+      return 'Logged out!'
   }
 }
 
