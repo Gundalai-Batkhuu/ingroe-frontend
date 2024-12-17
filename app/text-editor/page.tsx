@@ -4,9 +4,14 @@ import { Session } from '@/lib/types'
 import HandwrittenNotesEditor from '@/features/handwriting-recognition/components/handwritten-notes-content'
 
 export default async function TextEditorPage() {
+  
   const session = (await auth()) as Session
-  const userId = session.user.id
+  
+  if (!session || !session.user) {
+    return <div> Please log in</div>
+  }
 
+  const userId = session.user.id
   return (
       <HandwrittenNotesEditor userId={userId} />
   )

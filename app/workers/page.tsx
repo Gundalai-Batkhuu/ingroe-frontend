@@ -4,9 +4,14 @@ import WorkersPageContent from '@/features/workers-collection/components/workers
 
 export default async function WorkersPage() {
   const session = (await auth()) as Session
+
+  if (!session || !session.user) {
+    return <div> Please log in</div>
+  }
+
   const userId = session.user.id
   const searchParams = {q:'', offset:'0'}
-  return (
+    return (
     <WorkersPageContent  searchParams={searchParams} userId={userId} />
   );
 }

@@ -4,6 +4,7 @@ import { authConfig } from './auth.config'
 import { z } from 'zod'
 import { getStringFromBuffer } from '@/lib/utils'
 import { getUser } from '@/features/authentication/actions/user-actions'
+import Google from "next-auth/providers/google"
 
 export const { auth, signIn, signOut } = NextAuth({
   ...authConfig,
@@ -40,6 +41,15 @@ export const { auth, signIn, signOut } = NextAuth({
 
         return null
       }
-    })
+    }),
+    Google({
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code",
+        },
+      },
+    }),
   ]
 })

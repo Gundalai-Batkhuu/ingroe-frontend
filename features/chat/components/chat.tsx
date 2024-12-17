@@ -10,7 +10,7 @@ import { useUIState, useAIState } from 'ai/rsc'
 import { Message, Session } from '@/lib/types'
 import { usePathname, useRouter } from 'next/navigation'
 import { useScrollAnchor } from '@/hooks/use-scroll-anchor'
-import { toast } from 'sonner'
+import { useToast } from '@/components/hooks/use-toast'
 
 export interface ChatProps extends React.ComponentProps<'div'> {
   initialMessages?: Message[]
@@ -20,12 +20,12 @@ export interface ChatProps extends React.ComponentProps<'div'> {
 }
 
 export function Chat({ id, className, session, missingKeys }: ChatProps) {
-
   const router = useRouter()
   const path = usePathname()
   const [input, setInput] = useState('')
   const [messages] = useUIState()
   const [aiState] = useAIState()
+  const { toast } = useToast()
 
   const [_, setNewChatId] = useLocalStorage('newChatId', id)
 
@@ -49,10 +49,14 @@ export function Chat({ id, className, session, missingKeys }: ChatProps) {
   })
 
   useEffect(() => {
-    missingKeys.map(key => {
-      toast.error(`Missing ${key} environment variable!`)
+    missingKeys.forEach(key => {
+      toast({
+        variant: "destructive",
+        title: "Configuration Error",
+        description: `Missing ${key} environment variable!`,
+      })
     })
-  }, [missingKeys])
+  }, [missingKeys, toast])
 
   const { messagesRef, scrollRef, visibilityRef, isAtBottom, scrollToBottom } =
     useScrollAnchor()

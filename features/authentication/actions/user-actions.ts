@@ -253,3 +253,8 @@ export async function signout(): Promise<Result> {
     }
   }
 }
+
+
+export async function signInWithGoogle() {
+  await signIn('google', { callbackUrl: '/workers' })
+} 
