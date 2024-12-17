@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { ChatHistoryItemsList } from '@/features/chat/components/chat-history-items-list'
 import { buttonVariants } from '@/components/ui/button'
-import { IconPlus } from '@/components/icons'
+import { IconPlus } from '@/components/ui/icons'
 import {Card} from "@/components/ui/card";
 
 interface ChatHistoryProps {
