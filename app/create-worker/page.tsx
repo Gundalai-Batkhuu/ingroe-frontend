@@ -9,7 +9,7 @@ export default async function CreateWorkerPage() {
   const session = (await auth()) as Session | null
 
   if (!session || !session.user) {
-    return <div> Please log in to access the search page </div>
+    return <div> Please log in</div>
   }
   const userId = session.user.id
   

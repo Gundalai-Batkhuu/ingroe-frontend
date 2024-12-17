@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import { type DialogProps } from '@radix-ui/react-dialog'
-import { toast } from 'sonner'
+import { useToast } from '@/components/hooks/use-toast'
 
 import { ServerActionResult, type Chat } from '@/lib/types'
 import { Button } from '@/components/ui/button'
@@ -14,11 +14,11 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog'
-import { IconSpinner } from '@/components/icons'
+import { Loader2 } from 'lucide-react'
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard'
 
 interface ChatShareDialogProps extends DialogProps {
-  chat: Pick<Chat, 'id' | 'title' | 'messages' >
+  chat: Pick<Chat, 'id' | 'title' | 'messages'>
   shareChat: (id: string) => ServerActionResult<Chat>
   onCopy: () => void
 }
@@ -29,22 +29,30 @@ export function ChatShareDialog({
   onCopy,
   ...props
 }: ChatShareDialogProps) {
+  const { toast } = useToast()
   const { copyToClipboard } = useCopyToClipboard({ timeout: 1000 })
   const [isSharePending, startShareTransition] = React.useTransition()
 
   const copyShareLink = React.useCallback(
     async (chat: Chat) => {
       if (!chat.sharePath) {
-        return toast.error('Could not copy share link to clipboard')
+        return toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Could not copy share link to clipboard"
+        })
       }
 
       const url = new URL(window.location.href)
       url.pathname = chat.sharePath
       copyToClipboard(url.toString())
       onCopy()
-      toast.success('Share link copied to clipboard')
+      toast({
+        title: "Success",
+        description: "Share link copied to clipboard"
+      })
     },
-    [copyToClipboard, onCopy]
+    [copyToClipboard, onCopy, toast]
   )
 
   return (
@@ -66,12 +74,15 @@ export function ChatShareDialog({
           <Button
             disabled={isSharePending}
             onClick={() => {
-              // @ts-ignore
               startShareTransition(async () => {
                 const result = await shareChat(chat.id)
 
                 if (result && 'error' in result) {
-                  toast.error(result.error)
+                  toast({
+                    variant: "destructive",
+                    title: "Error",
+                    description: result.error
+                  })
                   return
                 }
 
@@ -81,7 +92,7 @@ export function ChatShareDialog({
           >
             {isSharePending ? (
               <>
-                <IconSpinner className="mr-2 animate-spin" />
+                <Loader2 className="mr-2 animate-spin" />
                 Copying...
               </>
             ) : (

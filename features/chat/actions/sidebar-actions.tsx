@@ -2,8 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import * as React from 'react'
-import { toast } from 'sonner'
-
+import { Loader2 } from 'lucide-react'
 import { ServerActionResult, type Chat } from '@/lib/types'
 import {
   AlertDialog,
@@ -16,13 +15,14 @@ import {
   AlertDialogTitle
 } from '../../../components/ui/alert-dialog'
 import { Button } from '../../../components/ui/button'
-import { IconShare, IconSpinner, IconTrash } from '../../../components/icons'
+import { IconShare, IconTrash } from '@/components/ui/icons'
 import { ChatShareDialog } from '@/features/chat/components/chat-share-dialog'
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger
 } from '../../../components/ui/tooltip'
+import { useToast } from '@/components/hooks/use-toast'
 
 interface SidebarActionsProps {
   chat: Chat
@@ -36,9 +36,33 @@ export function SidebarActions({
   shareChat
 }: SidebarActionsProps) {
   const router = useRouter()
+  const { toast } = useToast()
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
   const [shareDialogOpen, setShareDialogOpen] = React.useState(false)
   const [isRemovePending, startRemoveTransition] = React.useTransition()
+
+  const handleDeleteChat = React.useCallback(async () => {
+    const result = await removeChat({
+      id: chat.id,
+      path: chat.path
+    })
+
+    if (result && 'error' in result) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: result.error
+      })
+      return
+    }
+
+    setDeleteDialogOpen(false)
+    router.refresh()
+    router.push('/chat')
+    toast({
+      description: 'Chat deleted successfully'
+    })
+  }, [chat.id, chat.path, removeChat, router, toast])
 
   return (
     <>
@@ -95,26 +119,10 @@ export function SidebarActions({
               disabled={isRemovePending}
               onClick={event => {
                 event.preventDefault()
-                // @ts-ignore
-                startRemoveTransition(async () => {
-                  const result = await removeChat({
-                    id: chat.id,
-                    path: chat.path
-                  })
-
-                  if (result && 'error' in result) {
-                    toast.error(result.error)
-                    return
-                  }
-
-                  setDeleteDialogOpen(false)
-                  router.refresh()
-                  router.push('/chat')
-                  toast.success('Chat deleted')
-                })
+                startRemoveTransition(handleDeleteChat)
               }}
             >
-              {isRemovePending && <IconSpinner className="mr-2 animate-spin" />}
+              {isRemovePending && <Loader2 className="mr-2 animate-spin" />}
               Delete
             </AlertDialogAction>
           </AlertDialogFooter>
