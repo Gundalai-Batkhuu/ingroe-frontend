@@ -2,10 +2,10 @@
 module.exports = {
   endOfLine: 'lf',
   semi: false,
-  useTabs: false,
+  useTabs: true,
   singleQuote: true,
   arrowParens: 'avoid',
-  tabWidth: 2,
+  tabWidth: 4,
   trailingComma: 'none',
   importOrder: [
     '^(react/(.*)$)|^(react$)',
