@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 export const useScrollAnchor = () => {
   // Refs to track different DOM elements
@@ -45,8 +45,8 @@ export const useScrollAnchor = () => {
         const isAtBottom =
           target.scrollTop + target.clientHeight >= target.scrollHeight - offset
 
-        setIsAtBottom(isAtBottom)
-      }
+				setIsAtBottom(isAtBottom);
+			};
 
       // Add scroll listener with passive flag for better performance
       current.addEventListener('scroll', handleScroll, {

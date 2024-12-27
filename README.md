@@ -18,9 +18,7 @@ Before you begin, ensure you have the following installed on your system:
 
 2. Install the dependencies:
    ```bash
-   npm install
-   # or
-   yarn install
+   pnpm install
    ```
 3. Create a `.env` file in the root directory of the project and add the environment variables
   
@@ -30,9 +28,7 @@ Before you begin, ensure you have the following installed on your system:
 To start the development server:
 
 ```bash
-npm run dev
-# or
-yarn dev
+pnpm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
@@ -60,3 +56,5 @@ To learn more about Next.js, check out the following resources:
 ## Deployment
 
 For deployment options and best practices, refer to the [Next.js deployment documentation](https://nextjs.org/docs/deployment).
+
+Currently, the project is deployed on Vercel.

@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { IconAI, IconUser } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
@@ -23,17 +23,13 @@ export function UserMessage({ children }: { children: React.ReactNode }) {
 }
 
 interface BotMessageProps {
-  content: string | StreamableValue<string>
-  context?: Context[]
-  chunkid?: string[]
+	content: string | StreamableValue<string>;
+	context?: Context[];
+	chunkid?: string[];
 }
 
-export function BotMessage({
-  content,
-  context,
-  chunkid
-}: BotMessageProps) {
-  const text = useStreamableText(content)
+export function BotMessage({ content, context, chunkid }: BotMessageProps) {
+	const text = useStreamableText(content);
 
   return (
     <div className={cn('group relative flex items-start my-4 md:-ml-12', chunkid)}>
@@ -56,18 +52,23 @@ export function BotMessage({
                   )
                 }
 
-                children[0] = (children[0] as string).replace('`▍`', '▍')
-              }
+								children[0] = (children[0] as string).replace(
+									'`▍`',
+									'▍'
+								);
+							}
 
-              const match = /language-(\w+)/.exec(className || '')
+							const match = /language-(\w+)/.exec(
+								className || ''
+							);
 
-              if (inline) {
-                return (
-                  <code className={className} {...props}>
-                    {children}
-                  </code>
-                )
-              }
+							if (inline) {
+								return (
+									<code className={className} {...props}>
+										{children}
+									</code>
+								);
+							}
 
               return (
                 <CodeBlock
@@ -91,22 +92,22 @@ export function BotMessage({
 }
 
 export function SystemMessage({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="mt-2 flex items-center justify-center gap-2 text-xs text-gray-500">
-      <div className="max-w-[600px] flex-initial p-2">{children}</div>
-    </div>
-  )
+	return (
+		<div className="mt-2 flex items-center justify-center gap-2 text-xs text-gray-500">
+			<div className="max-w-[600px] flex-initial p-2">{children}</div>
+		</div>
+	);
 }
 
 export function SpinnerMessage() {
-  return (
-    <div className="group relative flex items-start md:-ml-12">
-      <div className="flex size-[24px] shrink-0 select-none items-center justify-center rounded-md border bg-primary text-primary-foreground shadow-sm">
-        <IconAI />
-      </div>
-      <div className="ml-4 h-[24px] flex flex-row items-center flex-1 space-y-2 overflow-hidden px-1">
-        {spinner}
-      </div>
-    </div>
-  )
+	return (
+		<div className="group relative flex items-start md:-ml-12">
+			<div className="flex size-[24px] shrink-0 select-none items-center justify-center rounded-md border bg-primary text-primary-foreground shadow-sm">
+				<IconAI />
+			</div>
+			<div className="ml-4 flex h-[24px] flex-1 flex-row items-center space-y-2 overflow-hidden px-1">
+				{spinner}
+			</div>
+		</div>
+	);
 }

@@ -1,13 +1,13 @@
-import { nanoid } from '@/lib/utils'
-import { Chat } from '@/features/chat/components/chat'
-import { AI } from '@/features/chat/actions/ai-actions'
-import { auth } from '@/features/authentication/auth'
-import { Session } from '@/lib/types'
-import { getMissingKeys } from '@/features/chat/actions/server-actions'
+import { nanoid } from '@/lib/utils';
+import { Chat } from '@/features/chat/components/chat';
+import { AI } from '@/features/chat/actions/ai-actions';
+import { auth } from '@/features/authentication/auth';
+import { Session } from '@/lib/types';
+import { getMissingKeys } from '@/features/chat/actions/server-actions';
 
 export const metadata = {
-  title: 'Ingroe',
-}
+	title: 'Ingroe'
+};
 
 export default async function IndexPage() {
   const id = nanoid()

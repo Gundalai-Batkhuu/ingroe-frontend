@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { cn } from '@/lib/utils'
 import { ChatList } from './chat-list'

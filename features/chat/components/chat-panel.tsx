@@ -35,8 +35,8 @@ export function ChatPanel({
       selectedDocumentId
     )
 
-    setMessages(currentMessages => [...currentMessages, responseMessage])
-  }
+		setMessages(currentMessages => [...currentMessages, responseMessage]);
+	};
 
   return (
     <div className="flex w-full px-4 py-4">

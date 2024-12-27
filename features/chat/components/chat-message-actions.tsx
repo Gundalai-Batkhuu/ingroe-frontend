@@ -1,24 +1,24 @@
-'use client'
+'use client';
 
 import { Copy, Check } from 'lucide-react'
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard'
 import { cn } from '@/lib/utils'
 
 interface ChatMessageActionsProps extends React.ComponentProps<'div'> {
-  message: string
+	message: string;
 }
 
 export function ChatMessageActions({
-  message,
-  className,
-  ...props
+	message,
+	className,
+	...props
 }: ChatMessageActionsProps) {
-  const { isCopied, copyToClipboard } = useCopyToClipboard({ timeout: 2000 })
+	const { isCopied, copyToClipboard } = useCopyToClipboard({ timeout: 2000 });
 
-  const onCopy = () => {
-    if (isCopied) return
-    copyToClipboard(message)
-  }
+	const onCopy = () => {
+		if (isCopied) return;
+		copyToClipboard(message);
+	};
 
   return (
     <div

@@ -1,39 +1,39 @@
-'use client'
+'use client';
 
-import * as React from 'react'
+import * as React from 'react';
 
-import { cn } from '@/lib/utils'
-import { Button, type ButtonProps } from '@/components/ui/button'
-import { IconArrowDown } from '@/components/ui/icons'
+import { cn } from '@/lib/utils';
+import { Button, type ButtonProps } from '@/components/ui/button';
+import { IconArrowDown } from '@/components/ui/icons';
 
 interface ButtonScrollToBottomProps extends ButtonProps {
-  isAtBottom: boolean
-  scrollToBottom: () => void
-  type?: 'button'
+	isAtBottom: boolean;
+	scrollToBottom: () => void;
+	type?: 'button';
 }
 
 export function ButtonScrollToBottom({
-  className,
-  isAtBottom,
-  scrollToBottom,
-  type = 'button',
-  ...props
+	className,
+	isAtBottom,
+	scrollToBottom,
+	type = 'button',
+	...props
 }: ButtonScrollToBottomProps) {
-  return (
-    <Button
-      type={type}
-      variant="outline"
-      size="icon"
-      className={cn(
-        'absolute right-4 top-1 z-10 bg-background transition-opacity duration-300 sm:right-8 md:top-2',
-        isAtBottom ? 'opacity-0' : 'opacity-100',
-        className
-      )}
-      onClick={() => scrollToBottom()}
-      {...props}
-    >
-      <IconArrowDown />
-      <span className="sr-only">Scroll to bottom</span>
-    </Button>
-  )
+	return (
+		<Button
+			type={type}
+			variant="outline"
+			size="icon"
+			className={cn(
+				'absolute right-4 top-1 z-10 bg-background transition-opacity duration-300 sm:right-8 md:top-2',
+				isAtBottom ? 'opacity-0' : 'opacity-100',
+				className
+			)}
+			onClick={() => scrollToBottom()}
+			{...props}
+		>
+			<IconArrowDown />
+			<span className="sr-only">Scroll to bottom</span>
+		</Button>
+	);
 }

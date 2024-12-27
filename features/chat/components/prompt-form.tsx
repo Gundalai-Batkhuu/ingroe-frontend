@@ -1,55 +1,55 @@
-'use client'
+'use client';
 
-import * as React from 'react'
-import Textarea from 'react-textarea-autosize'
-import { useActions, useUIState } from 'ai/rsc'
-import { type AI } from '@/features/chat/actions/ai-actions'
-import { Button } from '@/components/ui/button'
-import { IconArrowElbow, IconPlus } from '@/components/ui/icons'
+import * as React from 'react';
+import Textarea from 'react-textarea-autosize';
+import { useActions, useUIState } from 'ai/rsc';
+import { type AI } from '@/features/chat/actions/ai-actions';
+import { Button } from '@/components/ui/button';
+import { IconArrowElbow, IconPlus } from '@/components/ui/icons';
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger
-} from '@/components/ui/tooltip'
-import { useEnterSubmit } from '@/hooks/use-enter-submit'
-import { useRouter } from 'next/navigation'
-import VoiceTranscription from '@/features/accessibility/components/voice-transcription'
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger
+} from '@/components/ui/tooltip';
+import { useEnterSubmit } from '@/hooks/use-enter-submit';
+import { useRouter } from 'next/navigation';
+import VoiceTranscription from '@/features/accessibility/components/voice-transcription';
 
 export function PromptForm({
-  input,
-  setInput,
-  onSubmit // Add this prop
+	input,
+	setInput,
+	onSubmit // Add this prop
 }: {
-  input: string
-  setInput: (value: string) => void
-  onSubmit: (value: string) => Promise<void> // Add this prop type
+	input: string;
+	setInput: (value: string) => void;
+	onSubmit: (value: string) => Promise<void>; // Add this prop type
 }) {
-  const router = useRouter()
-  const { formRef, onKeyDown } = useEnterSubmit()
-  const inputRef = React.useRef<HTMLTextAreaElement>(null)
-  const [_, setMessages] = useUIState<typeof AI>()
+	const router = useRouter();
+	const { formRef, onKeyDown } = useEnterSubmit();
+	const inputRef = React.useRef<HTMLTextAreaElement>(null);
+	const [_, setMessages] = useUIState<typeof AI>();
 
-  React.useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus()
-    }
-  }, [])
+	React.useEffect(() => {
+		if (inputRef.current) {
+			inputRef.current.focus();
+		}
+	}, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
 
-    // Blur focus on mobile
-    if (window.innerWidth < 600) {
-      inputRef.current?.blur()
-    }
+		// Blur focus on mobile
+		if (window.innerWidth < 600) {
+			inputRef.current?.blur();
+		}
 
-    const value = input.trim()
-    setInput('')
-    if (!value) return
+		const value = input.trim();
+		setInput('');
+		if (!value) return;
 
-    // Call the onSubmit prop instead of directly handling the submission here
-    await onSubmit(value)
-  }
+		// Call the onSubmit prop instead of directly handling the submission here
+		await onSubmit(value);
+	};
 
   return (
     <form ref={formRef} onSubmit={handleSubmit}>
