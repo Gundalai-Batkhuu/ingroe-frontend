@@ -1,19 +1,18 @@
 import { LoginForm } from '@/features/authentication/forms/login-form';
-import { Session } from '@/lib/types'
-import { auth } from '@/features/authentication/auth'
-import { redirect } from 'next/navigation'
+import { Session } from '@/lib/types';
+import { auth } from '@/features/authentication/auth';
+import { redirect } from 'next/navigation';
 
 export default async function LoginPage() {
-    const session = (await auth()) as Session;
+	const session = (await auth()) as Session;
 
-    if (session) {
-        redirect('/')
-    }
+	if (session) {
+		redirect('/');
+	}
 
-    return (
-    <main className="flex flex-col p-4 my-20">
-      <LoginForm />
-    </main>
-    );
-};
-
+	return (
+		<main className="my-20 flex flex-col p-4">
+			<LoginForm />
+		</main>
+	);
+}
