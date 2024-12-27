@@ -325,33 +325,6 @@ function IconSun({ className, ...props }: React.ComponentProps<'svg'>) {
   )
 }
 
-function IconCopy({ className, ...props }: React.ComponentProps<'svg'>) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 256 256"
-      fill="currentColor"
-      className={cn('size-4', className)}
-      {...props}
-    >
-      <path d="M216 32H88a8 8 0 0 0-8 8v40H40a8 8 0 0 0-8 8v128a8 8 0 0 0 8 8h128a8 8 0 0 0 8-8v-40h40a8 8 0 0 0 8-8V40a8 8 0 0 0-8-8Zm-56 176H48V96h112Zm48-48h-32V88a8 8 0 0 0-8-8H96V48h112Z" />
-    </svg>
-  )
-}
-
-function IconCheck({ className, ...props }: React.ComponentProps<'svg'>) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 256 256"
-      fill="currentColor"
-      className={cn('size-4', className)}
-      {...props}
-    >
-      <path d="m229.66 77.66-128 128a8 8 0 0 1-11.32 0l-56-56a8 8 0 0 1 11.32-11.32L96 188.69 218.34 66.34a8 8 0 0 1 11.32 11.32Z" />
-    </svg>
-  )
-}
 
 function IconDownload({ className, ...props }: React.ComponentProps<'svg'>) {
   return (
@@ -716,8 +689,6 @@ export {
   IconRefresh,
   IconStop,
   IconSidebar,
-  IconCopy,
-  IconCheck,
   IconDownload,
   IconClose,
   IconShare,

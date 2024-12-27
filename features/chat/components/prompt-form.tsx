@@ -53,28 +53,12 @@ export function PromptForm({
 
   return (
     <form ref={formRef} onSubmit={handleSubmit}>
-      <div className="relative flex max-h-60 w-full grow flex-col overflow-hidden bg-background px-8 sm:rounded-md sm:border sm:px-12">
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant="outline"
-              size="icon"
-              className="absolute left-0 top-[14px] size-8 rounded-full bg-background p-0 sm:left-4"
-              onClick={() => {
-                router.push('/new')
-              }}
-            >
-              <IconPlus />
-              <span className="sr-only">New Chat</span>
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>New Chat</TooltipContent>
-        </Tooltip>
+      <div className="relative flex max-h-60 w-full grow flex-col overflow-hidden bg-background pl-2 pr-16 sm:rounded-md">
         <Textarea
           ref={inputRef}
           tabIndex={0}
           onKeyDown={onKeyDown}
-          placeholder="Send a message."
+          placeholder="Type your query here..."
           className="min-h-[60px] w-full resize-none bg-transparent px-4 py-[1.3rem] focus-within:outline-none sm:text-sm"
           autoFocus
           spellCheck={false}
@@ -85,10 +69,9 @@ export function PromptForm({
           value={input}
           onChange={e => setInput(e.target.value)}
         />
+        
+        {/* Send message button */}
         <div className="absolute right-0 top-[13px] flex items-center space-x-5 sm:right-4">
-          <div className={'pt-2'}>
-            <VoiceTranscription setTranscriptionValue={setInput} />
-          </div>
           <Tooltip>
             <TooltipTrigger asChild>
               <Button type="submit" size="icon" disabled={input === ''}>

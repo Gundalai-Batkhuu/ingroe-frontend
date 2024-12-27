@@ -1,4 +1,3 @@
-import { Separator } from '@/components/ui/separator'
 import { UIState } from '@/features/chat/actions/ai-actions'
 import { Session } from '@/lib/types'
 import Link from 'next/link'
@@ -37,14 +36,12 @@ export function ChatList({ messages, session, isShared }: ChatList) {
               </p>
             </div>
           </div>
-          <Separator className="my-4" />
         </>
       ) : null}
 
       {messages.map((message, index) => (
         <div key={message.id}>
           {message.display}
-          {index < messages.length - 1 && <Separator className="my-4" />}
         </div>
       ))}
     </div>

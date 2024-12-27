@@ -9,20 +9,16 @@ import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
 import { StreamableValue } from 'ai/rsc'
 import { useStreamableText } from '@/hooks/use-streamable-text'
-import { ChatMessageActions } from '@/features/chat/components/chat-message-actions'
 import ChatToolCollection from '@/features/chat/components/chat-tool-collection'
 import { Context } from '@/lib/types'
 
 export function UserMessage({ children }: { children: React.ReactNode }) {
   return (
-    <div className="group relative flex items-start md:-ml-12">
-      <div className="flex size-[25px] shrink-0 select-none items-center justify-center rounded-md border bg-background shadow-sm">
-        <IconUser />
+      <div className="flex justify-end space-y-2 overflow-hidden">
+        <div className="p-4 bg-green-100 rounded-md">
+          {children}
+        </div>
       </div>
-      <div className="ml-4 flex-1 space-y-2 overflow-hidden pl-2">
-        {children}
-      </div>
-    </div>
   )
 }
 
@@ -40,7 +36,7 @@ export function BotMessage({
   const text = useStreamableText(content)
 
   return (
-    <div className={cn('group relative flex items-start md:-ml-12', chunkid)}>
+    <div className={cn('group relative flex items-start my-4 md:-ml-12', chunkid)}>
       <div className="flex size-[24px] shrink-0 select-none items-center justify-center rounded-md border bg-primary text-primary-foreground shadow-sm">
         <IconAI />
       </div>
@@ -88,7 +84,6 @@ export function BotMessage({
         </MemoizedReactMarkdown>
         <div className="flex items-center justify-between">
           <ChatToolCollection message={text} context={context} chunkid={chunkid}/>
-          <ChatMessageActions message={text} />
         </div>
       </div>
     </div>
