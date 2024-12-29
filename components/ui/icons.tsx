@@ -334,7 +334,6 @@ function IconSun({ className, ...props }: React.ComponentProps<'svg'>) {
 	);
 }
 
-
 function IconDownload({ className, ...props }: React.ComponentProps<'svg'>) {
 	return (
 		<svg
@@ -674,26 +673,26 @@ export function Logo() {
 }
 
 export {
-  IconEdit,
-  IconNextChat,
-  IconAI,
-  IconSeparator,
-  IconArrowDown,
-  IconArrowRight,
-  IconUser,
-  IconPlus,
-  IconArrowElbow,
-  IconTrash,
-  IconRefresh,
-  IconStop,
-  IconSidebar,
-  IconDownload,
-  IconClose,
-  IconShare,
-  IconUsers,
-  IconExternalLink,
-  IconChevronUpDown,
-  IconMessage,
-  IconMoon,
-  IconSun,
-}
+	IconEdit,
+	IconNextChat,
+	IconAI,
+	IconSeparator,
+	IconArrowDown,
+	IconArrowRight,
+	IconUser,
+	IconPlus,
+	IconArrowElbow,
+	IconTrash,
+	IconRefresh,
+	IconStop,
+	IconSidebar,
+	IconDownload,
+	IconClose,
+	IconShare,
+	IconUsers,
+	IconExternalLink,
+	IconChevronUpDown,
+	IconMessage,
+	IconMoon,
+	IconSun
+};

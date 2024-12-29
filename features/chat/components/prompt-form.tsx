@@ -51,38 +51,42 @@ export function PromptForm({
 		await onSubmit(value);
 	};
 
-  return (
-    <form ref={formRef} onSubmit={handleSubmit}>
-      <div className="relative flex max-h-60 w-full grow flex-col overflow-hidden bg-background pl-2 pr-16 sm:rounded-md">
-        <Textarea
-          ref={inputRef}
-          tabIndex={0}
-          onKeyDown={onKeyDown}
-          placeholder="Type your query here..."
-          className="min-h-[60px] w-full resize-none bg-transparent px-4 py-[1.3rem] focus-within:outline-none sm:text-sm"
-          autoFocus
-          spellCheck={false}
-          autoComplete="off"
-          autoCorrect="off"
-          name="message"
-          rows={1}
-          value={input}
-          onChange={e => setInput(e.target.value)}
-        />
-        
-        {/* Send message button */}
-        <div className="absolute right-0 top-[13px] flex items-center space-x-5 sm:right-4">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button type="submit" size="icon" disabled={input === ''}>
-                <IconArrowElbow />
-                <span className="sr-only">Send message</span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Send message</TooltipContent>
-          </Tooltip>
-        </div>
-      </div>
-    </form>
-  )
+	return (
+		<form ref={formRef} onSubmit={handleSubmit}>
+			<div className="relative flex max-h-60 w-full grow flex-col overflow-hidden bg-background pl-2 pr-16 sm:rounded-md">
+				<Textarea
+					ref={inputRef}
+					tabIndex={0}
+					onKeyDown={onKeyDown}
+					placeholder="Type your query here..."
+					className="min-h-[60px] w-full resize-none bg-transparent px-4 py-[1.3rem] focus-within:outline-none sm:text-sm"
+					autoFocus
+					spellCheck={false}
+					autoComplete="off"
+					autoCorrect="off"
+					name="message"
+					rows={1}
+					value={input}
+					onChange={e => setInput(e.target.value)}
+				/>
+
+				{/* Send message button */}
+				<div className="absolute right-0 top-[13px] flex items-center space-x-5 sm:right-4">
+					<Tooltip>
+						<TooltipTrigger asChild>
+							<Button
+								type="submit"
+								size="icon"
+								disabled={input === ''}
+							>
+								<IconArrowElbow />
+								<span className="sr-only">Send message</span>
+							</Button>
+						</TooltipTrigger>
+						<TooltipContent>Send message</TooltipContent>
+					</Tooltip>
+				</div>
+			</div>
+		</form>
+	);
 }

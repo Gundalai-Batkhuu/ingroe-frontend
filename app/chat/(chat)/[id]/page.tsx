@@ -24,8 +24,8 @@ export async function generateMetadata({
 	if (!session?.user) {
 		return {};
 	}
-
-	const chat = await getChat(params.id, session.user.id);
+	
+	const chat = await getChat(params.id as string, session.user.id as string);
 	return {
 		title: chat?.title.toString().slice(0, 50) ?? 'Chat'
 	};
@@ -40,7 +40,7 @@ export default async function ChatPage({ params }: ChatPageProps) {
 	}
 
 	const userId = session.user.id as string;
-	const chat = await getChat(params.id, userId);
+	const chat = await getChat(params.id as string, userId);
 
 	if (!chat) {
 		redirect('/');

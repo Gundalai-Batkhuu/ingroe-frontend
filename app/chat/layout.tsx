@@ -1,8 +1,8 @@
-import React from 'react'
-import { ChatSidebarContainer } from '@/features/chat/components/chat-sidebar-container'
+import React from 'react';
+import { ChatSidebarContainer } from '@/features/chat/components/chat-sidebar-container';
 
 interface ChatLayoutProps {
-	children: React.ReactNode
+	children: React.ReactNode;
 }
 
 export default async function ChatLayout({ children }: ChatLayoutProps) {
@@ -11,5 +11,5 @@ export default async function ChatLayout({ children }: ChatLayoutProps) {
 			<main className="flex-1">{children}</main>
 			<ChatSidebarContainer />
 		</div>
-	)
+	);
 }

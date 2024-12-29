@@ -1,13 +1,13 @@
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-  } from "@/components/ui/dialog"
-import { IconWrapper } from "@/components/ui/icon-wrapper";
-import { Copy, BookMarked } from "lucide-react";
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger
+} from '@/components/ui/dialog';
+import { IconWrapper } from '@/components/ui/icon-wrapper';
+import { Copy, BookMarked } from 'lucide-react';
 import { Context } from '@/lib/types';
 
 const dummyInformationSource = {
@@ -81,60 +81,72 @@ export default function InformationSourceDisplay({
 		chunkid?.includes(ctx.metadata.chunkid)
 	);
 
-    return (
-        <Dialog>
-            <DialogTrigger>
-                <div>
-                    <IconWrapper tooltip='Source'>
-                        <BookMarked className="w-5 h-5 text-gray-500 hover:text-gray-700 cursor-pointer" />
-                    </IconWrapper>
-                </div>
-            </DialogTrigger>
-            <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
-                <DialogHeader>
-                    <DialogTitle>AI Response</DialogTitle>
-                    <DialogDescription>
-                    {message && (
-                        <div className="mt-2 mb-2">
-                            <p className="text-sm text-gray-700">{message}</p>
-                        </div>
-                    )}
-                    </DialogDescription>
-                </DialogHeader>
-                <p className="font-semibold text-primary text-lg">Source Documents:</p>
-                {filteredContext?.length ? (
-                    <div className="mt-1 space-y-4">
-                        {filteredContext.map((context, index) => (
-                            <div key={index} className="border rounded-lg p-4">
-                                <div className="flex items-center gap-2 mb-2">
-                                    <BookMarked className="w-4 h-4" />
-                                    <p className="text-sm font-medium">
-                                        {context.metadata.chunkid.split(':')[0]} (Page {context.metadata.chunkid.split(':')[1]})
-                                    </p>
-                                </div>
-                                <p className="text-sm whitespace-pre-wrap">
-                                    {context.page_content}
-                                </p>
-                                <div className="flex items-center justify-between text-gray-800 mt-2">
-                                    <p>Source: {context.metadata.source}</p>
-                                    <IconWrapper tooltip="Copy source">
-                                        <button 
-                                            onClick={() => navigator.clipboard.writeText(context.metadata.source)}
-                                            className="p-1 hover:bg-gray-100 rounded"
-                                        >
-                                            <Copy className="w-4 h-4" />
-                                        </button>
-                                    </IconWrapper>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                ) : (
-                    <div className="mt-4 text-center text-gray-500">
-                        This message was generated without referencing any specific documents.
-                    </div>
-                )}
-            </DialogContent>
-        </Dialog>
-    )
+	return (
+		<Dialog>
+			<DialogTrigger>
+				<div>
+					<IconWrapper tooltip="Source">
+						<BookMarked className="h-5 w-5 cursor-pointer text-gray-500 hover:text-gray-700" />
+					</IconWrapper>
+				</div>
+			</DialogTrigger>
+			<DialogContent className="max-h-[80vh] max-w-3xl overflow-y-auto">
+				<DialogHeader>
+					<DialogTitle>AI Response</DialogTitle>
+					<DialogDescription>
+						{message && (
+							<div className="mb-2 mt-2">
+								<p className="text-sm text-gray-700">
+									{message}
+								</p>
+							</div>
+						)}
+					</DialogDescription>
+				</DialogHeader>
+				<p className="text-lg font-semibold text-primary">
+					Source Documents:
+				</p>
+				{filteredContext?.length ? (
+					<div className="mt-1 space-y-4">
+						{filteredContext.map((context, index) => (
+							<div key={index} className="rounded-lg border p-4">
+								<div className="mb-2 flex items-center gap-2">
+									<BookMarked className="h-4 w-4" />
+									<p className="text-sm font-medium">
+										{context.metadata.chunkid.split(':')[0]}{' '}
+										(Page{' '}
+										{context.metadata.chunkid.split(':')[1]}
+										)
+									</p>
+								</div>
+								<p className="whitespace-pre-wrap text-sm">
+									{context.page_content}
+								</p>
+								<div className="mt-2 flex items-center justify-between text-gray-800">
+									<p>Source: {context.metadata.source}</p>
+									<IconWrapper tooltip="Copy source">
+										<button
+											onClick={() =>
+												navigator.clipboard.writeText(
+													context.metadata.source
+												)
+											}
+											className="rounded p-1 hover:bg-gray-100"
+										>
+											<Copy className="h-4 w-4" />
+										</button>
+									</IconWrapper>
+								</div>
+							</div>
+						))}
+					</div>
+				) : (
+					<div className="mt-4 text-center text-gray-500">
+						This message was generated without referencing any
+						specific documents.
+					</div>
+				)}
+			</DialogContent>
+		</Dialog>
+	);
 }

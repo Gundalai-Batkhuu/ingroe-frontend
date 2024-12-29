@@ -10,21 +10,18 @@ export const metadata = {
 };
 
 export default async function IndexPage() {
-  const id = nanoid()
-  const session = (await auth()) as Session
-  
-  if (!session || !session.user) {
-    return <div> Please log in</div>
-  }
-  
-  const missingKeys = await getMissingKeys()
-  
-  return (
-      <AI initialAIState={{ chatId: id, messages: [] }}>
-        <Chat id={id} session={session} missingKeys={missingKeys} />
-      </AI>
-  )
+	const id = nanoid();
+	const session = (await auth()) as Session;
+
+	if (!session || !session.user) {
+		return <div> Please log in</div>;
+	}
+
+	const missingKeys = await getMissingKeys();
+
+	return (
+		<AI initialAIState={{ chatId: id, messages: [] }}>
+			<Chat id={id} session={session} missingKeys={missingKeys} />
+		</AI>
+	);
 }
-
-
-
