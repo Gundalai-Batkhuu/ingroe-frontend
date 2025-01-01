@@ -8,6 +8,7 @@ interface UserArtifactsState {
     isLoading: boolean
     error: string | null
     selectedArtifactId: string | null
+    getSelectedArtifact: () => Artefact | null
     fetchUserArtifacts: (userId: string) => Promise<void>
     addArtifact: (artifact: Artefact) => void
     removeArtifact: (artifactId: string) => void
@@ -23,7 +24,7 @@ interface UserArtifactsState {
 
 export const userArtifactsStore = create<UserArtifactsState>()(
     persist(
-        (set) => ({
+        (set, get) => ({
             artifacts: null,
             isLoading: false,
             error: null,
@@ -74,6 +75,17 @@ export const userArtifactsStore = create<UserArtifactsState>()(
             })),
 
             setSelectedArtifactId: (artifactId: string | null) => set({ selectedArtifactId: artifactId }),
+            
+            getSelectedArtifact: () => {
+                const state = get()
+                if (!state.artifacts || !state.selectedArtifactId) {
+                    return null
+                }
+                
+                return state.artifacts.artefact_tree.find(
+                    (artifact) => artifact.document_id === state.selectedArtifactId
+                ) || null
+            },
 
             addSharedDocumentOwned: (sharedDocument: SharedDocumentOwned) => set((state) => ({
                 artifacts: state.artifacts

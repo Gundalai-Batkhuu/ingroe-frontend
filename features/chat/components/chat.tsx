@@ -14,6 +14,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { EmptyScreen } from '@/features/chat/components/empty-screen';
 import { Notebook } from 'lucide-react';
 import { Options } from './options';
+import { userArtifactsStore } from '@/stores/userArtifactsStore';
 
 export interface ChatProps extends React.ComponentProps<'div'> {
 	initialMessages?: Message[];
@@ -29,6 +30,10 @@ export function Chat({ id, className, session, missingKeys }: ChatProps) {
 	const [messages] = useUIState();
 	const [aiState] = useAIState();
 	const { toast } = useToast();
+	const selectedDocument = userArtifactsStore(
+		state => state.getSelectedArtifact()
+	);
+
 
 	const [_, setNewChatId] = useLocalStorage('newChatId', id);
 
@@ -73,7 +78,7 @@ export function Chat({ id, className, session, missingKeys }: ChatProps) {
 		<div className="flex h-full w-full xl:w-3/4 xl:mx-auto flex-col bg-background rounded-lg">
 			<div className="flex items-center justify-center h-20 w-full border-b border-gray-200 mx-auto">
 				<div className="flex flex-row items-center justify-center w-full mx-10">
-					<div className="flex-1 text-lg font-bold ml-4">Worker title</div>
+					<div className="flex-1 text-lg font-bold ml-4">{selectedDocument?.document_name}</div>
 					<Notebook className="w-10 mr-4 text-gray-400"/>
 					<Options/>
 				</div>
