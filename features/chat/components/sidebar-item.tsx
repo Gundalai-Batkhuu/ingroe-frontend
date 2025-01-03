@@ -33,6 +33,8 @@ export function SidebarItem({ index, chat, children }: SidebarItemProps) {
 
 	if (!chat?.id) return null;
 
+	const createdAt = chat.createdAt
+
 	return (
 		<motion.div
 			className="relative h-8"
@@ -113,12 +115,14 @@ export function SidebarItem({ index, chat, children }: SidebarItemProps) {
 											setNewChatId(null);
 										}
 									}}
-								>
+									>
 									{character}
 								</motion.span>
 							))
 						) : (
-							<span>{chat.title}</span>
+							<>
+								<span>{chat.title}</span>
+							</>
 						)}
 					</span>
 				</div>

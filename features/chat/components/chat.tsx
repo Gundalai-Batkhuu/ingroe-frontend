@@ -75,7 +75,7 @@ export function Chat({ id, className, session, missingKeys }: ChatProps) {
 	} = useScrollAnchor();
 
 	return (	
-		<div className="flex h-full w-full xl:w-3/4 xl:mx-auto flex-col bg-background rounded-lg">
+		<div className="flex h-full w-full flex-col bg-background rounded-lg">
 			<div className="flex items-center justify-center h-20 w-full border-b border-gray-200 mx-auto">
 				<div className="flex flex-row items-center justify-center w-full mx-10">
 					<div className="flex-1 text-lg font-bold ml-4">{selectedDocument?.document_name}</div>

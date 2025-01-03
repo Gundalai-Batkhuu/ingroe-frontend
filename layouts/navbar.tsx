@@ -29,9 +29,17 @@ import NavbarItems from './navbar-items'
 import { HelpCenter } from '@/features/application-settings/help-center'
 import { ThemeSwitch } from '@/features/application-settings/theme-switch'
 import { DashboardButton } from '@/features/application-settings/dashboard-button'
+import { usePathname } from 'next/navigation'
+
+function shouldHideNavbar(pathname: string): boolean {
+  return pathname.startsWith('/chat')
+}
 
 export function DesktopNavbar() {
   const { isNavbarExpanded, toggleNavbar } = useNavbar()
+  const pathname = usePathname()
+
+  if (shouldHideNavbar(pathname)) return null
 
   return (
     <aside className={`border-r bg-background ease-in-out duration-300 ${isNavbarExpanded ? 'w-56' : 'w-14'}`}>

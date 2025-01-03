@@ -4,6 +4,7 @@ import { UserMenu } from '@/features/authentication/components/user-menu'
 import React from 'react'
 import { Button } from '@/components/ui/button'
 import { Mail, MessageSquareText } from 'lucide-react'
+import Link from 'next/link'
 
 export default function HeaderContent() {
   return (
@@ -11,14 +12,18 @@ export default function HeaderContent() {
       <div className='flex items-center gap-4'>
         <SearchInput />
         <MobileNav />
-        <Button variant="ghost">
-          Documents
-        </Button>
+
+        <Link href="/dashboard">
+          <Button variant="ghost">
+            Dashboard
+          </Button>
+        </Link>
+
         <Button variant="ghost">
           Service Hub
         </Button>
         <Button variant="ghost">
-          Reports
+          Details
         </Button>
       </div>
       <div className='flex items-center gap-6'>

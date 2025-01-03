@@ -23,6 +23,7 @@ import {
 	TooltipTrigger
 } from '../../../components/ui/tooltip';
 import { useToast } from '@/components/hooks/use-toast';
+import { convertDate } from '@/components/hooks/convert-date';
 
 interface SidebarActionsProps {
 	chat: Chat;
@@ -47,7 +48,7 @@ export function SidebarActions({
 	const handleDeleteChat = React.useCallback(async () => {
 		const result = await removeChat({
 			id: chat.id,
-			path: chat.path
+			path: chat.path,
 		});
 
 		if (result && 'error' in result) {
@@ -69,7 +70,15 @@ export function SidebarActions({
 
 	return (
 		<>
-			<div className="">
+			<div className="flex items-center gap-1">
+				<Tooltip>
+					<TooltipTrigger asChild>
+						<span className="text-xs text-muted-foreground pr-1 cursor-default hover:text-foreground">{convertDate(chat.createdAt)}</span>
+					</TooltipTrigger>
+					<TooltipContent side="top" align="center">
+						Created at: {new Date(chat.createdAt).toLocaleString()}
+					</TooltipContent>
+				</Tooltip>
 				<Tooltip>
 					<TooltipTrigger asChild>
 						<Button
@@ -81,7 +90,7 @@ export function SidebarActions({
 							<span className="sr-only">Share</span>
 						</Button>
 					</TooltipTrigger>
-					<TooltipContent>Share chat</TooltipContent>
+					<TooltipContent side="top" align="center">Share chat</TooltipContent>
 				</Tooltip>
 				<Tooltip>
 					<TooltipTrigger asChild>
@@ -95,7 +104,9 @@ export function SidebarActions({
 							<span className="sr-only">Delete</span>
 						</Button>
 					</TooltipTrigger>
-					<TooltipContent>Delete chat</TooltipContent>
+					<TooltipContent>
+						Delete chat
+					</TooltipContent>
 				</Tooltip>
 			</div>
 			<ChatShareDialog
