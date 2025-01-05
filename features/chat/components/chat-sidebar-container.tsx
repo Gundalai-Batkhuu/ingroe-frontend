@@ -12,7 +12,7 @@ export async function ChatSidebarContainer() {
 
 	return (
 		<>
-			<ChatSearch className="flex relative w-full mx-auto md:grow-0 bg-background py-4 px-6" />
+			<ChatSearch className="relative mx-auto flex w-full bg-background px-6 py-4 md:grow-0" />
 			<Tabs
 				defaultValue="chats"
 				className="flex flex-1 flex-col justify-between bg-background px-4 dark:bg-zinc-950"

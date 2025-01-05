@@ -14,7 +14,8 @@ export async function UpdateDocumentInfo({
 		user_id: userId,
 		document_id: updatedArtifact.document_id,
 		document_alias: updatedArtifact.document_name,
-		description: updatedArtifact.description
+		description: updatedArtifact.description,
+		instruction: updatedArtifact.instruction
 	};
 
 	try {

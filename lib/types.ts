@@ -63,6 +63,7 @@ export interface Artefact {
 	file_links: string[];
 	files: string[];
 	description: string;
+	instruction: string;
 	captured_documents: CapturedDocument[];
 }
 
@@ -193,6 +194,7 @@ export interface DocumentInfo {
 	document_id: string;
 	document_alias: string;
 	description: string;
+	instruction: string;
 }
 
 export interface ShareDocument {

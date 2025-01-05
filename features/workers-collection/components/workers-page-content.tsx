@@ -37,9 +37,9 @@ export default function WorkersPageContent({
 			{/* Header Section */}
 			<div className="flex items-center justify-between">
 				<div>
-					<h1 className="text-2xl font-semibold">Workers Hub</h1>
+					<h1 className="text-2xl font-semibold">Assistant Hub</h1>
 					<p className="text-sm text-muted-foreground">
-						Manage workers
+						Manage assistants
 					</p>
 				</div>
 
@@ -64,7 +64,7 @@ export default function WorkersPageContent({
 						onClick={() => router.push('/create-worker')}
 					>
 						<Plus className="h-4 w-4" />
-						Create New
+						Add New
 					</Button>
 				</div>
 			</div>

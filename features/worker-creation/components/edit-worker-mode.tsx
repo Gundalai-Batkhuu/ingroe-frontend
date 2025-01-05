@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { Artefact } from '@/lib/types';
+import { cn } from "@/lib/utils";
 
 interface ArtifactEditModeProps {
 	editedArtifact: Artefact;
@@ -13,12 +14,14 @@ interface ArtifactEditModeProps {
 		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
 	) => void;
 	handleAddItem: (field: string) => void;
+	errors?: Record<string, string>;
 }
 
 export function ArtifactEditMode({
 	editedArtifact,
 	handleInputChange,
-	handleAddItem
+	handleAddItem,
+	errors = {}
 }: ArtifactEditModeProps) {
 	const isFileLink = (link: string): boolean => {
 		const fileExtensions = [
@@ -44,15 +47,24 @@ export function ArtifactEditMode({
 	return (
 		<div className="grid w-full items-center gap-4">
 			<ArtifactEditField
-				label="Document Name"
+				label="Title"
 				name="document_name"
 				value={editedArtifact.document_name}
 				onChange={handleInputChange}
+				error={errors.document_name}
 			/>
 			<ArtifactEditField
 				label="Description"
 				name="description"
 				value={editedArtifact.description}
+				onChange={handleInputChange}
+				error={errors.description}
+				isTextarea
+			/>
+			<ArtifactEditField
+				label="Instruction"
+				name="instruction"
+				value={editedArtifact.instruction}
 				onChange={handleInputChange}
 				isTextarea
 			/>
@@ -84,9 +96,10 @@ interface ArtifactListFieldProps {
 	label: string;
 	value: string;
 	onAdd: () => void;
+	error?: string;
 }
 
-function ArtifactListField({ label, value, onAdd }: ArtifactListFieldProps) {
+function ArtifactListField({ label, value, onAdd, error }: ArtifactListFieldProps) {
 	return (
 		<div className="flex flex-col space-y-1.5 text-sm">
 			<div className="flex items-center justify-between">
@@ -114,6 +127,7 @@ interface ArtifactEditFieldProps {
 		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
 	) => void;
 	isTextarea?: boolean;
+	error?: string;
 }
 
 function ArtifactEditField({
@@ -121,7 +135,8 @@ function ArtifactEditField({
 	name,
 	value,
 	onChange,
-	isTextarea = false
+	isTextarea = false,
+	error
 }: ArtifactEditFieldProps) {
 	return (
 		<div className="flex flex-col space-y-1.5 text-sm">
@@ -132,6 +147,8 @@ function ArtifactEditField({
 					name={name}
 					value={value}
 					onChange={onChange}
+					className={cn(error && "border-destructive placeholder:text-destructive")}
+					placeholder={error}
 				/>
 			) : (
 				<Input
@@ -139,6 +156,8 @@ function ArtifactEditField({
 					name={name}
 					value={value}
 					onChange={onChange}
+					className={cn(error && "border-destructive placeholder:text-destructive")}
+					placeholder={error}
 				/>
 			)}
 		</div>

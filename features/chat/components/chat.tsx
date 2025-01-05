@@ -30,10 +30,9 @@ export function Chat({ id, className, session, missingKeys }: ChatProps) {
 	const [messages] = useUIState();
 	const [aiState] = useAIState();
 	const { toast } = useToast();
-	const selectedDocument = userArtifactsStore(
-		state => state.getSelectedArtifact()
+	const selectedDocument = userArtifactsStore(state =>
+		state.getSelectedArtifact()
 	);
-
 
 	const [_, setNewChatId] = useLocalStorage('newChatId', id);
 
@@ -74,13 +73,15 @@ export function Chat({ id, className, session, missingKeys }: ChatProps) {
 		scrollToBottom
 	} = useScrollAnchor();
 
-	return (	
-		<div className="flex h-full w-full flex-col bg-background rounded-lg">
-			<div className="flex items-center justify-center h-20 w-full border-b border-gray-200 mx-auto">
-				<div className="flex flex-row items-center justify-center w-full mx-10">
-					<div className="flex-1 text-lg font-bold ml-4">{selectedDocument?.document_name}</div>
-					<Notebook className="w-10 mr-4 text-gray-400"/>
-					<Options/>
+	return (
+		<div className="flex h-full w-full flex-col rounded-lg bg-background">
+			<div className="mx-auto flex h-20 w-full items-center justify-center border-b border-gray-200">
+				<div className="mx-10 flex w-full flex-row items-center justify-center">
+					<div className="ml-4 flex-1 text-lg font-bold">
+						{selectedDocument?.document_name}
+					</div>
+					<Notebook className="mr-4 w-10 text-gray-400" />
+					<Options />
 				</div>
 			</div>
 

@@ -54,6 +54,13 @@ export function AvailableWorkersTable({
 
 	const { artifacts, isLoading, error, fetchUserArtifacts } =
 		userArtifactsStore();
+
+	useEffect(() => {
+		if (userId) {
+			fetchUserArtifacts(userId);
+		}
+	}, [userId]);
+		
 	const search = searchParams.q ?? '';
 	const offset = parseInt(searchParams.offset ?? '0', 10);
 
@@ -68,9 +75,9 @@ export function AvailableWorkersTable({
 		}));
 	};
 
-	useEffect(() => {
-		fetchUserArtifacts(userId);
-	}, [fetchUserArtifacts, userId]);
+	const handleCardClick = (documentId: string) => {
+		router.push(`/manage-assistants/details/${documentId}`);
+	};
 
 	if (isLoading) return <div>Loading...</div>;
 	if (error) return <div>Error: {error}</div>;
@@ -88,14 +95,14 @@ export function AvailableWorkersTable({
 			<Card className="flex h-full flex-col items-center justify-center p-8">
 				<Image
 					src="/no_workers.png"
-					alt="No workers found"
+					alt="No assistants found"
 					width={300}
 					height={300}
 					priority
 				/>
-				<CardTitle className="mt-4">No workers available</CardTitle>
+				<CardTitle className="mt-4">No assistants available</CardTitle>
 				<CardDescription className="mt-2">
-					Create a new worker to get started
+					Create a new assistant to get started
 				</CardDescription>
 			</Card>
 		);
@@ -114,18 +121,18 @@ export function AvailableWorkersTable({
 	};
 
 	const handleEditArtifact = (artifactId: string) => {
-		router.push(`/databases/${artifactId}`);
+		router.push(`/manage-assistants/${artifactId}`);
 	};
 
 	return (
 		<Card className="flex h-full flex-col">
 			<CardHeader>
-				<CardTitle>Workers available</CardTitle>
+				<CardTitle>Assistants available</CardTitle>
 			</CardHeader>
 			<CardContent className="flex-grow">
 				<div className="grid gap-4">
 					{paginatedArtifacts.map(artifact => (
-						<Card key={artifact.document_id}>
+						<Card key={artifact.document_id} onClick={() => handleCardClick(artifact.document_id)}> 
 							<CardHeader
 								className="flex cursor-pointer flex-row items-center justify-between space-y-0 pb-2"
 								onClick={() => toggleCard(artifact.document_id)}
@@ -290,7 +297,7 @@ export function AvailableWorkersTable({
 						<strong>
 							{offset + 1}-{Math.min(offset + 5, totalArtifacts)}
 						</strong>{' '}
-						of <strong>{totalArtifacts}</strong> workers
+						of <strong>{totalArtifacts}</strong> assistants
 					</div>
 					<div className="flex">
 						<Button

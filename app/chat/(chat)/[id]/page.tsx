@@ -24,7 +24,7 @@ export async function generateMetadata({
 	if (!session?.user) {
 		return {};
 	}
-	
+
 	const chat = await getChat(params.id as string, session.user.id as string);
 	return {
 		title: chat?.title.toString().slice(0, 50) ?? 'Chat'

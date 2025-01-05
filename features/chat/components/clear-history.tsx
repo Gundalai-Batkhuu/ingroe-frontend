@@ -60,13 +60,15 @@ export function ClearHistory({
 	return (
 		<AlertDialog open={open} onOpenChange={setOpen}>
 			<AlertDialogTrigger asChild>
-
-				<Button className={cn(
-					buttonVariants({ variant: 'outline' }),
-					'mb-4 h-10 w-full justify-center bg-zinc-50 text-zinc-900 px-2 px-4 shadow-none transition-colors hover:bg-zinc-200/40 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-300/10'
-				)} disabled={!isEnabled || isPending}>
+				<Button
+					className={cn(
+						buttonVariants({ variant: 'outline' }),
+						'mb-4 h-10 w-full justify-center bg-zinc-50 px-2 px-4 text-zinc-900 shadow-none transition-colors hover:bg-zinc-200/40 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-300/10'
+					)}
+					disabled={!isEnabled || isPending}
+				>
 					{isPending && <Loader2 className="mr-2 animate-spin" />}
-						Clear history
+					Clear history
 				</Button>
 			</AlertDialogTrigger>
 			<AlertDialogContent>

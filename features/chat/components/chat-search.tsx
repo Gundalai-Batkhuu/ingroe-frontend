@@ -24,10 +24,7 @@ export function ChatSearch({ className }: ChatSearchProps) {
 	}
 
 	return (
-		<form
-			action={searchAction}
-			className={cn("", className)}
-		>
+		<form action={searchAction} className={cn('', className)}>
 			<Search className="absolute left-10 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
 			<Input
 				name="q"
