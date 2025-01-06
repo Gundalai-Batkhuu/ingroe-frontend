@@ -46,7 +46,7 @@ export function LoginForm() {
 				action={formAction}
 				className="flex flex-col items-center gap-4 space-y-3"
 			>
-				<div className="w-full flex-1 rounded-lg border bg-white px-6 pb-4 pt-8 shadow-md dark:bg-zinc-950 md:w-96">
+				<div className="w-full flex-1 justify-center rounded-lg border bg-white px-6 pb-4 pt-8 shadow-md dark:bg-zinc-950 md:w-96">
 					<h1 className="mb-3 text-2xl font-bold">
 						Please log in to continue.
 					</h1>

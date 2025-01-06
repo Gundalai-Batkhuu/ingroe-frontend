@@ -7,15 +7,23 @@ export const authConfig = {
 		newUser: '/signup'
 	},
 	callbacks: {
-		async authorized({ auth, request: { nextUrl } }) {
+		authorized({ auth, request: { nextUrl } }) {
 			const isLoggedIn = !!auth?.user;
-			const isOnLoginPage = nextUrl.pathname.startsWith('/login');
-			const isOnSignupPage = nextUrl.pathname.startsWith('/signup');
+			const isAuthPage = nextUrl.pathname.startsWith('/login') || 
+								nextUrl.pathname.startsWith('/signup');
+			const isPublicPage = ['/'].includes(nextUrl.pathname);
+			
+			// Allow public pages
+			if (isPublicPage) return true;
+			
+			// Redirect logged-in users away from auth pages
+			if (isLoggedIn && isAuthPage) {
+				return Response.redirect(new URL('/admin-dashboard', nextUrl));
+			}
 
-			if (isLoggedIn) {
-				if (isOnLoginPage || isOnSignupPage) {
-					return Response.redirect(new URL('/', nextUrl));
-				}
+			// Protect private pages
+			if (!isLoggedIn && !isAuthPage) {
+				return Response.redirect(new URL('/login', nextUrl));
 			}
 
 			return true;

@@ -1,9 +1,8 @@
 import { nanoid } from '@/lib/utils';
 import { Chat } from '@/features/chat/components/chat';
 import { AI } from '@/features/chat/actions/ai-actions';
-import { auth } from '@/features/authentication/auth';
-import { Session } from '@/lib/types';
 import { getMissingKeys } from '@/features/chat/actions/server-actions';
+import { checkAuth } from '@/features/authentication/auth-utils';
 
 export const metadata = {
 	title: 'Ingroe'
@@ -11,11 +10,7 @@ export const metadata = {
 
 export default async function IndexPage() {
 	const id = nanoid();
-	const session = (await auth()) as Session;
-
-	if (!session || !session.user) {
-		return <div> Please log in</div>;
-	}
+	const session = await checkAuth();
 
 	const missingKeys = await getMissingKeys();
 

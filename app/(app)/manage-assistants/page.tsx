@@ -1,13 +1,8 @@
-import { auth } from '@/features/authentication/auth';
-import { Session } from '@/lib/types';
 import WorkersPageContent from '@/features/workers-collection/components/workers-page-content';
+import { checkAuth } from '@/features/authentication/auth-utils';
 
 export default async function WorkersPage() {
-	const session = (await auth()) as Session;
-
-	if (!session || !session.user) {
-		return <div> Please log in</div>;
-	}
+	const session = await checkAuth();
 
 	const userId = session.user.id;
 	const searchParams = { q: '', offset: '0' };

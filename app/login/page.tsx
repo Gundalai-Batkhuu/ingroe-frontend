@@ -11,7 +11,7 @@ export default async function LoginPage() {
 	}
 
 	return (
-		<main className="my-20 flex flex-col p-4">
+		<main className="my-20 w-full">
 			<LoginForm />
 		</main>
 	);

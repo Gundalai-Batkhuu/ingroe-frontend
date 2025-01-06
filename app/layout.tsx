@@ -1,13 +1,9 @@
 import { Analytics } from '@vercel/analytics/react';
 import { Providers } from '@/components/providers';
-import { DesktopNavbar, MobileNav } from '@/layouts/navbar';
 import { Toaster } from '@/components/ui/toaster';
 import '@/public/globals.css';
 import { TailwindIndicator } from '@/components/tailwind-indicator';
 import React from 'react';
-import HeaderContainer from '@/layouts/header-container';
-import MainArea from '@/layouts/main';
-import HeaderContent from '@/layouts/header-content';
 import { Manrope } from 'next/font/google';
 
 const manrope = Manrope({
@@ -46,11 +42,7 @@ export default function RootLayout({
 					disableTransitionOnChange
 				>
 					<div className="flex h-screen w-screen bg-muted/40">
-						<DesktopNavbar />
-						<div className="h-full flex-1 flex-col overflow-x-hidden">
-							<HeaderContainer slot={<HeaderContent />} />
-							<MainArea>{children}</MainArea>
-						</div>
+						{children}
 						<Analytics />
 					</div>
 					<TailwindIndicator />

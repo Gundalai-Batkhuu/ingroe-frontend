@@ -1,5 +1,4 @@
-import { auth } from '@/features/authentication/auth';
-import { Session } from '@/lib/types';
+import { checkAuth } from '@/features/authentication/auth-utils';
 import AssistantDetails from '@/features/workers-collection/components/assistant-details';
 
 
@@ -8,11 +7,7 @@ export default async function AssistantDetailsPage({
 }: {
 	params: { id: string };
 }) {
-	const session = (await auth()) as Session;
-
-	if (!session || !session.user) {
-		return <div> Please log in</div>;
-	}
+	const session = await checkAuth();
 
 	const userId = session.user.id;
 	const searchParams = { q: '', offset: '0' };

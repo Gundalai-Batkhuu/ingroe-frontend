@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 const Logo = () => {
 	return (
-		<Link href="/test" passHref>
+		<Link href="/company" passHref className="size-10">
 			<Image
 				src="/logo.svg"
 				width={65}

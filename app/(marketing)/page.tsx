@@ -1,8 +1,9 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BookOpen, Users, Search, Brain } from 'lucide-react';
+import Link from 'next/link';
 
-export default function HomePage() {
+export default async function MarketingPage() {
 	return (
 		<div className="flex min-h-screen flex-col">
 			<main className="flex-1">
@@ -89,7 +90,9 @@ export default function HomePage() {
 									collective wisdom of Knowledge Commons.
 								</p>
 							</div>
-							<Button>Sign Up Now</Button>
+							<Link href="/signup">
+								<Button>Sign Up Now</Button>
+							</Link>
 						</div>
 					</div>
 				</section>
