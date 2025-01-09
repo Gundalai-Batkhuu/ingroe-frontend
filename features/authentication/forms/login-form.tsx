@@ -33,7 +33,7 @@ export function LoginForm() {
 					description: getMessageFromCode(result.resultCode)
 				});
 				setTimeout(() => {
-					router.push('/workers');
+					router.push('/manage-assistants');
 					router.refresh();
 				}, 1000);
 			}

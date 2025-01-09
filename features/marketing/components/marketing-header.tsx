@@ -13,11 +13,14 @@ export default function MarketingHeaderContent() {
 				<span className="text-2xl font-bold text-brand-green">Ingroe</span>
 			</div>
 			<div className="flex items-center gap-6">
-				<Link href="/dashboard">
+				<Link href="/documentation">
 					<Button variant="ghost">Documentation</Button>
 				</Link>
 
 				<Button variant="ghost">Company</Button>
+				<Link href="/login">
+					<Button>Login</Button>
+				</Link>
 				<Link href="/signup">
 					<Button>Sign Up Now</Button>
 				</Link>

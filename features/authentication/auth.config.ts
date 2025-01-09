@@ -11,20 +11,20 @@ export const authConfig = {
 			const isLoggedIn = !!auth?.user;
 			const isAuthPage = nextUrl.pathname.startsWith('/login') || 
 								nextUrl.pathname.startsWith('/signup');
-			const isPublicPage = ['/'].includes(nextUrl.pathname);
-			
-			// Allow public pages
-			if (isPublicPage) return true;
+			const isPublicPage = ['/'];
 			
 			// Redirect logged-in users away from auth pages
 			if (isLoggedIn && isAuthPage) {
-				return Response.redirect(new URL('/admin-dashboard', nextUrl));
+				return Response.redirect(new URL('/manage-assistants', nextUrl));
 			}
-
+			
 			// Protect private pages
 			if (!isLoggedIn && !isAuthPage) {
 				return Response.redirect(new URL('/login', nextUrl));
 			}
+
+			// Allow public pages
+			if (isPublicPage) return true;
 
 			return true;
 		},

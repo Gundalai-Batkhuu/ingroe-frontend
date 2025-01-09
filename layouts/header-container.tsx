@@ -3,8 +3,16 @@
 import React, { ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
 
-export default function HeaderContainer({ slot }: { slot: ReactNode }) {
+interface HeaderContainerProps {
+	slot: ReactNode;
+}
+
+export default function HeaderContainer({ slot }: HeaderContainerProps) {
 	const pathname = usePathname();
+
+	if (!pathname) {
+		return null; // Add a safety check for SSR
+	}
 
 	return (
 		<header

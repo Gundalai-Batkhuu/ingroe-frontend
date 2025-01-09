@@ -6,6 +6,7 @@ export async function checkAuth(redirectTo?: string) {
   const session = await auth() as Session;
   
   if (!session?.user) {
+    console.log('Redirecting to login because no user session found');
     redirect(redirectTo || '/login');
   }
   
