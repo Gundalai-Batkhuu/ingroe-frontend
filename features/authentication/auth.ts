@@ -3,7 +3,7 @@ import Credentials from 'next-auth/providers/credentials';
 import { authConfig } from './auth.config';
 import { z } from 'zod';
 import { getStringFromBuffer } from '@/lib/utils';
-import { getUser } from '@/features/authentication/actions/user-actions';
+import { createUser, getUser, handleGoogleSignInCallback } from '@/features/authentication/actions/user-actions';
 import Google from 'next-auth/providers/google';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
@@ -51,6 +51,32 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 					response_type: 'code'
 				}
 			}
-		})
-	]
+		}),
+	],
+	callbacks: {
+		async signIn({ user, account }) {
+			return handleGoogleSignInCallback(user, account);
+		},
+		async jwt({ token, trigger, session, user, account }) {
+			if (account?.provider === 'google') {
+				token.id = account.providerAccountId;
+			} else if (user) {
+				token.id = user.id;
+			}
+			token.email = user?.email || token.email;
+
+			if (trigger === 'update' && session) {
+				token = { ...token, ...session };
+			}
+
+			return token;
+		},
+		async session({ session, token }) {
+			if (session.user) {
+				session.user.id = token.id as string;
+				session.user.email = token.email as string;
+			}
+			return session;
+		}
+	}
 });

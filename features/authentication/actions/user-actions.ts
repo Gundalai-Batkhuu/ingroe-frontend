@@ -74,7 +74,9 @@ export async function authenticate(
 export async function createUser(
 	email: string,
 	hashedPassword: string,
-	salt: string
+	salt: string,
+	isGoogleUser: boolean = false,
+	googleUserId: string | null = null
 ) {
 	const existingUser = await getUser(email);
 
@@ -83,69 +85,78 @@ export async function createUser(
 			type: 'error',
 			resultCode: ResultCode.UserAlreadyExists
 		};
-	} else {
-		const user = {
-			id: crypto.randomUUID(),
-			email,
-			password: hashedPassword,
-			salt
-		};
+	}
 
+	const user = isGoogleUser
+		? {
+				id: googleUserId!,
+				email,
+				password: hashedPassword,
+				salt,
+				isGoogleUser: true
+		  }
+		: {
+				id: crypto.randomUUID(),
+				email,
+				password: hashedPassword,
+				salt,
+				isGoogleUser: false
+		  };
+
+	try {
+		// Create user in Redis
 		try {
-			// Create user in Redis
-			try {
-				await kv.hmset(`user:${email}`, user);
-			} catch (redisError) {
-				console.error('Failed to create user in Redis:', redisError);
-				return {
-					type: 'error',
-					resultCode: ResultCode.DatabaseError
-				};
-			}
-
-			// Create user in the backend database
-			try {
-				await userService.createUser(user.id, email);
-			} catch (dbError) {
-				console.error(
-					'Failed to create user in backend database:',
-					dbError
-				);
-				// Clean up Redis since backend creation failed
-				try {
-					await kv.del(`user:${email}`);
-				} catch (cleanupError) {
-					console.error(
-						'Failed to clean up Redis after backend error:',
-						cleanupError
-					);
-				}
-				return {
-					type: 'error',
-					resultCode: ResultCode.DatabaseError
-				};
-			}
-
+			await kv.hmset(`user:${email}`, user);
+		} catch (redisError) {
+			console.error('Failed to create user in Redis:', redisError);
 			return {
-				type: 'success',
-				resultCode: ResultCode.UserCreated
+				type: 'error',
+				resultCode: ResultCode.DatabaseError
 			};
-		} catch (error) {
-			console.error('Unexpected error during user creation:', error);
-			// Attempt to clean up Redis in case of unexpected errors
+		}
+
+		// Create user in the backend database
+		try {
+			await userService.createUser(user.id, email);
+		} catch (dbError) {
+			console.error(
+				'Failed to create user in backend database:',
+				dbError
+			);
+			// Clean up Redis since backend creation failed
 			try {
 				await kv.del(`user:${email}`);
 			} catch (cleanupError) {
 				console.error(
-					'Failed to clean up Redis after unexpected error:',
+					'Failed to clean up Redis after backend error:',
 					cleanupError
 				);
 			}
 			return {
 				type: 'error',
-				resultCode: ResultCode.UnknownError
+				resultCode: ResultCode.DatabaseError
 			};
 		}
+
+		return {
+			type: 'success',
+			resultCode: ResultCode.UserCreated
+		};
+	} catch (error) {
+		console.error('Unexpected error during user creation:', error);
+		// Attempt to clean up Redis in case of unexpected errors
+		try {
+			await kv.del(`user:${email}`);
+		} catch (cleanupError) {
+			console.error(
+				'Failed to clean up Redis after unexpected error:',
+				cleanupError
+			);
+		}
+		return {
+			type: 'error',
+			resultCode: ResultCode.UnknownError
+		};
 	}
 }
 
@@ -160,7 +171,7 @@ export async function signup(
 ): Promise<Result | undefined> {
 	const email = formData.get('email') as string;
 	const password = formData.get('password') as string;
-
+	
 	const parsedCredentials = z
 		.object({
 			email: z.string().email(),
@@ -183,7 +194,7 @@ export async function signup(
 		const hashedPassword = getStringFromBuffer(hashedPasswordBuffer);
 
 		try {
-			const result = await createUser(email, hashedPassword, salt);
+			const result = await createUser(email, hashedPassword, salt, false, null);
 
 			if (result.resultCode === ResultCode.UserCreated) {
 				await signIn('credentials', {
@@ -264,4 +275,31 @@ export async function signout(): Promise<Result> {
 
 export async function signInWithGoogle() {
 	await signIn('google', { redirectTo: '/manage-assistants' });
+}
+
+export async function handleGoogleSignInCallback(user: any, account: any) {
+	if (account?.provider === 'google') {
+		const existingUser = await getUser(user.email!);
+		
+		if (!existingUser) {
+			const userId = account.providerAccountId;
+			// Create a new user for first-time Google sign-ins
+			const result = await createUser(
+				user.email!,
+				crypto.randomUUID(), // Random password for Google users
+				crypto.randomUUID(),  // Random salt
+				true,
+				userId
+			);
+			
+			if (result.type === 'success') {
+				user.id = userId; // Use Google's sub as the ID
+				return true;
+			}
+			return false;
+		}
+		// If user exists, set their ID
+		user.id = existingUser.id;
+	}
+	return true;
 }

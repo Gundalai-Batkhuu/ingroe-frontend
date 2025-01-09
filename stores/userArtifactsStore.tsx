@@ -38,7 +38,7 @@ export const userArtifactsStore = create<UserArtifactsState>()(
 			isLoading: false,
 			error: null,
 			selectedArtifactId: null,
-
+			
 			fetchUserArtifacts: async (userId: string) => {
 				set({ isLoading: true, error: null });
 				try {
