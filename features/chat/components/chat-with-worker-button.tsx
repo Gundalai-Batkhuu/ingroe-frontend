@@ -26,7 +26,7 @@ export const WorkerChatButton: React.FC<WorkerChatButtonProps> = ({
 			className="gap-2 bg-brand-green text-white hover:bg-brand-green/90 hover:text-white"
 		>
 			<BotMessageSquare className="size-4" />
-			Chat with worker
+			Chat with assistant
 		</Button>
 	);
 };

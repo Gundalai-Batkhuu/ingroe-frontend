@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
 	Card,
 	CardContent,
@@ -13,9 +13,6 @@ import { useRouter } from 'next/navigation';
 import {
 	ChevronLeft,
 	ChevronRight,
-	ChevronDown,
-	ChevronUp,
-	Calendar,
 	Bot
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -23,24 +20,7 @@ import { DeleteWorkerButton } from '@/features/assistant-creation/components/del
 import { WorkerChatButton } from '@/features/chat/components/chat-with-worker-button';
 import { userArtifactsStore } from '@/stores/userArtifactsStore';
 import { EditWorkerButton } from '@/features/assistant-creation/components/edit-worker-button';
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow
-} from '@/components/ui/table';
 import Image from 'next/image';
-
-interface TableRowData {
-	captured_document_id: string;
-	captured_files?: Array<{
-		file_url: string;
-		file_name: string;
-	}>;
-	query_ready: boolean;
-}
 
 export function AvailableWorkersTable({
 	searchParams,
@@ -51,7 +31,7 @@ export function AvailableWorkersTable({
 }) {
 	const router = useRouter();
 
-	const { artifacts, isLoading, error, fetchUserArtifacts } =
+	const { artifacts, error, fetchUserArtifacts } =
 		userArtifactsStore();
 
 	useEffect(() => {
@@ -60,23 +40,9 @@ export function AvailableWorkersTable({
 		}
 	}, [userId]);
 		
-	const search = searchParams.q ?? '';
-	const offset = parseInt(searchParams.offset ?? '0', 10);
+	const search = searchParams.q || '';
+	const offset = parseInt(searchParams.offset || '0', 10);
 
-	const [expandedCards, setExpandedCards] = useState<Record<string, boolean>>(
-		{}
-	);
-
-	const toggleCard = (documentId: string) => {
-		setExpandedCards(prev => ({
-			...prev,
-			[documentId]: !prev[documentId]
-		}));
-	};
-
-	const handleCardClick = (documentId: string) => {
-		router.push(`/manage-assistants/details/${documentId}`);
-	};
 
 	if (error) return <div>Error: {error}</div>;
 	if (!artifacts) return <div>No artifacts found</div>;
@@ -119,37 +85,23 @@ export function AvailableWorkersTable({
 	};
 
 	const handleEditArtifact = (artifactId: string) => {
-		router.push(`/manage-assistants/${artifactId}`);
+		router.push(`/manage-assistants/details/${artifactId}`);
 	};
 
 	return (
-		<Card className="flex h-full flex-col border-none">
+		<Card className="flex h-full flex-col border-0 shadow-none">
 			<CardHeader>
 				<CardTitle>Assistants available</CardTitle>
 			</CardHeader>
 			<CardContent className="flex-grow">
 				<div className="grid gap-4">
 					{paginatedArtifacts.map(artifact => (
-						<Card key={artifact.document_id} onClick={() => handleCardClick(artifact.document_id)}> 
-							<CardHeader
-								className="flex cursor-pointer flex-row items-center justify-between space-y-0 pb-2"
-								onClick={() => toggleCard(artifact.document_id)}
-							>
+						<Card 
+							key={artifact.document_id}
+							className="hover:shadow-md hover:bg-gray-50"
+						> 
+							<CardContent className="flex flex-row items-center justify-between py-4">
 								<div className="flex items-center space-x-4">
-									<Button
-										variant="ghost"
-										size="sm"
-										onClick={e => {
-											e.stopPropagation();
-											toggleCard(artifact.document_id);
-										}}
-									>
-										{expandedCards[artifact.document_id] ? (
-											<ChevronUp className="h-4 w-4" />
-										) : (
-											<ChevronDown className="h-4 w-4" />
-										)}
-									</Button>
 									<div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
 										<Bot className="size-6 text-brand-green" />
 									</div>
@@ -161,7 +113,6 @@ export function AvailableWorkersTable({
 											Created date: 01 Nov 2024
 										</CardDescription>
 									</div>
-									{expandedCards[artifact.document_id] && (
 										<div className="flex items-center gap-2">
 											<EditWorkerButton
 												documentId={
@@ -177,112 +128,10 @@ export function AvailableWorkersTable({
 												onSuccess={handleDeleteSuccess}
 											/>
 										</div>
-									)}
 								</div>
 								<WorkerChatButton
 									artifactId={artifact.document_id}
 								/>
-							</CardHeader>
-							<CardContent>
-								{artifact.description && (
-									<p className="mt-4 text-sm text-muted-foreground">
-										{artifact.description}
-									</p>
-								)}
-
-								{expandedCards[artifact.document_id] && (
-									<div className="mt-4">
-										<Table>
-											<TableHeader className="bg-muted/50">
-												<TableRow>
-													<TableHead className="font-semibold">
-														Name
-													</TableHead>
-													<TableHead className="font-semibold">
-														File type
-													</TableHead>
-													<TableHead className="font-semibold">
-														Status
-													</TableHead>
-													<TableHead className="font-semibold">
-														Modified date
-													</TableHead>
-												</TableRow>
-											</TableHeader>
-											<TableBody>
-												{artifact.captured_documents?.map(
-													doc => (
-														<TableRow
-															key={
-																doc.captured_document_id
-															}
-														>
-															<TableCell>
-																{doc.captured_files?.map(
-																	file => (
-																		<div
-																			key={
-																				file.file_url
-																			}
-																			className="text-sm"
-																		>
-																			{file.file_name
-																				.split(
-																					'.'
-																				)
-																				.slice(
-																					0,
-																					-1
-																				)
-																				.join(
-																					'.'
-																				)}
-																		</div>
-																	)
-																)}
-															</TableCell>
-															<TableCell>
-																{doc.captured_files?.map(
-																	file => {
-																		const extension =
-																			file.file_name
-																				.split(
-																					'.'
-																				)
-																				.pop()
-																				?.toLowerCase() ||
-																			'';
-																		return (
-																			<div
-																				key={
-																					file.file_url
-																				}
-																				className="text-sm"
-																			>
-																				{
-																					extension
-																				}
-																			</div>
-																		);
-																	}
-																)}
-															</TableCell>
-															<TableCell>
-																{doc.query_ready
-																	? 'Ready'
-																	: 'Processing'}
-															</TableCell>
-															<TableCell className="flex items-center gap-2">
-																<Calendar className="h-4 w-4" />
-																01 Nov 2024
-															</TableCell>
-														</TableRow>
-													)
-												)}
-											</TableBody>
-										</Table>
-									</div>
-								)}
 							</CardContent>
 						</Card>
 					))}

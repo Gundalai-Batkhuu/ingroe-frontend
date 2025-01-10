@@ -3,6 +3,12 @@ import { DeleteWorker } from '@/lib/types';
 import { documentService } from '@/services/document-service';
 import { Button } from '@/components/ui/button';
 import { Trash } from 'lucide-react';
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface DeleteWorkerButtonProps extends DeleteWorker {
 	onSuccess?: () => void;
@@ -34,9 +40,18 @@ export const DeleteWorkerButton = ({
 	};
 
 	return (
-		<Button variant="destructive" size="smIcon" onClick={handleDelete}>
-			<Trash className="size-4" />
-		</Button>
+		<TooltipProvider>
+			<Tooltip>
+				<TooltipTrigger asChild>
+					<Button variant="destructive" size="smIcon" onClick={handleDelete}>
+						<Trash className="size-4" />
+					</Button>
+				</TooltipTrigger>
+				<TooltipContent className="bg-background text-foreground border">
+					<p>Delete Assistant</p>
+				</TooltipContent>
+			</Tooltip>
+		</TooltipProvider>
 	);
 };
 
