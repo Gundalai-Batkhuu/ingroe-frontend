@@ -35,20 +35,15 @@ export function WorkerCreationSuccessDialog({
 				</div>
 				<DialogHeader>
 					<DialogTitle className="text-center text-2xl font-semibold">
-						New worker created!
+						New assistant created!
 					</DialogTitle>
 				</DialogHeader>
-				<div className="flex flex-col items-center space-y-4">
-					<p className="text-center text-muted-foreground">
-						New worker has been successfully created!
-					</p>
-					<Button
-						className="text-md w-full bg-slate-900 text-white hover:bg-slate-800"
-						onClick={() => router.push('/workers')}
-					>
-						Go to Workers hub
-					</Button>
-				</div>
+				<Button
+					className="text-md w-full bg-slate-900 text-white hover:bg-slate-800"
+					onClick={() => router.push('/manage-assistants')}
+				>
+					Go to Assistants hub
+				</Button>
 			</DialogContent>
 		</Dialog>
 	);

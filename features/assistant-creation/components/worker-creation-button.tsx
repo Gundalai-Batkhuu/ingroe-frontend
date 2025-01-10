@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { documentService } from '@/services/document-service';
-import { useResourceItemsStore } from '@/features/worker-creation/stores/useResourceItemsStore';
+import { useResourceItemsStore } from '@/features/assistant-creation/stores/useResourceItemsStore';
 import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { Toast, ToastAction } from '@/components/ui/toast';

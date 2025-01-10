@@ -20,10 +20,10 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Artefact } from '@/lib/types';
-import { UpdateDocumentInfo } from '@/features/worker-creation/components/update-worker-info';
-import { ArtifactEditMode } from '@/features/worker-creation/components/edit-worker-mode';
-import { LinkDocumentUploader } from '@/features/worker-creation/components/link-document-uploader';
-import { FileDocumentUploader } from '@/features/worker-creation/components/file-document-uploader';
+import { UpdateDocumentInfo } from '@/features/assistant-creation/components/update-worker-info';
+import { ArtifactEditMode } from '@/features/assistant-creation/components/edit-worker-mode';
+import { LinkDocumentUploader } from '@/features/assistant-creation/components/link-document-uploader';
+import { FileDocumentUploader } from '@/features/assistant-creation/components/file-document-uploader';
 import { Info, X } from 'lucide-react';
 
 interface EditArtifactDialogProps {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { SearchResult } from '@/lib/types';
 import { truncateText } from '@/lib/utils';
-import { useResourceItemsStore } from '@/features/worker-creation/stores/useResourceItemsStore';
+import { useResourceItemsStore } from '@/features/assistant-creation/stores/useResourceItemsStore';
 
 interface SearchResultsListProps {
 	searchResults: SearchResult[];

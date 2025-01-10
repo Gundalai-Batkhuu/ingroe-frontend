@@ -65,7 +65,7 @@ export default function AssistantDetails({
 
 
 	return (
-		<div className="h-full flex flex-col space-y-6 rounded-lg bg-background px-5 py-4">
+		<div className="h-full flex flex-col space-y-4 rounded-lg bg-background p-4">
 			{/* Header Section */}
 			<div className="flex flex-col px-4 pt-2 h-20 gap-2 shrink-0">
 				<h1 className="text-2xl font-semibold">Assistant Hub</h1>

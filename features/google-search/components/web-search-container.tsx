@@ -8,7 +8,7 @@ import { CountryShortName } from '@/lib/types';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
-import { useResourceItemsStore } from '@/features/worker-creation/stores/useResourceItemsStore';
+import { useResourceItemsStore } from '@/features/assistant-creation/stores/useResourceItemsStore';
 
 interface WebSearchContainerProps {
 	userId: string;

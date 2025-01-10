@@ -52,7 +52,7 @@ export default function WorkersPageContent({
 
 					<Button
 						className="gap-2"
-						onClick={() => router.push('/create-worker')}
+						onClick={() => router.push('/create-assistant')}
 					>
 						<Plus className="h-4 w-4" />
 						Add New

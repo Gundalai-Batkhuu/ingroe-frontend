@@ -1,4 +1,4 @@
-import EditArtifactPageContent from '@/features/worker-creation/components/edit-artifact-page-content';
+import EditArtifactPageContent from '@/features/assistant-creation/components/edit-artifact-page-content';
 import React from 'react';
 import { checkAuth } from '@/features/authentication/auth-utils';
 

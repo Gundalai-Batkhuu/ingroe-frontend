@@ -19,10 +19,10 @@ import {
 	Bot
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { DeleteWorkerButton } from '@/features/worker-creation/components/delete-worker-button';
+import { DeleteWorkerButton } from '@/features/assistant-creation/components/delete-worker-button';
 import { WorkerChatButton } from '@/features/chat/components/chat-with-worker-button';
 import { userArtifactsStore } from '@/stores/userArtifactsStore';
-import { EditWorkerButton } from '@/features/worker-creation/components/edit-worker-button';
+import { EditWorkerButton } from '@/features/assistant-creation/components/edit-worker-button';
 import {
 	Table,
 	TableBody,

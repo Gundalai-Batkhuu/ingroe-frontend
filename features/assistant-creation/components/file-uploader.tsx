@@ -96,7 +96,7 @@ export function FileUploader({ onFileUpload }: FileUploaderProps) {
 	};
 
 	return (
-		<Card className="h-full w-full shadow-none">
+		<Card className="h-full w-full border-0 shadow-none">
 			<CardHeader>
 				<CardTitle>Upload knowledge files</CardTitle>
 			</CardHeader>
@@ -154,7 +154,7 @@ export function FileUploader({ onFileUpload }: FileUploaderProps) {
 					</p>
 				</div>
 				{(unsupportedCount > 0 || supportedCount > 0) && (
-					<Alert variant="default" className="mt-4">
+					<Alert variant="default" className="mt-4 border-0">
 						<AlertDescription>
 							{unsupportedCount > 0 &&
 								`${unsupportedCount} unsupported file${unsupportedCount > 1 ? 's were' : ' was'} ignored. `}
