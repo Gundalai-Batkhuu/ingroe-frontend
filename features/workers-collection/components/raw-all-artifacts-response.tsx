@@ -33,10 +33,6 @@ export function RawAllArtifactsResponse({ userId }: AllArtifactsTableProps) {
 		return <div>Error: {error}</div>;
 	}
 
-	if (!artifacts) {
-		return <div>Loading...</div>;
-	}
-
 	return (
 		<div>
 			<h2>Raw Artifacts Data:</h2>

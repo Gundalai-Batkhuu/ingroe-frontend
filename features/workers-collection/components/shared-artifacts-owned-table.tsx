@@ -49,7 +49,6 @@ export function SharedArtifactsOwnedTable({
 		fetchUserArtifacts(userId);
 	}, [fetchUserArtifacts, userId]);
 
-	if (isLoading) return <div>Loading shared artifacts...</div>;
 	if (error) return <div>Error: {error}</div>;
 	if (!artifacts || !artifacts.shared_documents_owned)
 		return <div>No shared artifacts found</div>;
@@ -80,14 +79,14 @@ export function SharedArtifactsOwnedTable({
 	};
 
 	return (
-		<Card>
+		<Card className='flex flex-col h-full border-none'>
 			<CardHeader>
 				<CardTitle>Shared Artifacts</CardTitle>
 				<CardDescription>
 					Manage your shared knowledge bases and their access details.
 				</CardDescription>
 			</CardHeader>
-			<CardContent>
+			<CardContent className='flex-1'>
 				<Table>
 					<TableHeader>
 						<TableRow>
@@ -157,7 +156,7 @@ export function SharedArtifactsOwnedTable({
 					</TableBody>
 				</Table>
 			</CardContent>
-			<CardFooter>
+			<CardFooter className='mt-auto'>
 				<form className="flex w-full items-center justify-between">
 					<div className="text-xs text-muted-foreground">
 						Showing{' '}

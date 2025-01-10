@@ -10,8 +10,6 @@ export async function checkAuth(redirectTo?: string) {
     redirect(redirectTo || '/login');
   }
   
-  console.log('Session user:', session.user);
-  
   if (!session.user.id) {
     console.log('Warning: User ID is undefined in session');
   }

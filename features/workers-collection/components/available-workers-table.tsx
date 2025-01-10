@@ -19,7 +19,6 @@ import {
 	Bot
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Artefact } from '@/lib/types';
 import { DeleteWorkerButton } from '@/features/worker-creation/components/delete-worker-button';
 import { WorkerChatButton } from '@/features/chat/components/chat-with-worker-button';
 import { userArtifactsStore } from '@/stores/userArtifactsStore';
@@ -79,7 +78,6 @@ export function AvailableWorkersTable({
 		router.push(`/manage-assistants/details/${documentId}`);
 	};
 
-	if (isLoading) return <div>Loading...</div>;
 	if (error) return <div>Error: {error}</div>;
 	if (!artifacts) return <div>No artifacts found</div>;
 
@@ -92,7 +90,7 @@ export function AvailableWorkersTable({
 
 	if (totalArtifacts === 0) {
 		return (
-			<Card className="flex h-full flex-col items-center justify-center p-8">
+			<Card className="flex h-full flex-col items-center justify-center p-8 border-none">
 				<Image
 					src="/no_workers.png"
 					alt="No assistants found"
@@ -125,7 +123,7 @@ export function AvailableWorkersTable({
 	};
 
 	return (
-		<Card className="flex h-full flex-col">
+		<Card className="flex h-full flex-col border-none">
 			<CardHeader>
 				<CardTitle>Assistants available</CardTitle>
 			</CardHeader>

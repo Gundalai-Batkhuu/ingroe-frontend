@@ -49,7 +49,6 @@ export function SharedArtifactsLoanedTable({
 		fetchUserArtifacts(userId);
 	}, [fetchUserArtifacts, userId]);
 
-	if (isLoading) return <div>Loading shared artifacts...</div>;
 	if (error) return <div>Error: {error}</div>;
 	if (!artifacts || !artifacts.shared_artifacts_loaned)
 		return <div>No shared artifacts found</div>;
@@ -77,14 +76,14 @@ export function SharedArtifactsLoanedTable({
 	};
 
 	return (
-		<Card>
+		<Card className='flex flex-col h-full border-none'> 
 			<CardHeader>
 				<CardTitle>Shared Artifacts (Loaned)</CardTitle>
 				<CardDescription>
 					View the knowledge bases shared with you by other users.
 				</CardDescription>
 			</CardHeader>
-			<CardContent>
+			<CardContent className='flex-1'>
 				<Table>
 					<TableHeader>
 						<TableRow>
@@ -139,7 +138,7 @@ export function SharedArtifactsLoanedTable({
 					</TableBody>
 				</Table>
 			</CardContent>
-			<CardFooter>
+			<CardFooter className='mt-auto'>
 				<form className="flex w-full items-center justify-between">
 					<div className="text-xs text-muted-foreground">
 						Showing{' '}
