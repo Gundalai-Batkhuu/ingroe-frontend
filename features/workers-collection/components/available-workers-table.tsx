@@ -126,6 +126,7 @@ export function AvailableWorkersTable({
 												}
 												user_id={userId}
 												onSuccess={handleDeleteSuccess}
+												documentName={artifact.document_name}
 											/>
 										</div>
 								</div>

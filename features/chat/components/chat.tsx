@@ -85,7 +85,7 @@ export function Chat({ id, className, session, missingKeys }: ChatProps) {
 				</div>
 			</div>
 
-			{/* Message Area - always at top, takes remaining space */}
+			{/* Message Area*/}
 			{messages.length ? (
 				<ScrollArea
 					className="group w-full flex-1 overflow-auto"
