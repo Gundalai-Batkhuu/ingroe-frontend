@@ -27,6 +27,12 @@ async function submitUserMessage(
 		);
 	}
 
+	// Make sure we're updating the state correctly
+	aiState.update(prev => ({
+		...prev,
+		isLoading: true
+	}));
+
 	try {
 		// Add the user message to the state
 		aiState.update({
@@ -75,10 +81,11 @@ async function submitUserMessage(
 			chunkid: data.response.chunkid
 		};
 
-		aiState.update({
-			...aiState.get(),
+		aiState.update(prev => ({
+			...prev,
+			isLoading: false,
 			messages: [
-				...aiState.get().messages,
+				...prev.messages,
 				{
 					id: nanoid(),
 					role: 'assistant',
@@ -87,7 +94,7 @@ async function submitUserMessage(
 					chunkid: assistantMessage.chunkid
 				}
 			]
-		});
+		}));
 
 		// Return the UI representation of the assistant's message
 		return {
@@ -121,6 +128,12 @@ async function submitUserMessage(
 			]
 		});
 
+		// Set loading to false on error
+		aiState.update({
+			...aiState.get(),
+			isLoading: false
+		});
+
 		// Return an error message to be displayed in the UI
 		return {
 			id: nanoid(),
@@ -136,6 +149,7 @@ async function submitUserMessage(
 export type AIState = {
 	chatId: string;
 	messages: Message[];
+	isLoading: boolean;
 };
 
 export type UIState = {
@@ -148,7 +162,11 @@ export const AI = createAI<AIState, UIState>({
 		submitUserMessage
 	},
 	initialUIState: [],
-	initialAIState: { chatId: nanoid(), messages: [] },
+	initialAIState: { 
+		chatId: nanoid(), 
+		messages: [],
+		isLoading: false 
+	},
 	onGetUIState: async () => {
 		'use server';
 

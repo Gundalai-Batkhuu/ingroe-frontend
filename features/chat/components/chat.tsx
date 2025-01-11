@@ -94,8 +94,6 @@ export function Chat({ id, className, session, missingKeys }: ChatProps) {
 					>
 						<ChatList
 							messages={messages}
-							isShared={false}
-							session={session}
 						/>
 					</div>
 				</ScrollArea>

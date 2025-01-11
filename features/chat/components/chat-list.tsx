@@ -1,30 +1,33 @@
+'use client';
+
 import { UIState } from '@/features/chat/actions/ai-actions';
-import { Session } from '@/lib/types';
-import Link from 'next/link';
-import { ExclamationTriangleIcon } from '@radix-ui/react-icons';
 import { useScrollAnchor } from '@/hooks/use-scroll-anchor';
+import { useAIState } from 'ai/rsc';
+import { LoadingDots } from '../../../components/ui/loading-dots';
 
 export interface ChatList {
 	messages: UIState;
-	session?: Session;
-	isShared: boolean;
 }
 
-export function ChatList({ messages, session, isShared }: ChatList) {
+export function ChatList({ messages }: ChatList) {
 	const { messagesRef, scrollRef, visibilityRef } = useScrollAnchor();
-
-	if (!messages.length) {
-		return null;
-	}
+	const [aiState] = useAIState();
 
 	return (
 		<div 
 			ref={scrollRef} 
 			className="relative mx-auto max-w-2xl px-4 overflow-y-auto"
-		>
-			{messages.map((message, index) => (
-				<div key={message.id}>{message.display}</div>
-			))}
+			>
+			<div className="space-y-4 pb-4">
+				{messages.map((message, index) => (
+					<div key={message.id}>
+						{message.display}
+					</div>
+				))}
+				
+				{aiState.isLoading && <LoadingDots />}
+				
+			</div>
 			
 			<div ref={messagesRef} />
 			<div ref={visibilityRef} className="h-px w-full" />

@@ -1,7 +1,6 @@
 'use client';
 
 import * as React from 'react';
-import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/hooks/use-toast';
 import { ServerActionResult } from '@/lib/types';
 import { Button, buttonVariants } from '@/components/ui/button';
@@ -31,7 +30,6 @@ export function ClearHistory({
 	const [open, setOpen] = React.useState(false);
 	const [isPending, startTransition] = React.useTransition();
 	const { toast } = useToast();
-	const router = useRouter();
 
 	const handleClearHistory = async (
 		event: React.MouseEvent<HTMLButtonElement>

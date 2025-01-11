@@ -84,7 +84,7 @@ export async function clearChats() {
 		-1
 	);
 	if (!chats.length) {
-		return redirect('/');
+		return redirect('/chat');
 	}
 	const pipeline = kv.pipeline();
 
@@ -95,8 +95,8 @@ export async function clearChats() {
 
 	await pipeline.exec();
 
-	revalidatePath('/');
-	return redirect('/');
+	revalidatePath('/chat');
+	return redirect('/chat');
 }
 
 export async function getSharedChat(id: string) {

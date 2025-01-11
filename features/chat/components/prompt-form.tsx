@@ -2,8 +2,8 @@
 
 import * as React from 'react';
 import Textarea from 'react-textarea-autosize';
-import { useActions, useUIState } from 'ai/rsc';
-import { type AI } from '@/features/chat/actions/ai-actions';
+import { useActions, useUIState, useAIState } from 'ai/rsc';
+import { type AI, type AIState } from '@/features/chat/actions/ai-actions';
 import { Button } from '@/components/ui/button';
 import { IconArrowElbow, IconPlus } from '@/components/ui/icons';
 import {
@@ -13,21 +13,21 @@ import {
 } from '@/components/ui/tooltip';
 import { useEnterSubmit } from '@/hooks/use-enter-submit';
 import { useRouter } from 'next/navigation';
-import VoiceTranscription from '@/features/accessibility/components/voice-transcription';
 
 export function PromptForm({
 	input,
 	setInput,
-	onSubmit // Add this prop
+	onSubmit
 }: {
 	input: string;
 	setInput: (value: string) => void;
-	onSubmit: (value: string) => Promise<void>; // Add this prop type
+	onSubmit: (value: string) => Promise<void>;
 }) {
 	const router = useRouter();
 	const { formRef, onKeyDown } = useEnterSubmit();
 	const inputRef = React.useRef<HTMLTextAreaElement>(null);
 	const [_, setMessages] = useUIState<typeof AI>();
+	const [aiState, setAIState] = useAIState();
 
 	React.useEffect(() => {
 		if (inputRef.current) {
@@ -38,7 +38,6 @@ export function PromptForm({
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 
-		// Blur focus on mobile
 		if (window.innerWidth < 600) {
 			inputRef.current?.blur();
 		}
@@ -47,8 +46,19 @@ export function PromptForm({
 		setInput('');
 		if (!value) return;
 
-		// Call the onSubmit prop instead of directly handling the submission here
-		await onSubmit(value);
+		setAIState((prev: AIState) => ({
+			...prev,
+			isLoading: true
+		}));
+
+		try {
+			await onSubmit(value);
+		} finally {
+			setAIState((prev: AIState) => ({
+				...prev,
+				isLoading: false
+			}));
+		}
 	};
 
 	return (

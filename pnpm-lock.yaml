@@ -6193,7 +6193,7 @@ snapshots:
 
   '@vue/compiler-core@3.4.36':
     dependencies:
-      '@babel/parser': 7.26.2
+      '@babel/parser': 7.26.3
       '@vue/shared': 3.4.36
       entities: 5.0.0
       estree-walker: 2.0.2
@@ -6206,7 +6206,7 @@ snapshots:
 
   '@vue/compiler-sfc@3.4.36':
     dependencies:
-      '@babel/parser': 7.26.2
+      '@babel/parser': 7.26.3
       '@vue/compiler-core': 3.4.36
       '@vue/compiler-dom': 3.4.36
       '@vue/compiler-ssr': 3.4.36
