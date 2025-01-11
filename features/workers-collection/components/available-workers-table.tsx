@@ -45,7 +45,8 @@ export function AvailableWorkersTable({
 
 
 	if (error) return <div>Error: {error}</div>;
-	if (!artifacts) return <div>No artifacts found</div>;
+	
+	if (!artifacts) return <div className="text-muted-foreground">No assistants found</div>;
 
 	const filteredArtifacts = artifacts.artefact_tree.filter(artifact =>
 		artifact.document_name.toLowerCase().includes(search.toLowerCase())

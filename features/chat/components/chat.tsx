@@ -67,10 +67,7 @@ export function Chat({ id, className, session, missingKeys }: ChatProps) {
 
 	const {
 		messagesRef,
-		scrollRef,
-		visibilityRef,
-		isAtBottom,
-		scrollToBottom
+		scrollRef
 	} = useScrollAnchor();
 
 	return (

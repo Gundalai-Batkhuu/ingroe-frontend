@@ -67,15 +67,24 @@ export default function AssistantDetails({
 
 	return (
 		<div className="h-full flex flex-col space-y-4 rounded-lg bg-background p-4">
-			{/* Header Section */}
-			<div className="flex flex-col px-4 pt-2 h-20 gap-2 shrink-0">
-				<h1 className="text-2xl font-semibold">Assistant Hub</h1>
-				<p className="text-sm text-muted-foreground">
-					Manage assistants {'>'} Assistant Details 
-				</p>
+			{/* Header Section - Updated to match workers-page-content */}
+			<div className="h-14 flex items-center justify-between">
+				<div>
+					<h1 className="text-2xl font-semibold">Assistant Hub</h1>
+					<p className="text-sm text-muted-foreground">
+						Manage assistants {'>'} Assistant Details
+					</p>
+				</div>
+
+				<div className="flex items-center gap-2">
+					<Button variant="outline" size="lg" onClick={() => setIsEditDialogOpen(true)}>Edit</Button>
+					<EditDocumentDialog documentId={assistantId} userId={userId} isOpen={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}/>
+					<MoreVertical className="size-6 text-muted-foreground" />
+				</div>
 			</div>
 
-			<div className="flex flex-col gap-4 border p-4 rounded-lg flex-1 min-h-0">
+			{/* Content Section */}
+			<div className="flex-1 rounded-lg border p-4">
 				<div className="flex items-center justify-between">
 					<div className="text-lg font-semibold"> Details </div>
 					<div className="flex items-center gap-2">
@@ -85,12 +94,23 @@ export default function AssistantDetails({
 					</div>
 				</div>
 				<div className="flex flex-col gap-2">
-					<p>Title: {assistantDetails?.document_name}</p>
-					<p>Description: {assistantDetails?.description}</p>
-					<p>Instructions: {assistantDetails?.instruction}</p>
+					<div className="flex items-center gap-2">
+						<span className="font-medium font-semibold">Title:</span>
+						<span>{assistantDetails?.document_name}</span>
+					</div>
+					<div className="flex items-center gap-2">
+						<span className="font-medium font-semibold">Description:</span>
+						<span>{assistantDetails?.description}</span>
+					</div>
+					<div className="flex items-center gap-2">
+						<span className="font-medium font-semibold">Instructions:</span>
+						<span>{assistantDetails?.instruction}</span>
+					</div>
 				</div>
 			
-			<div className="text-lg font-semibold"> Files </div>
+			<div className="flex items-center justify-between border-t py-4 mt-4">
+				<div className="text-lg font-semibold">Files</div>
+			</div>
 			
 			<Table>
 				<TableCaption>
