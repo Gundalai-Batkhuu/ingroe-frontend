@@ -34,7 +34,7 @@ export default function RootLayout({
 			className={`${manrope.variable}`}
 			suppressHydrationWarning
 		>
-			<body>
+			<body className="font-manrope">
 				<Providers
 					attribute="class"
 					defaultTheme="light"

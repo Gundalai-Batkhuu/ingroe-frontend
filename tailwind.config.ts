@@ -25,7 +25,7 @@ module.exports = {
   			sans: ['var(--font-geist-sans)'],
   			mono: ['var(--font-geist-mono)'],
   			nunito: ['Nunito', 'sans-serif'],
-			manrope: ['Manrope', 'sans-serif']
+			manrope: ['var(--font-manrope)', 'sans-serif']
   		},
   		colors: {
   			border: 'hsl(var(--border))',
