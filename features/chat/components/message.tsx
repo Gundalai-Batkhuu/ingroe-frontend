@@ -1,6 +1,6 @@
 'use client';
 
-import { IconAI, IconUser } from '@/components/ui/icons';
+import { IconAI, IconUser, Logo } from '@/components/ui/icons';
 import { cn } from '@/lib/utils';
 import { spinner } from '@/components/ui/icons';
 import { CodeBlock } from '@/components/ui/codeblock';
@@ -15,7 +15,7 @@ import { Context } from '@/lib/types';
 export function UserMessage({ children }: { children: React.ReactNode }) {
 	return (
 		<div className="flex justify-end space-y-2 overflow-hidden">
-			<div className="rounded-md bg-green-100 p-4">{children}</div>
+			<div className="rounded-md bg-green-100 p-2">{children}</div>
 		</div>
 	);
 }
@@ -37,7 +37,7 @@ export function BotMessage({ content, context, chunkid }: BotMessageProps) {
 			)}
 		>
 			<div className="flex size-[24px] shrink-0 select-none items-center justify-center rounded-md border bg-primary text-primary-foreground shadow-sm">
-				<IconAI />
+				<Logo />
 			</div>
 			<div className="ml-4 flex-1 space-y-2 overflow-hidden px-1">
 				<MemoizedReactMarkdown

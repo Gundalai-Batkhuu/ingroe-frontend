@@ -38,7 +38,7 @@ export default function FirstSectionContent() {
 				</Link>
 
 				<h1 className="text-title mt-8 text-wrap text-4xl font-semibold md:text-5xl xl:text-5xl xl:[line-height:1.125]">
-					Go One More <br className="hidden sm:block" /> My man
+					AI tools for <br className="hidden sm:block" /> your business
 				</h1>
 				<p className="text-body mx-auto mt-8 hidden max-w-2xl text-wrap text-lg sm:block">
 					Tailwindcss highly customizable components for building

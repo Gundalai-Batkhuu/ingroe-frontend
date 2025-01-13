@@ -69,7 +69,7 @@ export function Chat({ id, className, session, missingKeys }: ChatProps) {
 
 	return (
 		<div className="flex h-full w-full flex-col rounded-lg bg-background">
-			<div className="mx-auto flex h-20 w-full items-center justify-center border-b border-gray-200">
+			<div className="mx-auto flex h-14 w-full items-center justify-center border-b border-gray-200">
 				<div className="mx-10 flex w-full flex-row items-center justify-center">
 					<div className="ml-4 flex-1 text-lg font-bold">
 						{selectedDocument?.document_name}

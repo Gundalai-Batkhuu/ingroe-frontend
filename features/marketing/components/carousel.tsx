@@ -12,7 +12,7 @@ import Autoplay from 'embla-carousel-autoplay';
 import { Card } from '@/components/ui/card';
 
 export function CarouselComponent() {
-	const plugin = Autoplay({ delay: 100000, stopOnInteraction: false });
+	const plugin = Autoplay({ delay: 3000, stopOnInteraction: false });
 
 	return (
 		<div className="relative -mx-6 mt-8 max-w-xl sm:mx-auto sm:mt-12">
