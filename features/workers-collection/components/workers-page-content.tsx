@@ -21,12 +21,11 @@ export default function WorkersPageContent({
 	searchParams,
 	userId
 }: WorkersPageContentProps) {
-	
 	const router = useRouter();
 	return (
-		<div className="h-full flex flex-col space-y-4 rounded-lg bg-background p-4">
+		<div className="flex h-full flex-col space-y-4 rounded-lg bg-background p-4">
 			{/* Header Section */}
-			<div className="h-14 flex items-center justify-between">
+			<div className="flex h-14 items-center justify-between">
 				<div>
 					<h1 className="text-2xl font-semibold">Assistant Hub</h1>
 					<p className="text-sm text-muted-foreground">
@@ -62,7 +61,10 @@ export default function WorkersPageContent({
 
 			{/* Content Section */}
 			<div className="flex-1 rounded-lg border p-4">
-				<ManageAssistantsTabs searchParams={searchParams} userId={userId} />
+				<ManageAssistantsTabs
+					searchParams={searchParams}
+					userId={userId}
+				/>
 			</div>
 		</div>
 	);

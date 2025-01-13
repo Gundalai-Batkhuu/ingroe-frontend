@@ -1,4 +1,3 @@
+import { handlers } from '@/features/authentication/auth';
 
-import { handlers } from '@/features/authentication/auth'
-
-export const { GET, POST } = handlers
+export const { GET, POST } = handlers;

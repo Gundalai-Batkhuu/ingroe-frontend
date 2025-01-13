@@ -28,10 +28,9 @@ export default function AssistantCreator({ userId }: AssistantCreatorProps) {
 	const isAssistantCreated = title && description;
 
 	return (
-		<div className="h-full flex flex-col space-y-4 rounded-lg bg-background p-4">
-			
+		<div className="flex h-full flex-col space-y-4 rounded-lg bg-background p-4">
 			{/* Header Section */}
-			<div className="h-14 flex items-center justify-between">
+			<div className="flex h-14 items-center justify-between">
 				<div>
 					<h1 className="text-2xl font-semibold">Assistant Hub</h1>
 					<p className="text-sm text-muted-foreground">
@@ -42,29 +41,28 @@ export default function AssistantCreator({ userId }: AssistantCreatorProps) {
 
 			{/* Content Section */}
 			<div className="flex-1 rounded-lg border p-4">
-				
-			{isAssistantCreated ? (
-				<div className="flex h-full flex-1 gap-6">
-					<FileUploadCard
-						userId={userId}
-						activeTab={activeTab}
-						setActiveTab={setActiveTab}
-						onFileUpload={handleFileUpload}
+				{isAssistantCreated ? (
+					<div className="flex h-full flex-1 gap-6">
+						<FileUploadCard
+							userId={userId}
+							activeTab={activeTab}
+							setActiveTab={setActiveTab}
+							onFileUpload={handleFileUpload}
+						/>
+						<UploadedFilesCard
+							userId={userId}
+							title={title}
+							description={description}
+						/>
+					</div>
+				) : (
+					<NewAssistantCard
+						setDescription={setDescription}
+						setTitle={setTitle}
+						setInstructions={setInstructions}
 					/>
-					<UploadedFilesCard 
-						userId={userId}
-						title={title}
-						description={description}
-					/>
-				</div>
-			) : (
-				<NewAssistantCard
-					setDescription={setDescription}
-					setTitle={setTitle}
-					setInstructions={setInstructions}
-				/>
-			)}
-		</div>
+				)}
+			</div>
 		</div>
 	);
 }

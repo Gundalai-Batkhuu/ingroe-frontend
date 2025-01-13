@@ -162,10 +162,10 @@ export const AI = createAI<AIState, UIState>({
 		submitUserMessage
 	},
 	initialUIState: [],
-	initialAIState: { 
-		chatId: nanoid(), 
+	initialAIState: {
+		chatId: nanoid(),
 		messages: [],
-		isLoading: false 
+		isLoading: false
 	},
 	onGetUIState: async () => {
 		'use server';

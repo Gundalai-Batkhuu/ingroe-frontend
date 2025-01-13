@@ -7,8 +7,8 @@ import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
-	TooltipTrigger,
-} from "@/components/ui/tooltip";
+	TooltipTrigger
+} from '@/components/ui/tooltip';
 import {
 	AlertDialog,
 	AlertDialogContent,
@@ -16,9 +16,9 @@ import {
 	AlertDialogFooter,
 	AlertDialogHeader,
 	AlertDialogTitle,
-	AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Input } from "@/components/ui/input";
+	AlertDialogTrigger
+} from '@/components/ui/alert-dialog';
+import { Input } from '@/components/ui/input';
 
 interface DeleteWorkerButtonProps extends DeleteWorker {
 	onSuccess?: () => void;
@@ -32,15 +32,15 @@ export const DeleteWorkerButton = ({
 	documentName
 }: DeleteWorkerButtonProps) => {
 	const [isOpen, setIsOpen] = React.useState(false);
-	const [confirmationText, setConfirmationText] = React.useState("");
-	
+	const [confirmationText, setConfirmationText] = React.useState('');
+
 	const handleDelete = async () => {
 		try {
 			const worker = {
 				user_id,
 				document_id
 			};
-			
+
 			await documentService.deleteDocument(worker);
 			setIsOpen(false);
 			if (onSuccess) {
@@ -62,24 +62,33 @@ export const DeleteWorkerButton = ({
 							</Button>
 						</AlertDialogTrigger>
 					</TooltipTrigger>
-					
+
 					<AlertDialogContent>
 						<AlertDialogHeader>
-							<AlertDialogTitle>Delete Assistant</AlertDialogTitle>
+							<AlertDialogTitle>
+								Delete Assistant
+							</AlertDialogTitle>
 							<AlertDialogDescription>
-								This action cannot be undone. Please type <span className="font-semibold">{documentName}</span> to confirm.
+								This action cannot be undone. Please type{' '}
+								<span className="font-semibold">
+									{documentName}
+								</span>{' '}
+								to confirm.
 							</AlertDialogDescription>
 						</AlertDialogHeader>
-						
+
 						<Input
 							value={confirmationText}
-							onChange={(e) => setConfirmationText(e.target.value)}
+							onChange={e => setConfirmationText(e.target.value)}
 							placeholder="Type the document name to confirm"
 							className="my-4"
 						/>
-						
+
 						<AlertDialogFooter>
-							<Button variant="outline" onClick={() => setIsOpen(false)}>
+							<Button
+								variant="outline"
+								onClick={() => setIsOpen(false)}
+							>
 								Cancel
 							</Button>
 							<Button
@@ -92,8 +101,8 @@ export const DeleteWorkerButton = ({
 						</AlertDialogFooter>
 					</AlertDialogContent>
 				</AlertDialog>
-				
-				<TooltipContent className="bg-background text-foreground border">
+
+				<TooltipContent className="border bg-background text-foreground">
 					<p>Delete Assistant</p>
 				</TooltipContent>
 			</Tooltip>

@@ -16,27 +16,30 @@ export default function ManageAssistantsTabs({
 }: ManageAssistantsTabsProps) {
 	return (
 		<div className="h-full">
-			<Tabs defaultValue="available" className="w-full h-full flex flex-col">
-				<TabsList className="flex space-x-8 bg-transparent justify-start">
-					<TabsTrigger 
+			<Tabs
+				defaultValue="available"
+				className="flex h-full w-full flex-col"
+			>
+				<TabsList className="flex justify-start space-x-8 bg-transparent">
+					<TabsTrigger
 						value="available"
 						className="px-2 pb-1 text-sm font-medium data-[state=active]:border-b-2 data-[state=active]:border-brand-green data-[state=active]:text-brand-green data-[state=inactive]:text-muted-foreground"
 					>
 						Available
 					</TabsTrigger>
-					<TabsTrigger 
+					<TabsTrigger
 						value="shared-to-you"
 						className="px-2 pb-1 text-sm font-medium data-[state=active]:border-b-2 data-[state=active]:border-brand-green data-[state=active]:text-brand-green data-[state=inactive]:text-muted-foreground"
 					>
 						Shared to you
 					</TabsTrigger>
-					<TabsTrigger 
+					<TabsTrigger
 						value="shared-by-you"
 						className="px-2 pb-1 text-sm font-medium data-[state=active]:border-b-2 data-[state=active]:border-brand-green data-[state=active]:text-brand-green data-[state=inactive]:text-muted-foreground"
 					>
 						Shared by you
 					</TabsTrigger>
-					<TabsTrigger 
+					<TabsTrigger
 						value="raw"
 						className="px-2 pb-1 text-sm font-medium data-[state=active]:border-b-2 data-[state=active]:border-brand-green data-[state=active]:text-brand-green data-[state=inactive]:text-muted-foreground"
 					>
@@ -45,19 +48,28 @@ export default function ManageAssistantsTabs({
 				</TabsList>
 
 				<div className="flex-1">
-					<TabsContent className="h-full max-h-full" value="available">
+					<TabsContent
+						className="h-full max-h-full"
+						value="available"
+					>
 						<AvailableWorkersTable
 							searchParams={searchParams}
 							userId={userId}
 						/>
 					</TabsContent>
-					<TabsContent className="h-full max-h-full" value="shared-to-you">
+					<TabsContent
+						className="h-full max-h-full"
+						value="shared-to-you"
+					>
 						<SharedArtifactsLoanedTable
 							searchParams={searchParams}
 							userId={userId}
-							/>
+						/>
 					</TabsContent>
-					<TabsContent className="h-full max-h-full" value="shared-by-you">
+					<TabsContent
+						className="h-full max-h-full"
+						value="shared-by-you"
+					>
 						<SharedArtifactsOwnedTable
 							searchParams={searchParams}
 							userId={userId}

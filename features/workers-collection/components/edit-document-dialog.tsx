@@ -9,14 +9,14 @@ import {
 	DialogDescription,
 	DialogHeader,
 	DialogTitle,
-	DialogFooter,
-} from "@/components/ui/dialog";
+	DialogFooter
+} from '@/components/ui/dialog';
 import {
 	Card,
 	CardContent,
 	CardFooter,
 	CardHeader,
-	CardTitle,
+	CardTitle
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Artefact } from '@/lib/types';
@@ -40,8 +40,7 @@ export function EditDocumentDialog({
 	onOpenChange
 }: EditArtifactDialogProps) {
 	const router = useRouter();
-	const { artifacts, setSelectedArtifactId } =
-			userArtifactsStore();
+	const { artifacts, setSelectedArtifactId } = userArtifactsStore();
 	const [editedArtifact, setEditedArtifact] = useState<Artefact | null>(null);
 	const [showSideCard, setShowSideCard] = useState(false);
 	const [activeField, setActiveField] = useState<string | null>(null);
@@ -62,7 +61,6 @@ export function EditDocumentDialog({
 		}
 	}, [artifacts, documentId, setSelectedArtifactId, router]);
 
-
 	const handleCancel = () => {
 		if (artifacts) {
 			const originalArtifact = artifacts.artefact_tree.find(
@@ -72,18 +70,18 @@ export function EditDocumentDialog({
 		}
 		setShowSideCard(false);
 		setActiveField(null);
-    setErrors({});
+		setErrors({});
 		onOpenChange(false);
 	};
 
 	const validateForm = () => {
 		const newErrors: Record<string, string> = {};
-		
+
 		if (!editedArtifact?.document_name?.trim()) {
-			newErrors.document_name = "Title is required";
+			newErrors.document_name = 'Title is required';
 		}
 		if (!editedArtifact?.description?.trim()) {
-			newErrors.description = "Description is required";
+			newErrors.description = 'Description is required';
 		}
 
 		setErrors(newErrors);
@@ -92,7 +90,7 @@ export function EditDocumentDialog({
 
 	const handleSave = () => {
 		if (!editedArtifact) return;
-		
+
 		if (!validateForm()) {
 			return;
 		}
@@ -102,7 +100,6 @@ export function EditDocumentDialog({
 		setActiveField(null);
 		onOpenChange(false);
 	};
-
 
 	const handleInputChange = (
 		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -132,10 +129,15 @@ export function EditDocumentDialog({
 				<DialogHeader>
 					<div className="flex items-center justify-between">
 						<div>
-							<DialogTitle className="mb-2">Update details</DialogTitle>
+							<DialogTitle className="mb-2">
+								Update details
+							</DialogTitle>
 							<DialogDescription className="flex items-center gap-2">
-                <Info className="size-4"/>
-								<div>Update the title, description & instruction to the worker.</div>
+								<Info className="size-4" />
+								<div>
+									Update the title, description & instruction
+									to the worker.
+								</div>
 							</DialogDescription>
 						</div>
 					</div>
@@ -143,12 +145,12 @@ export function EditDocumentDialog({
 
 				<div className="flex">
 					<div className="w-full">
-							<ArtifactEditMode
-								editedArtifact={editedArtifact}
-								handleInputChange={handleInputChange}
-								handleAddItem={handleAddItem}
-								errors={errors}
-							/>
+						<ArtifactEditMode
+							editedArtifact={editedArtifact}
+							handleInputChange={handleInputChange}
+							handleAddItem={handleAddItem}
+							errors={errors}
+						/>
 					</div>
 
 					{showSideCard && (
@@ -181,34 +183,35 @@ export function EditDocumentDialog({
 									<div>Form fields for {activeField}</div>
 								)}
 							</CardContent>
-							{activeField !== 'files' && activeField !== 'web_links' && (
-								<CardFooter className="flex justify-end space-x-2">
-									<Button
-										variant="outline"
-										onClick={handleCloseSideCard}
-									>
-										Cancel
-									</Button>
-									<Button
-										onClick={() => {
-											/* Handle save logic */
-										}}
-									>
-										Add
-									</Button>
-								</CardFooter>
-							)}
+							{activeField !== 'files' &&
+								activeField !== 'web_links' && (
+									<CardFooter className="flex justify-end space-x-2">
+										<Button
+											variant="outline"
+											onClick={handleCloseSideCard}
+										>
+											Cancel
+										</Button>
+										<Button
+											onClick={() => {
+												/* Handle save logic */
+											}}
+										>
+											Add
+										</Button>
+									</CardFooter>
+								)}
 						</Card>
 					)}
 				</div>
 
 				<DialogFooter>
-						<>
-							<Button variant="outline" onClick={handleCancel}>
-								Cancel
-							</Button>
-							<Button onClick={handleSave}>Save</Button>
-						</>
+					<>
+						<Button variant="outline" onClick={handleCancel}>
+							Cancel
+						</Button>
+						<Button onClick={handleSave}>Save</Button>
+					</>
 				</DialogFooter>
 			</DialogContent>
 		</Dialog>

@@ -65,10 +65,7 @@ export function Chat({ id, className, session, missingKeys }: ChatProps) {
 		});
 	}, [missingKeys, toast]);
 
-	const {
-		messagesRef,
-		scrollRef
-	} = useScrollAnchor();
+	const { messagesRef, scrollRef } = useScrollAnchor();
 
 	return (
 		<div className="flex h-full w-full flex-col rounded-lg bg-background">
@@ -92,9 +89,7 @@ export function Chat({ id, className, session, missingKeys }: ChatProps) {
 						className={cn('pb-[200px] pt-4 md:pt-10', className)}
 						ref={messagesRef}
 					>
-						<ChatList
-							messages={messages}
-						/>
+						<ChatList messages={messages} />
 					</div>
 				</ScrollArea>
 			) : (

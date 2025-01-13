@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { Artefact } from '@/lib/types';
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 
 interface ArtifactEditModeProps {
 	editedArtifact: Artefact;
@@ -99,7 +99,12 @@ interface ArtifactListFieldProps {
 	error?: string;
 }
 
-function ArtifactListField({ label, value, onAdd, error }: ArtifactListFieldProps) {
+function ArtifactListField({
+	label,
+	value,
+	onAdd,
+	error
+}: ArtifactListFieldProps) {
 	return (
 		<div className="flex flex-col space-y-1.5 text-sm">
 			<div className="flex items-center justify-between">
@@ -147,7 +152,10 @@ function ArtifactEditField({
 					name={name}
 					value={value}
 					onChange={onChange}
-					className={cn(error && "border-destructive placeholder:text-destructive")}
+					className={cn(
+						error &&
+							'border-destructive placeholder:text-destructive'
+					)}
 					placeholder={error}
 				/>
 			) : (
@@ -156,7 +164,10 @@ function ArtifactEditField({
 					name={name}
 					value={value}
 					onChange={onChange}
-					className={cn(error && "border-destructive placeholder:text-destructive")}
+					className={cn(
+						error &&
+							'border-destructive placeholder:text-destructive'
+					)}
 					placeholder={error}
 				/>
 			)}

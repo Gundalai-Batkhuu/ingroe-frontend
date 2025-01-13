@@ -1,7 +1,7 @@
-import HeaderContainer from "@/layouts/header-container";
-import HeaderContent from "@/layouts/header-content";
-import MainArea from "@/layouts/main";
-import { DesktopNavbar } from "@/layouts/navbar";
+import HeaderContainer from '@/layouts/header-container';
+import HeaderContent from '@/layouts/header-content';
+import MainArea from '@/layouts/main';
+import { DesktopNavbar } from '@/layouts/navbar';
 
 export default function AuthenticatedLayout({
 	children

@@ -76,14 +76,14 @@ export function SharedArtifactsLoanedTable({
 	};
 
 	return (
-		<Card className='flex flex-col h-full border-none'> 
+		<Card className="flex h-full flex-col border-none">
 			<CardHeader>
 				<CardTitle>Shared Artifacts (Loaned)</CardTitle>
 				<CardDescription>
 					View the knowledge bases shared with you by other users.
 				</CardDescription>
 			</CardHeader>
-			<CardContent className='flex-1'>
+			<CardContent className="flex-1">
 				<Table>
 					<TableHeader>
 						<TableRow>
@@ -138,7 +138,7 @@ export function SharedArtifactsLoanedTable({
 					</TableBody>
 				</Table>
 			</CardContent>
-			<CardFooter className='mt-auto'>
+			<CardFooter className="mt-auto">
 				<form className="flex w-full items-center justify-between">
 					<div className="text-xs text-muted-foreground">
 						Showing{' '}

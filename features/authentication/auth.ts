@@ -3,7 +3,11 @@ import Credentials from 'next-auth/providers/credentials';
 import { authConfig } from './auth.config';
 import { z } from 'zod';
 import { getStringFromBuffer } from '@/lib/utils';
-import { createUser, getUser, handleGoogleSignInCallback } from '@/features/authentication/actions/user-actions';
+import {
+	createUser,
+	getUser,
+	handleGoogleSignInCallback
+} from '@/features/authentication/actions/user-actions';
 import Google from 'next-auth/providers/google';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
@@ -51,7 +55,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 					response_type: 'code'
 				}
 			}
-		}),
+		})
 	],
 	callbacks: {
 		async signIn({ user, account }) {

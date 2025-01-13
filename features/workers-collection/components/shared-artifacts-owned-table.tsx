@@ -79,14 +79,14 @@ export function SharedArtifactsOwnedTable({
 	};
 
 	return (
-		<Card className='flex flex-col h-full border-none'>
+		<Card className="flex h-full flex-col border-none">
 			<CardHeader>
 				<CardTitle>Shared Artifacts</CardTitle>
 				<CardDescription>
 					Manage your shared knowledge bases and their access details.
 				</CardDescription>
 			</CardHeader>
-			<CardContent className='flex-1'>
+			<CardContent className="flex-1">
 				<Table>
 					<TableHeader>
 						<TableRow>
@@ -156,7 +156,7 @@ export function SharedArtifactsOwnedTable({
 					</TableBody>
 				</Table>
 			</CardContent>
-			<CardFooter className='mt-auto'>
+			<CardFooter className="mt-auto">
 				<form className="flex w-full items-center justify-between">
 					<div className="text-xs text-muted-foreground">
 						Showing{' '}

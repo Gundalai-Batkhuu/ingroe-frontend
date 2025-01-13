@@ -94,14 +94,14 @@ export async function createUser(
 				password: hashedPassword,
 				salt,
 				isGoogleUser: true
-		  }
+			}
 		: {
 				id: crypto.randomUUID(),
 				email,
 				password: hashedPassword,
 				salt,
 				isGoogleUser: false
-		  };
+			};
 
 	try {
 		// Create user in Redis
@@ -171,7 +171,7 @@ export async function signup(
 ): Promise<Result | undefined> {
 	const email = formData.get('email') as string;
 	const password = formData.get('password') as string;
-	
+
 	const parsedCredentials = z
 		.object({
 			email: z.string().email(),
@@ -194,7 +194,13 @@ export async function signup(
 		const hashedPassword = getStringFromBuffer(hashedPasswordBuffer);
 
 		try {
-			const result = await createUser(email, hashedPassword, salt, false, null);
+			const result = await createUser(
+				email,
+				hashedPassword,
+				salt,
+				false,
+				null
+			);
 
 			if (result.resultCode === ResultCode.UserCreated) {
 				await signIn('credentials', {
@@ -280,18 +286,18 @@ export async function signInWithGoogle() {
 export async function handleGoogleSignInCallback(user: any, account: any) {
 	if (account?.provider === 'google') {
 		const existingUser = await getUser(user.email!);
-		
+
 		if (!existingUser) {
 			const userId = account.providerAccountId;
 			// Create a new user for first-time Google sign-ins
 			const result = await createUser(
 				user.email!,
 				crypto.randomUUID(), // Random password for Google users
-				crypto.randomUUID(),  // Random salt
+				crypto.randomUUID(), // Random salt
 				true,
 				userId
 			);
-			
+
 			if (result.type === 'success') {
 				user.id = userId; // Use Google's sub as the ID
 				return true;

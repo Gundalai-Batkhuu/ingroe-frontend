@@ -4,8 +4,8 @@ import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
-	TooltipTrigger,
-} from "@/components/ui/tooltip";
+	TooltipTrigger
+} from '@/components/ui/tooltip';
 
 interface EditWorkerButtonProps {
 	documentId: string;
@@ -29,7 +29,7 @@ export function EditWorkerButton({
 						<Pencil className="size-4" />
 					</Button>
 				</TooltipTrigger>
-				<TooltipContent className="bg-background text-foreground border">
+				<TooltipContent className="border bg-background text-foreground">
 					<p>Edit Assistant</p>
 				</TooltipContent>
 			</Tooltip>

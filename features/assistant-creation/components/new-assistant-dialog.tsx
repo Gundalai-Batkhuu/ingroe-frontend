@@ -6,7 +6,7 @@ import {
 	CardDescription,
 	CardFooter,
 	CardHeader,
-	CardTitle,
+	CardTitle
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -22,16 +22,17 @@ interface NewAssistantCardProps {
 export function NewAssistantCard({
 	setTitle,
 	setDescription,
-	setInstructions,
+	setInstructions
 }: NewAssistantCardProps) {
 	const [localTitle, setLocalTitle] = useState('');
 	const [localDescription, setLocalDescription] = useState('');
 	const [localInstructions, setLocalInstructions] = useState('');
 	const [isTogglePressed, setIsTogglePressed] = useState(false);
 
-	const isFormValid = localTitle.trim() !== '' && 
-					   localDescription.trim() !== '' && 
-					   isTogglePressed;
+	const isFormValid =
+		localTitle.trim() !== '' &&
+		localDescription.trim() !== '' &&
+		isTogglePressed;
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
@@ -41,18 +42,19 @@ export function NewAssistantCard({
 	};
 
 	return (
-		<Card className="h-full border-0 shadow-none flex flex-col">
+		<Card className="flex h-full flex-col border-0 shadow-none">
 			<CardHeader>
 				<CardTitle>Add details</CardTitle>
 			</CardHeader>
 
-			<form onSubmit={handleSubmit} className="flex flex-col flex-1">
+			<form onSubmit={handleSubmit} className="flex flex-1 flex-col">
 				<CardContent className="flex-1">
 					<div className="grid gap-16">
 						<div className="space-y-6">
 							<div className="flex gap-4">
 								<Label htmlFor="worker-title" className="w-24">
-									Title <span className="text-red-500">*</span>
+									Title{' '}
+									<span className="text-red-500">*</span>
 								</Label>
 								<Input
 									id="worker-title"
@@ -65,8 +67,12 @@ export function NewAssistantCard({
 								/>
 							</div>
 							<div className="flex gap-4">
-								<Label htmlFor="worker-description" className="w-24">
-									Description <span className="text-red-500">*</span>
+								<Label
+									htmlFor="worker-description"
+									className="w-24"
+								>
+									Description{' '}
+									<span className="text-red-500">*</span>
 								</Label>
 								<Textarea
 									id="worker-description"
@@ -80,7 +86,10 @@ export function NewAssistantCard({
 								/>
 							</div>
 							<div className="flex gap-4">
-								<Label htmlFor="worker-instructions" className="w-24">
+								<Label
+									htmlFor="worker-instructions"
+									className="w-24"
+								>
 									Instructions
 								</Label>
 								<Textarea
@@ -96,12 +105,14 @@ export function NewAssistantCard({
 						</div>
 						<div className="flex flex-col gap-6">
 							<CardTitle>Select service type</CardTitle>
-							<Toggle 
+							<Toggle
 								className="flex h-24 w-24 flex-col items-center justify-center rounded-lg border-2 border-gray-300"
 								pressed={isTogglePressed}
 								onPressedChange={setIsTogglePressed}
 							>
-								<div className="text-center">Ask your files</div>
+								<div className="text-center">
+									Ask your files
+								</div>
 							</Toggle>
 						</div>
 					</div>
@@ -115,4 +126,3 @@ export function NewAssistantCard({
 		</Card>
 	);
 }
-

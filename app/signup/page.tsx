@@ -9,7 +9,7 @@ export default async function SignupPage() {
 	if (session) {
 		redirect('/');
 	}
-	
+
 	return (
 		<main className="my-20 w-full">
 			<SignupForm />

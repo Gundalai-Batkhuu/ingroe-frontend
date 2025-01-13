@@ -14,21 +14,18 @@ export function ChatList({ messages }: ChatList) {
 	const [aiState] = useAIState();
 
 	return (
-		<div 
-			ref={scrollRef} 
-			className="relative mx-auto max-w-2xl px-4 overflow-y-auto"
-			>
+		<div
+			ref={scrollRef}
+			className="relative mx-auto max-w-2xl overflow-y-auto px-4"
+		>
 			<div className="space-y-4 pb-4">
 				{messages.map((message, index) => (
-					<div key={message.id}>
-						{message.display}
-					</div>
+					<div key={message.id}>{message.display}</div>
 				))}
-				
+
 				{aiState.isLoading && <LoadingDots />}
-				
 			</div>
-			
+
 			<div ref={messagesRef} />
 			<div ref={visibilityRef} className="h-px w-full" />
 		</div>

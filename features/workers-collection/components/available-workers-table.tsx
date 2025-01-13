@@ -10,11 +10,7 @@ import {
 	CardTitle
 } from '@/components/ui/card';
 import { useRouter } from 'next/navigation';
-import {
-	ChevronLeft,
-	ChevronRight,
-	Bot
-} from 'lucide-react';
+import { ChevronLeft, ChevronRight, Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { DeleteWorkerButton } from '@/features/assistant-creation/components/delete-worker-button';
 import { WorkerChatButton } from '@/features/chat/components/chat-with-worker-button';
@@ -31,22 +27,21 @@ export function AvailableWorkersTable({
 }) {
 	const router = useRouter();
 
-	const { artifacts, error, fetchUserArtifacts } =
-		userArtifactsStore();
+	const { artifacts, error, fetchUserArtifacts } = userArtifactsStore();
 
 	useEffect(() => {
 		if (userId) {
 			fetchUserArtifacts(userId);
 		}
 	}, [userId]);
-		
+
 	const search = searchParams.q || '';
 	const offset = parseInt(searchParams.offset || '0', 10);
 
-
 	if (error) return <div>Error: {error}</div>;
-	
-	if (!artifacts) return <div className="text-muted-foreground">No assistants found</div>;
+
+	if (!artifacts)
+		return <div className="text-muted-foreground">No assistants found</div>;
 
 	const filteredArtifacts = artifacts.artefact_tree.filter(artifact =>
 		artifact.document_name.toLowerCase().includes(search.toLowerCase())
@@ -57,7 +52,7 @@ export function AvailableWorkersTable({
 
 	if (totalArtifacts === 0) {
 		return (
-			<Card className="flex h-full flex-col items-center justify-center p-8 border-none">
+			<Card className="flex h-full flex-col items-center justify-center border-none p-8">
 				<Image
 					src="/no_workers.png"
 					alt="No assistants found"
@@ -97,10 +92,10 @@ export function AvailableWorkersTable({
 			<CardContent className="flex-grow">
 				<div className="grid gap-4">
 					{paginatedArtifacts.map(artifact => (
-						<Card 
+						<Card
 							key={artifact.document_id}
-							className="hover:shadow-md hover:bg-gray-50"
-						> 
+							className="hover:bg-gray-50 hover:shadow-md"
+						>
 							<CardContent className="flex flex-row items-center justify-between py-4">
 								<div className="flex items-center space-x-4">
 									<div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
@@ -114,22 +109,20 @@ export function AvailableWorkersTable({
 											Created date: 01 Nov 2024
 										</CardDescription>
 									</div>
-										<div className="flex items-center gap-2">
-											<EditWorkerButton
-												documentId={
-													artifact.document_id
-												}
-												onEdit={handleEditArtifact}
-											/>
-											<DeleteWorkerButton
-												document_id={
-													artifact.document_id
-												}
-												user_id={userId}
-												onSuccess={handleDeleteSuccess}
-												documentName={artifact.document_name}
-											/>
-										</div>
+									<div className="flex items-center gap-2">
+										<EditWorkerButton
+											documentId={artifact.document_id}
+											onEdit={handleEditArtifact}
+										/>
+										<DeleteWorkerButton
+											document_id={artifact.document_id}
+											user_id={userId}
+											onSuccess={handleDeleteSuccess}
+											documentName={
+												artifact.document_name
+											}
+										/>
+									</div>
 								</div>
 								<WorkerChatButton
 									artifactId={artifact.document_id}
