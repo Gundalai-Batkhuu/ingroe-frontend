@@ -46,7 +46,7 @@ export default function WorkersPageContent({
 
 					<Button variant="outline" className="gap-2">
 						<Calendar className="h-4 w-4" />
-						01 Mar 2024 - 10 Nov 2024
+						15/01/2025
 					</Button>
 
 					<Button

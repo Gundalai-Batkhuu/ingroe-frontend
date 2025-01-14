@@ -39,12 +39,12 @@ export default function ManageAssistantsTabs({
 					>
 						Shared by you
 					</TabsTrigger>
-					<TabsTrigger
+					{/* <TabsTrigger
 						value="raw"
 						className="px-2 pb-1 text-sm font-medium data-[state=active]:border-b-2 data-[state=active]:border-brand-green data-[state=active]:text-brand-green data-[state=inactive]:text-muted-foreground"
 					>
 						Raw
-					</TabsTrigger>
+					</TabsTrigger> */}
 				</TabsList>
 
 				<div className="flex-1">

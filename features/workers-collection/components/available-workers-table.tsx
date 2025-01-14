@@ -106,7 +106,7 @@ export function AvailableWorkersTable({
 											{artifact.document_name}
 										</CardTitle>
 										<CardDescription>
-											Created date: 01 Nov 2024
+											Created date: 15/01/2025
 										</CardDescription>
 									</div>
 									<div className="flex items-center gap-2">

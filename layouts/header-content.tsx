@@ -13,8 +13,8 @@ export default function HeaderContent() {
 				<SearchInput />
 				<MobileNav />
 
-				<Link href="/dashboard">
-					<Button variant="ghost">Dashboard</Button>
+				<Link href="/manage-assistants">
+					<Button variant="ghost">Assistant Hub</Button>
 				</Link>
 
 				<Button variant="ghost">Service Hub</Button>
