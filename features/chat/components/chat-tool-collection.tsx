@@ -64,9 +64,9 @@ export default function ChatToolCollection({
 					onClick={handleDislike}
 				/>
 			</IconWrapper>
-			<IconWrapper tooltip="Do something magical">
+			{/* <IconWrapper tooltip="Do something magical">
 				<WandSparkles className="h-5 w-5 cursor-pointer text-gray-500 hover:text-gray-700" />
-			</IconWrapper>
+			</IconWrapper> */}
 			<InformationSourceDisplay
 				context={context || []}
 				chunkid={chunkid}

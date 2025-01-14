@@ -119,7 +119,6 @@ function ArtifactListField({
 					Add
 				</Button>
 			</div>
-			<div className="rounded-md bg-secondary p-2">{value}</div>
 		</div>
 	);
 }

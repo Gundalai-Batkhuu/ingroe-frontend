@@ -71,7 +71,7 @@ export function SidebarActions({
 	return (
 		<>
 			<div className="flex items-center gap-1">
-				<Tooltip>
+				{/* <Tooltip>
 					<TooltipTrigger asChild>
 						<span className="cursor-default pr-1 text-xs text-muted-foreground hover:text-foreground">
 							{convertDate(chat.createdAt)}
@@ -80,7 +80,7 @@ export function SidebarActions({
 					<TooltipContent side="top" align="center">
 						Created at: {new Date(chat.createdAt).toLocaleString()}
 					</TooltipContent>
-				</Tooltip>
+				</Tooltip> */}
 				<Tooltip>
 					<TooltipTrigger asChild>
 						<Button

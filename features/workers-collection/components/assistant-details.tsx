@@ -13,8 +13,21 @@ import {
 } from '@/components/ui/table';
 import { Calendar, Edit, MoreVertical } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useRouter } from 'next/navigation';
 import { EditDocumentDialog } from './edit-document-dialog';
+
+interface FileDetails {
+	file_url: string;
+	file_name: string;
+	created_at?: string;
+	status?: string;
+}
+
+interface Artifact {
+	document_id: string;
+	document_name: string;
+	description: string;
+	instruction: string;
+}
 
 interface AssistantDetailsProps {
 	searchParams: { q: string; offset: string };
@@ -27,7 +40,6 @@ export default function AssistantDetails({
 	userId,
 	assistantId
 }: AssistantDetailsProps) {
-	const router = useRouter();
 	const { artifacts, isLoading, error, fetchUserArtifacts } =
 		userArtifactsStore();
 	const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -39,7 +51,7 @@ export default function AssistantDetails({
 	}, [userId]);
 
 	const assistantDetails = artifacts?.artefact_tree.find(
-		artifact => artifact.document_id === assistantId
+		(artifact: Artifact) => artifact.document_id === assistantId
 	);
 
 	if (isLoading) {
@@ -81,22 +93,6 @@ export default function AssistantDetails({
 					</p>
 				</div>
 
-				<div className="flex items-center gap-2">
-					<Button
-						variant="outline"
-						size="lg"
-						onClick={() => setIsEditDialogOpen(true)}
-					>
-						Edit
-					</Button>
-					<EditDocumentDialog
-						documentId={assistantId}
-						userId={userId}
-						isOpen={isEditDialogOpen}
-						onOpenChange={setIsEditDialogOpen}
-					/>
-					<MoreVertical className="size-6 text-muted-foreground" />
-				</div>
 			</div>
 
 			{/* Content Section */}
@@ -146,65 +142,42 @@ export default function AssistantDetails({
 				</div>
 
 				<Table>
-					<TableCaption>Files unavailable</TableCaption>
 					<TableHeader className="bg-muted/50">
 						<TableRow>
-							<TableHead className="font-semibold">
-								File Names
-							</TableHead>
-							<TableHead className="font-semibold">
-								Modified date
-							</TableHead>
-							<TableHead className="font-semibold">
-								File type
-							</TableHead>
-							<TableHead className="font-semibold">
-								Action
-							</TableHead>
+							<TableHead className="font-semibold">File Names</TableHead>
+							<TableHead className="font-semibold">File type</TableHead>
+							<TableHead className="font-semibold">Status</TableHead>
+							<TableHead className="font-semibold">Modified date</TableHead>
 						</TableRow>
 					</TableHeader>
 					<TableBody>
-						{assistantDetails?.captured_documents?.map(doc => (
-							<TableRow key={doc.captured_document_id}>
-								<TableCell>
-									{doc.captured_files?.map(file => (
-										<div
-											key={file.file_url}
-											className="text-sm"
-										>
-											{file.file_name
-												.split('.')
-												.slice(0, -1)
-												.join('.')}
-										</div>
-									))}
-								</TableCell>
-								<TableCell>
-									{doc.captured_files?.map(file => {
-										const extension =
-											file.file_name
-												.split('.')
-												.pop()
-												?.toLowerCase() || '';
-										return (
-											<div
-												key={file.file_url}
-												className="text-sm"
-											>
-												{extension}
-											</div>
-										);
-									})}
-								</TableCell>
-								<TableCell>
-									{doc.query_ready ? 'Ready' : 'Processing'}
-								</TableCell>
-								<TableCell className="flex items-center gap-2">
-									<Calendar className="h-4 w-4" />
-									01 Nov 2024
-								</TableCell>
-							</TableRow>
-						))}
+						{assistantDetails?.files?.map((file: FileDetails) => {
+							const fileName = file.file_name.split('.').slice(0, -1).join('.');
+							const fileExtension = file.file_name.split('.').pop()?.toLowerCase() || '';
+							const formattedDate = file.created_at 
+								? new Date(file.created_at).toLocaleDateString('en-US', {
+									day: '2-digit',
+									month: 'short',
+									year: 'numeric'
+								})
+								: '14/01/2025';
+
+							return (
+								<TableRow key={file.file_url}>
+									<TableCell className="font-medium">{fileName}</TableCell>
+									<TableCell className="uppercase">{fileExtension}</TableCell>
+									<TableCell>
+										<span className="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium bg-green-50 text-green-700">
+											{file.status || 'Ready'}
+										</span>
+									</TableCell>
+									<TableCell className="flex items-center gap-2">
+										<Calendar className="size-4 text-muted-foreground" />
+										{formattedDate}
+									</TableCell>
+								</TableRow>
+							);
+						})}
 					</TableBody>
 				</Table>
 			</div>
