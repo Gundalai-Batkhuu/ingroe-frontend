@@ -5,7 +5,7 @@ summary: "A Next.js-powered frontend for an AI assistant platform with advanced 
 tags: "Next.js,TypeScript,OpenAI,Radix UI,Tailwind CSS,React"
 ---
 
-Ingroe is a sophisticated AI assistant platform built with Next.js App Router and TypeScript, designed to provide intelligent interactions while maintaining high accessibility standards. The project showcases advanced frontend architecture and modern development practices.
+Ingroe is an AI assistant platform built with Next.js App Router and TypeScript, designed to provide intelligent interactions while maintaining high accessibility standards. The project showcases advanced frontend architecture and modern development practices.
 
 ## Technical Highlights
 
