@@ -23,7 +23,7 @@ Ingroe is an AI-RAG assistant platform built with Next.js App Router and TypeScr
   - Speech-to-Text capabilities via Whisper-1 model
   - Real-time chat interface with streaming responses
 
-#### Accessibility Focus
+#### Accessibility 
 The platform prioritizes accessibility through:
 - Screen reader compatibility
 - Voice command integration
