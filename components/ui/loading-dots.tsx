@@ -5,7 +5,7 @@ export function LoadingDots() {
 				{[1, 2, 3].map(dot => (
 					<div
 						key={dot}
-						className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground"
+						className="size-1.5 animate-bounce rounded-full bg-muted-foreground"
 						style={{
 							animationDelay: `${dot * 150}ms`
 						}}
