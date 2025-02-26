@@ -27,6 +27,7 @@ interface Artifact {
 	document_name: string;
 	description: string;
 	instruction: string;
+	files?: FileDetails[];
 }
 
 interface AssistantDetailsProps {
@@ -118,19 +119,19 @@ export default function AssistantDetails({
 				</div>
 				<div className="flex flex-col gap-2">
 					<div className="flex items-center gap-2">
-						<span className="font-medium font-semibold">
+						<span className="font-semibold">
 							Title:
 						</span>
 						<span>{assistantDetails?.document_name}</span>
 					</div>
 					<div className="flex items-center gap-2">
-						<span className="font-medium font-semibold">
+						<span className="font-semibold">
 							Description:
 						</span>
 						<span>{assistantDetails?.description}</span>
 					</div>
 					<div className="flex items-center gap-2">
-						<span className="font-medium font-semibold">
+						<span className="font-semibold">
 							Instructions:
 						</span>
 						<span>{assistantDetails?.instruction}</span>
@@ -151,7 +152,7 @@ export default function AssistantDetails({
 						</TableRow>
 					</TableHeader>
 					<TableBody>
-						{assistantDetails?.files?.map((file: FileDetails) => {
+						{assistantDetails?.files?.map((file: any) => {
 							const fileName = file.file_name.split('.').slice(0, -1).join('.');
 							const fileExtension = file.file_name.split('.').pop()?.toLowerCase() || '';
 							const formattedDate = file.created_at 
