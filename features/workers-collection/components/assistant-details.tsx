@@ -14,6 +14,7 @@ import {
 import { Calendar, Edit, MoreVertical } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { EditDocumentDialog } from './edit-document-dialog';
+import { Artefact } from '@/lib/types';
 
 interface FileDetails {
 	file_url: string;
@@ -52,7 +53,7 @@ export default function AssistantDetails({
 	}, [userId]);
 
 	const assistantDetails = artifacts?.artefact_tree.find(
-		(artifact: Artifact) => artifact.document_id === assistantId
+		(artifact: Artefact) => artifact.document_id === assistantId
 	);
 
 	if (isLoading) {
