@@ -199,3 +199,68 @@ export const ModernUIIcon = () => {
 		</div>
 	);
 };
+
+export const SecurityIcon = () => {
+	return (
+		<div className="flex w-fit mb-4">
+			<Image
+				src="https://img.icons8.com/?size=100&id=TJtAWRO3Gpa9&format=png&color=000000"
+				width={100}
+				height={100}
+				alt="AI Chat Animation"
+				className="size-20 m-auto"
+				priority
+			/>	
+		</div>
+	);
+};
+
+export const ApiIntegrationIcon = () => {
+	return (
+		<div className="flex w-fit mb-4">
+			<Image
+				src="https://img.icons8.com/?size=100&id=b3uCTpcS-NiY&format=png&color=000000"
+				width={100}
+				height={100}
+				alt="AI Chat Animation"
+				className="size-20 m-auto"
+				priority
+			/>	
+		</div>
+	);
+};
+
+export const DocumentationIcon = () => {
+	return (
+		<div className="flex w-fit mb-4">
+			<Image
+				src="https://img.icons8.com/?size=100&id=FbQwYNq0op8d&format=png&color=000000"
+				width={100}
+				height={100}
+				alt="AI Chat Animation"
+				className="size-20 m-auto"
+				priority
+			/>	
+		</div>
+	);
+};
+
+export const TrainingProgramsIcon = () => {
+	return (
+		<div className="flex w-fit mb-4">
+			<Image
+				src="https://img.icons8.com/?size=100&id=113845&format=png&color=000000"
+				width={100}
+				height={100}
+				alt="AI Chat Animation"
+				className="size-20 m-auto"
+				priority
+			/>	
+		</div>
+	);
+};
+
+
+
+
+
