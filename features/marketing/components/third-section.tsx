@@ -189,6 +189,8 @@ export default function ThirdSectionContent() {
 							</g>
 						</svg>
 					</Card>
+					</div>
+					<div className="mx-auto my-3 flex w-fit gap-3">
 					<Card className="variant-mixed bg-ui relative mx-auto flex size-20 *:relative *:m-auto *:size-7">
 						<svg
 							fill="#000000"

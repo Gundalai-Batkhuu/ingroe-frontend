@@ -101,7 +101,7 @@ export default function FourthSectionContent() {
 											<div className="bg-[#fbbf24]"></div>
 											<div className="bg-[#a3e635]"></div>
 										</div>
-										<div className="grid grid-cols-2 gap-4 px-6 py-8">
+										<div className="grid sm:grid-cols-2 gap-4 px-6 py-8">
 											<Card className="p-6">
 												<SecurityIcon />
 												<h3 className="font-semibold">Security Compliance</h3>
