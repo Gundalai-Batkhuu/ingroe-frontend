@@ -124,3 +124,78 @@ export const DatabaseIcon = () => {
 		</div>
 	);
 };
+
+export const AICommunicationIcon = () => {
+	return (
+		<div className="mx-auto flex w-fit">
+			<Image
+				src="https://img.icons8.com/?size=100&id=j11I22jYGwW5&format=png&color=000000"
+				width={100}
+				height={100}
+				alt="AI Chat Animation"
+				className="size-20 m-auto"
+				priority
+			/>
+		</div>
+	);
+};
+
+export const AccessibilityIcon = () => {
+	return (
+		<div className="mx-auto flex w-fit">
+			<Image
+				src="https://img.icons8.com/?size=100&id=68693&format=png&color=000000"
+				width={100}
+				height={100}
+				alt="AI Chat Animation"
+				className="size-20 m-auto"
+				priority
+			/>
+		</div>
+	);
+};
+
+export const IntelligenceIcon = () => {
+	return (
+		<div className="mx-auto flex w-fit">
+			<Image
+				src="https://img.icons8.com/?size=100&id=121694&format=png&color=000000"
+				width={100}
+				height={100}
+				alt="AI Chat Animation"
+				className="size-20 m-auto"
+				priority
+			/>
+		</div>
+	);
+};
+
+export const SmartDatabaseManagementIcon = () => {
+	return (
+		<div className="mx-auto flex w-fit">
+			<Image
+				src="https://img.icons8.com/?size=100&id=110478&format=png&color=000000"
+				width={100}
+				height={100}
+				alt="AI Chat Animation"
+				className="size-20 m-auto"
+				priority
+			/>
+		</div>
+	);
+};
+
+export const ModernUIIcon = () => {
+	return (
+		<div className="mx-auto flex w-fit">
+			<Image
+				src="https://img.icons8.com/?size=100&id=116999&format=png&color=000000"
+				width={100}
+				height={100}
+				alt="AI Chat Animation"
+				className="size-20 m-auto"
+				priority
+			/>
+		</div>
+	);
+};
