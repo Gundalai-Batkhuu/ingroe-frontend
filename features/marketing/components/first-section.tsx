@@ -13,10 +13,10 @@ export default function FirstSectionContent() {
 				>
 					<span className="flex items-center gap-2">
 						<span className="inline-flex items-center rounded-full bg-gradient-to-r from-green-50 to-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/10 dark:from-green-900/20 dark:to-green-900/30 dark:text-green-400 dark:ring-green-500/20">
-							Try for Free
+							New
 						</span>
 						<span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-							Simple pricing, powerful features
+							Search the Web using AI
 						</span>
 					</span>
 					<div className="flex items-center -space-x-3 transition-transform duration-300 group-hover:translate-x-1">
@@ -38,16 +38,15 @@ export default function FirstSectionContent() {
 				</Link>
 
 				<h1 className="text-title mt-8 text-wrap text-4xl font-semibold md:text-5xl xl:text-5xl xl:[line-height:1.125]">
-					AI tools for <br className="hidden sm:block" /> your business
+					Intelligent AI Assistant <br className="hidden sm:block" /> with Knowledge Base Management
 				</h1>
 				<p className="text-body mx-auto mt-8 hidden max-w-2xl text-wrap text-lg sm:block">
-					Tailwindcss highly customizable components for building
-					modern websites and applications that look and feel the way
-					you mean it.
+					Experience seamless AI interactions with voice commands, real-time chat, and comprehensive 
+					knowledge base management. Built for accessibility and performance.
 				</p>
 				<p className="text-body mx-auto mt-6 max-w-2xl text-wrap sm:hidden">
-					Highly customizable components for building modern websites
-					and applications, with your personal spark.
+					AI-powered assistant platform with voice commands and real-time chat, 
+					designed for everyone.
 				</p>
 				<div className="mt-8 flex flex-col items-center justify-center gap-4">
 					<Link href="/manage-assistants">

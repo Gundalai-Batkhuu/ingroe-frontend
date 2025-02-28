@@ -7,7 +7,7 @@ import {
 	CarouselNext,
 	CarouselPrevious
 } from '@/components/ui/carousel';
-import { AstroIcon, NetlifyIcon, WorkOSIcon } from './icons';
+import { AiChatIcon, VoiceCommandIcon, DatabaseIcon } from './icons';
 import Autoplay from 'embla-carousel-autoplay';
 import { Card } from '@/components/ui/card';
 
@@ -31,9 +31,9 @@ export function CarouselComponent() {
 					<CarouselItem className="px-6 pb-12 pt-2">
 						<Card className="rounded-xl bg-white p-9 shadow-lg">
 							<div>
-								<NetlifyIcon />
+								<VoiceCommandIcon />
 								<p className="mt-6 text-center text-lg">
-									30% Increase in revenue
+									Voice Commands & Speech Support
 								</p>
 							</div>
 						</Card>
@@ -42,9 +42,9 @@ export function CarouselComponent() {
 					<CarouselItem className="px-6 pb-12 pt-2">
 						<Card className="rounded-xl bg-white p-9 shadow-lg">
 							<div>
-								<AstroIcon />
+								<AiChatIcon />
 								<p className="mt-6 text-center text-lg">
-									30% Increase in work
+									Real-time Chat with AI
 								</p>
 							</div>
 						</Card>
@@ -53,11 +53,9 @@ export function CarouselComponent() {
 					<CarouselItem className="px-6 pb-12 pt-2">
 						<Card className="rounded-xl bg-white p-9 shadow-lg">
 							<div>
-								<div className="mx-auto h-12 w-fit">
-									<WorkOSIcon />
-								</div>
+								<DatabaseIcon />
 								<p className="mt-6 text-center text-lg">
-									30% Increase in speed
+									Knowledge Base Management
 								</p>
 							</div>
 						</Card>

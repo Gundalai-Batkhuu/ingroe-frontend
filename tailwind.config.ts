@@ -88,11 +88,16 @@ module.exports = {
   				to: {
   					height: '0'
   				}
-  			}
+  			},
+  			'small-bounce': {
+  				'0%, 100%': { transform: 'translateY(-10%)' },
+  				'50%': { transform: 'translateY(0)' },
+  			},
   		},
   		animation: {
   			'accordion-down': 'accordion-down 0.2s ease-out',
-  			'accordion-up': 'accordion-up 0.2s ease-out'
+  			'accordion-up': 'accordion-up 0.2s ease-out',
+  			'small-bounce': 'small-bounce 1s ease-in-out infinite',
   		}
   	}
   },
